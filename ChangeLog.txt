@@ -3,4 +3,8 @@
 
     CHANGES
 
+    - Added the main FrostEngine
+    - Added ProgramOutputHandler
+    - Added Fr_StringManip.h
+
     FIXES

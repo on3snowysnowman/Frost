@@ -1,9 +1,6 @@
 
 build
+demos/build_demo
 .vscode
-clang-tidy
-CMakeLists.txt
-LSDLE_Path.txt
 Frost_Path.txt
-test.cpp
 *.exe
