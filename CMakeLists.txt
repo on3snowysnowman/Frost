@@ -4,7 +4,12 @@ project(Frost VERSION "0.1")
 
 # Create static library
 add_library(Frost STATIC ${SOURCES}
+    
+    src/FileSystemHandler.cpp
+    src/Fr_StringManip.cpp
     src/FrostEngine.cpp
+    src/JsonHandler.cpp
+    src/ProgramOutputHandler.cpp
 )
 
 target_include_directories(Frost
@@ -18,6 +23,7 @@ target_include_directories(Frost
 
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
+find_package(nlohmann_json REQUIRED)
 
 
 # Link libraries
@@ -45,6 +51,8 @@ install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/ DESTINATION "${FROST_PATH}/Frost/
     PATTERN ".vscode" EXCLUDE
     PATTERN "old_files" EXCLUDE
     PATTERN "Demos" EXCLUDE
+    PATTERN "documentation" EXCLUDE
+    PATTERN "data" EXCLUDE
     PATTERN "*.exe" EXCLUDE
     PATTERN "*.txt" EXCLUDE
     PATTERN "*.cpp" EXCLUDE

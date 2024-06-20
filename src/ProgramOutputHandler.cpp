@@ -26,7 +26,7 @@ bool ProgramOutputHandler::clear_output_file()
     return true;
 }
 
-bool ProgramOutputHandler::log(std::string content, OUTPUT_SEVERITY out_severity)
+bool ProgramOutputHandler::log(std::string content, Frost::OUTPUT_SEVERITY out_severity)
 {
     s_file_stream.open(s_output_file_path, std::ios::app);
 
@@ -35,24 +35,24 @@ bool ProgramOutputHandler::log(std::string content, OUTPUT_SEVERITY out_severity
 
     switch(out_severity)
     {
-        case LOG:
+        case Frost::LOG:
 
             s_file_stream << "[LOG] ";
             break;
 
-        case WARN:
+        case Frost::WARN:
 
             s_file_stream << "[WARN] ";
             break;
 
-        case ERR:   
+        case Frost::ERR:   
 
             s_file_stream << "[ERR] ";
             break;
     }
 
-    // Trim the output so that each line does not exceed 100 characters
-    Frost::configure_string_with_line_limit(content, 100);
+    // Trim the output so that each line does not exceed 90 characters
+    Frost::configure_string_with_line_limit(content, 90);
 
     s_file_stream << content << '\n';
 

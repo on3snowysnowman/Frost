@@ -5,6 +5,8 @@
 
     - Added the main FrostEngine
     - Added ProgramOutputHandler
-    - Added Fr_StringManip.h
+    - Added Fr_StringManip
+    - Added FileSystemhandler
+    - Added JsonHandler
 
     FIXES

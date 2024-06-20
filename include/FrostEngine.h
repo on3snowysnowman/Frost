@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <string>
 
 #include <SDL2/SDL.h>
 
@@ -23,8 +24,14 @@ protected:
     /** Terminates Engine simulate. This function simply flags the Engine to stop on the next 
      * frame completion. Any change made between this function call and the end of the frame will
      * still happen. */
-    void quit();
+    void _quit();
 
+    /** Sets the icon of the application window to a new png at the passed path. Returns true
+     * if the png was sucessfuly set.
+     * 
+     * @param path_to_png Path to the new png.
+     */
+    bool _set_application_icon(std::string path_to_png);
 
 private:
 
@@ -37,10 +44,10 @@ private:
 
     uint8_t m_elapsed_miliseconds_this_frame; // Number of miliseconds this frame took.
 
+    const uint16_t TARGET_FPS = 60; // Target frames per second that the Engine will simulate at.
+
     // Target miliseconds per frame to achieve target fps.
     const uint8_t TARGET_MILISECONDS_PER_FRAME;  
-
-    const uint16_t TARGET_FPS = 60; // Target frames per second that the Engine will simulate at.
 
     // Timestamp of the beginning of the frame. Used to calculate the miliseconds each frame takes.
     uint64_t m_frame_start_timestamp; 
@@ -50,17 +57,19 @@ private:
 
     SDL_Event event; // Instance of the SDL_Event.
 
+    SDL_Surface* m_application_icon {}; // Icon for the application Window.
     SDL_Window* m_window; // Instance of the SDL_Window.
     SDL_Renderer* m_renderer; // Instance of the SDL_Renderer.
 
 
     // Methods
 
-    /** Initializes SDL and creates SDL Components. */
-    void _init_SDL();
+    /** Creates default init files, along with initializing the engine with default values. This 
+     * method is called on Engine construction when no user created init files were found. */
+    void _create_default_init_files_and_engine();
 
-    /** Begins engine simulation. */
-    void _start_simulation();
+    /** Initializes SDL and creates SDL Components, along with the rest of the Engine. */
+    void _init_SDL_and_engine();
 
     /** The core loop of the engine. This loop runs as long as the Engine is stil active (until 
      * the quit method is called). Each process of the engine is contained here, such as the updating 
@@ -71,9 +80,9 @@ private:
      * registering pressed keys on the keyboard. */
     void _handle_SDL_events();
 
-    /** Flags the SDL_Renderer to clear itself */
+    /** Flags the SDL_Renderer to clear itself. */
     void _clear_SDL_renderer();
 
-    /** Flags the SDL_Renderer to present its buffered content */
+    /** Flags the SDL_Renderer to present its buffered content. */
     void _present_SDL_renderer();
 };
