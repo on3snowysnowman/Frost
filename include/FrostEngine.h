@@ -5,6 +5,9 @@
 
 #include <SDL2/SDL.h>
 
+#include "TextureHandler.h"
+#include "ConsoleOutputHandler.h"
+
 class FrostEngine
 {
 
@@ -44,10 +47,10 @@ private:
 
     uint8_t m_elapsed_miliseconds_this_frame; // Number of miliseconds this frame took.
 
-    const uint16_t TARGET_FPS = 60; // Target frames per second that the Engine will simulate at.
+    const uint16_t m_TARGET_FPS = 60; // Target frames per second that the Engine will simulate at.
 
     // Target miliseconds per frame to achieve target fps.
-    const uint8_t TARGET_MILISECONDS_PER_FRAME;  
+    const uint8_t m_TARGET_MILISECONDS_PER_FRAME;  
 
     // Timestamp of the beginning of the frame. Used to calculate the miliseconds each frame takes.
     uint64_t m_frame_start_timestamp; 
@@ -55,12 +58,22 @@ private:
     static int s_screen_width; // Screen width in pixels.
     static int s_screen_height; // Screen height in pixels.
 
-    SDL_Event event; // Instance of the SDL_Event.
+    // Path to the init data folder to setup the engine.
+    std::string m_init_data_directory = "data/init"; 
+
+    // Path to the color data file.
+    const std::string m_color_data_path = "data/init/colors.json";
+
+    TextureHandler m_texture_handler;
+    TextRenderingHandler m_text_ren_handler;
+
+    ConsoleOutputHandler m_coh;
+
+    SDL_Event m_event; // Instance of the SDL_Event.
 
     SDL_Surface* m_application_icon {}; // Icon for the application Window.
     SDL_Window* m_window; // Instance of the SDL_Window.
     SDL_Renderer* m_renderer; // Instance of the SDL_Renderer.
-
 
     // Methods
 

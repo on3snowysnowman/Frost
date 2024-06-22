@@ -1,3 +1,4 @@
-_/ FROST ( Simple Text and 2D Image Engine ) by Joel Height \_
+ / "Frost" ( Simple Text and 2D Image Engine ) by Joel Height \
 
-Frost is a lightweight engine desinged for rendering text and PNG images.
+Frost is a lightweight 2D engine designed for rendering text and PNG images. It contains various 
+tools for creating simple text menus along with support for sprite rendering.

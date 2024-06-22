@@ -59,7 +59,3 @@ bool ProgramOutputHandler::log(std::string content, Frost::OUTPUT_SEVERITY out_s
     s_file_stream.close();
     return true;
 }
-
-
-
-// Private

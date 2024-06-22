@@ -5,11 +5,15 @@ project(Frost VERSION "0.1")
 # Create static library
 add_library(Frost STATIC ${SOURCES}
     
+    src/ConsoleOutputHandler.cpp
     src/FileSystemHandler.cpp
+    src/Fr_Math.cpp
     src/Fr_StringManip.cpp
     src/FrostEngine.cpp
     src/JsonHandler.cpp
     src/ProgramOutputHandler.cpp
+    src/TextRenderingHandler.cpp
+    src/TextureHandler.cpp
 )
 
 target_include_directories(Frost
@@ -34,11 +38,24 @@ target_link_libraries(Frost
         SDL2_image
 )
 
-# Fetch the target path for this static library from the external path file
+# Get the target path for the user project from the external path file.
 
-file(STRINGS "Frost_Path.txt" FROST_PATH)
+file(READ "Paths/Project_Path.txt" PROJECT_PATH)
 
-# Install the library 
+# Copy the assets folder to the project
+
+file(COPY "assets" DESTINATION ${PROJECT_PATH})
+
+# Copy the data folder to the project
+
+file(COPY "data" DESTINATION ${PROJECT_PATH})
+
+
+# Fetch the target path for this static library from the external path file.
+
+file(READ "Paths/Frost_Path.txt" FROST_PATH)
+
+# Install the library.
 
 install(TARGETS Frost ARCHIVE DESTINATION "${FROST_PATH}/Frost/lib")
 
@@ -52,6 +69,8 @@ install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/ DESTINATION "${FROST_PATH}/Frost/
     PATTERN "old_files" EXCLUDE
     PATTERN "Demos" EXCLUDE
     PATTERN "documentation" EXCLUDE
+    PATTERN "assets" EXCLUDE
+    PATTERN "Paths" EXCLUDE
     PATTERN "data" EXCLUDE
     PATTERN "*.exe" EXCLUDE
     PATTERN "*.txt" EXCLUDE

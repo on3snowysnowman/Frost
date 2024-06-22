@@ -19,7 +19,7 @@ private:
 int main()
 {
 
-    FrostTester frost_tester;
+    FrostTester frost_tester; 
 
     return 0;
 }

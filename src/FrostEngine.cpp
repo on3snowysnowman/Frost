@@ -3,7 +3,7 @@
 #include "FrostEngine.h"
 #include "ProgramOutputHandler.h"
 #include "FileSystemHandler.h"
- #include "JsonHandler.h"
+#include "JsonHandler.h"
 
 
 // Static Members
@@ -15,14 +15,20 @@ int FrostEngine::s_screen_height {};
 
 // Constructors / Deconstructor
 
-FrostEngine::FrostEngine() : TARGET_MILISECONDS_PER_FRAME(1000 / TARGET_FPS) 
+FrostEngine::FrostEngine() : m_TARGET_MILISECONDS_PER_FRAME(1000 / m_TARGET_FPS) 
 {
-
     // Clear the ProgramOutputHandler's output file
     ProgramOutputHandler::clear_output_file();
 
     // Initialize SDL and the Engine. 
     _init_SDL_and_engine();
+
+    m_texture_handler = TextureHandler(m_renderer, m_color_data_path);
+
+    m_text_ren_handler = TextRenderingHandler(&m_texture_handler);
+    m_text_ren_handler.set_size_scale(2.0);
+
+    m_coh = ConsoleOutputHandler(&m_texture_handler, 0, 0, s_screen_width, s_screen_height);
 
     m_is_active = true;
 
@@ -74,7 +80,7 @@ bool FrostEngine::_set_application_icon(std::string path_to_png)
 void FrostEngine::_create_default_init_files_and_engine()
 {
     // Create the data directory.
-    FileSystemHandler::make_directory("data");
+    FileSystemHandler::make_directory(m_init_data_directory);
 
     ProgramOutputHandler::log("Fullscreen: true");
 
@@ -106,7 +112,7 @@ void FrostEngine::_create_default_init_files_and_engine()
     temp["background_color"] = json::array({20, 20, 30});
 
     // Dump the init data to the init file.
-    JsonHandler::dump(temp, "data/init_data.json");
+    JsonHandler::dump(temp, m_init_data_directory + "/init_data.json");
 
     temp.clear();
 
@@ -127,7 +133,7 @@ void FrostEngine::_create_default_init_files_and_engine()
     temp.push_back(json::array({"White", 235, 235, 247}));
 
     // Dump the color data to the colors file.
-    JsonHandler::dump(temp, "data/colors.json");
+    JsonHandler::dump(temp, m_init_data_directory + "/colors.json");
 
     // #TODO Place the color loading for the TextureHandler here.
 }
@@ -145,27 +151,23 @@ void FrostEngine::_init_SDL_and_engine()
     // Disable the cursor
     SDL_ShowCursor(SDL_DISABLE);
 
-    // If the data folder does not exist in the working directory.
+    // If the init folder does not exist in the working directory.
     if(!FileSystemHandler::does_directory_exist("data"))
     {
-        ProgramOutputHandler::log("\"data\" folder not found, creating folder and default "
-            "init files");
-
-        // Create default files for the init data.
-        _create_default_init_files_and_engine();
-
-        return;
+        ProgramOutputHandler::log("FrostEngine::_init_SDL_and_engine() -> \"data\" folder "
+            "not found", Frost::ERR);
+        exit(1);
     }
 
     // The data folder exists, assume the init files already exist.
 
-    json init_data = JsonHandler::get("data/init_data.json");
+    json init_data = JsonHandler::get(m_init_data_directory + "/init_data.json");
 
-    std::string application_window_name = init_data["application_window_name"];
+    std::string application_window_name = init_data.at("application_window_name");
 
     if(application_window_name.size() == 0) application_window_name = "Frost";
 
-    if(init_data["fullscreen"])
+    if(init_data.at("fullscreen"))
     {
         ProgramOutputHandler::log("Fullscreen: true");
 
@@ -181,8 +183,8 @@ void FrostEngine::_init_SDL_and_engine()
         ProgramOutputHandler::log("Fullscreen: false");
 
         // Get the width and height from the data file.
-        s_screen_width = init_data["screen_width"];
-        s_screen_height = init_data["screen_height"];
+        s_screen_width = init_data.at("screen_width");
+        s_screen_height = init_data.at("screen_height");
 
         // Create the SDL_Window with the loaded data.
         m_window = SDL_CreateWindow(application_window_name.c_str(), SDL_WINDOWPOS_CENTERED, 
@@ -190,29 +192,31 @@ void FrostEngine::_init_SDL_and_engine()
     }
 
     // Create the Renderer.
-    m_renderer = SDL_CreateRenderer(m_window, -1, 0);
+    m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED);
 
-    _set_application_icon("../assets/Frost_Icon.png");
+    SDL_RenderSetVSync(m_renderer, 1);
+
+    _set_application_icon("assets/Frost_Icon.png");
 }
 
 void FrostEngine::_simulation_loop()
 {
     while(m_is_active)
     {
-
         m_frame_start_timestamp = SDL_GetTicks64();
         
         _handle_SDL_events();
         _clear_SDL_renderer();
-        // _present_SDL_renderer();
+        m_coh.render();
+        _present_SDL_renderer();
 
         // Calculate the miliseconds this frame took.
         m_elapsed_miliseconds_this_frame = SDL_GetTicks64() - m_frame_start_timestamp;
 
-        if(m_elapsed_miliseconds_this_frame < TARGET_MILISECONDS_PER_FRAME)
+        if(m_elapsed_miliseconds_this_frame < m_TARGET_MILISECONDS_PER_FRAME)
         {
             // Delay for the difference between the elapsed miliseconds and target miliseconds.
-            SDL_Delay(TARGET_MILISECONDS_PER_FRAME - m_elapsed_miliseconds_this_frame);
+            SDL_Delay(m_TARGET_MILISECONDS_PER_FRAME - m_elapsed_miliseconds_this_frame);
         }
     }
 }
@@ -220,9 +224,9 @@ void FrostEngine::_simulation_loop()
 void FrostEngine::_handle_SDL_events() 
 {
     // While there are events.
-    while(SDL_PollEvent(&event))
+    while(SDL_PollEvent(&m_event))
     {
-        if(event.type == SDL_QUIT)
+        if(m_event.type == SDL_QUIT)
         {
             _quit();
         }

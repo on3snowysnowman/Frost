@@ -3,6 +3,11 @@
 
     CHANGES
 
+    - Added ability for TextureHandler to render colors
+    - Added a color struct
+    - Configured cmake to load assets to the project folder on configure.
+    - Added TextRenderingHandler
+    - Added ConsoleOutputHandler
     - Added the main FrostEngine
     - Added ProgramOutputHandler
     - Added Fr_StringManip
