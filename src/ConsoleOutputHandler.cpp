@@ -93,6 +93,29 @@ void ConsoleOutputHandler::modify_cursor_position(uint16_t x_modify, uint16_t y_
 
 void ConsoleOutputHandler::add_ch(const char c, const std::string color)
 {
+    if(c == ' ')
+    {
+        ++m_cursor_position.first;
+
+        // If the cursor's x position is not in bounds.
+        if(!_is_x_character_position_in_bounds(m_cursor_position.first)) 
+        { 
+            // Place the cursor on the next line.
+            add_new_line(); 
+        }
+
+        return;
+    }
+
+    else if(c == '\n')
+    {
+        add_new_line();
+        return;
+    }
+
+    // This character is not a valid renderable charactere.
+    else if(c < '!' || c > '~') return;
+
     m_text_ren_handler.add_ch(c, m_start_x + (m_cursor_position.first * m_font_scaled_width),
         m_start_y + (m_cursor_position.second * m_font_scaled_height * VERTICAL_SPACE_MODIFIER), 
         color);

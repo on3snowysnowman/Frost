@@ -1,9 +1,11 @@
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_render.h>
 
 #include "FrostEngine.h"
 #include "ProgramOutputHandler.h"
 #include "FileSystemHandler.h"
 #include "JsonHandler.h"
+#include "InputHandler.h"
 
 
 // Static Members
@@ -31,6 +33,8 @@ FrostEngine::FrostEngine() : m_TARGET_MILISECONDS_PER_FRAME(1000 / m_TARGET_FPS)
     m_coh = ConsoleOutputHandler(&m_texture_handler, 0, 0, s_screen_width, s_screen_height);
 
     m_is_active = true;
+
+    frost_icon = m_texture_handler.create_texture("assets/Frost_Icon.png");
 
     // Begin simulation.
     _simulation_loop();
@@ -206,7 +210,14 @@ void FrostEngine::_simulation_loop()
         m_frame_start_timestamp = SDL_GetTicks64();
         
         _handle_SDL_events();
+
+        SDL_Rect src {0, 0, 27, 28};
+        SDL_Rect dest {10, 50, 81, 84};
+
+        m_coh.add_str("Frost created by Joel Height");
+
         _clear_SDL_renderer();
+        m_texture_handler.draw(frost_icon, src, dest);
         m_coh.render();
         _present_SDL_renderer();
 
@@ -226,10 +237,16 @@ void FrostEngine::_handle_SDL_events()
     // While there are events.
     while(SDL_PollEvent(&m_event))
     {
-        if(m_event.type == SDL_QUIT)
-        {
-            _quit();
-        }
+        // Application exit button pressed.
+        if(m_event.type == SDL_QUIT) { _quit(); }
+
+        // Keyboard key was pressed.
+        else if(m_event.type == SDL_KEYDOWN)
+        { InputHandler::flag_key_pressed(m_event.key.keysym.sym); }
+
+        // Keyboard key was released.
+        else if(m_event.type == SDL_KEYUP)
+        { InputHandler::flag_key_released(m_event.key.keysym.sym); }
     }
 }
 

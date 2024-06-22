@@ -16,10 +16,11 @@ private:
 
 };
 
+#include <string>
+#include <iostream>
 int main()
 {
-
-    FrostTester frost_tester; 
+    FrostTester frost_tester;
 
     return 0;
 }

@@ -66,7 +66,6 @@ private:
 
     TextureHandler m_texture_handler;
     TextRenderingHandler m_text_ren_handler;
-
     ConsoleOutputHandler m_coh;
 
     SDL_Event m_event; // Instance of the SDL_Event.
@@ -74,6 +73,8 @@ private:
     SDL_Surface* m_application_icon {}; // Icon for the application Window.
     SDL_Window* m_window; // Instance of the SDL_Window.
     SDL_Renderer* m_renderer; // Instance of the SDL_Renderer.
+
+    SDL_Texture* frost_icon;
 
     // Methods
 

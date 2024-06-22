@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <unordered_set>
 
 #include "TextRenderingHandler.h"
 #include "TextureHandler.h"

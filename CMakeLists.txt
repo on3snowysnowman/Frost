@@ -10,6 +10,7 @@ add_library(Frost STATIC ${SOURCES}
     src/Fr_Math.cpp
     src/Fr_StringManip.cpp
     src/FrostEngine.cpp
+    src/InputHandler.cpp
     src/JsonHandler.cpp
     src/ProgramOutputHandler.cpp
     src/TextRenderingHandler.cpp
