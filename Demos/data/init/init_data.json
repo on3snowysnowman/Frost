@@ -1,0 +1,11 @@
+{
+    "application_window_name": "Frost",
+    "background_color": [
+        20,
+        20,
+        30
+    ],
+    "fullscreen": true,
+    "screen_height": 1440,
+    "screen_width": 2560
+}

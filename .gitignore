@@ -2,6 +2,5 @@
 build
 demos/build_demo
 .vscode
-Frost_Path.txt
+Paths
 *.exe
-data
