@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <unordered_set>
+#include <vector>
 
 #include "TextRenderingHandler.h"
 #include "TextureHandler.h"
@@ -63,38 +64,85 @@ public:
      * */
     void modify_cursor_position(const uint16_t x_modify, const uint16_t y_modify);
 
+    /** Adds a character to the screen at the cursor's position.
+     * 
+     * @param C Character to add.
+     * @param color Color of the character, default is White.
+     */
     void add_ch(char c, const std::string color = "White");
 
+    /** Adds a string to the screen starting at the cursor's position. Supports automatic wrapping
+     * of characters if they breach the screen's bounds.
+     * 
+     * @param str String to add.
+     * @param color Color of the string, default is White.
+     */
     void add_str(const std::string str, const std::string color = "White");
 
+    /** Moves the cursor's y position down "num" times, and places the x position at the set
+     * anchor. 
+     * 
+     * @param num Number of new lines to add, default is 1.
+     */
     void add_new_line(const uint8_t num = 1);
 
+    /** Clears the buffered content this frame. Only use this function to clear the content added 
+     * this frame before it has a chance to render. Do not use this method as a scheduled clear 
+     * screen after each frame.
+     */
     void clear_buffered_content();
 
+    /** Resets the cursor's position to the top left. This is called automatically during each 
+     * render call. */
     void reset_cursor_position();
 
-    void set_anchor();
+    /** Sets the anchor to a new value.
+     * 
+     * @param new_anchor New value.
+     */
+    void set_anchor(uint16_t new_anchor);
 
-    void set_focus();
+    /** Sets the focus to a new value.
+     * 
+     * @param new_focus New value.
+     */
+    void set_focus(uint16_t new_focus);
 
+    /** Renders the content buffered this frame, and resets the cursor's position to the top left. */
     void render();
 
-    const std::pair<uint16_t, uint16_t> get_cursor_position() const;
+    // Returns a const reference to the cursor's position.
+    const std::pair<uint16_t, uint16_t>& get_cursor_position() const;
 
 private:
 
+    // Classes / Structs 
+
+    // Stores data for a character that has been queued to be rendered on next render call.
+    struct QueuedCharacter
+    {
+        // Character symbol this struct represents
+        char symbol {};
+
+        uint16_t x_character_pos {};
+
+        // Color of the character.
+        std::string color = "White";
+    };
+
+
     // Members
 
-    // Starting X position of the screen.
+    // Starting X position of the screen in pixels.
     uint16_t m_start_x;
 
-    // Starting Y position of the screen.
+    // Starting Y position of the screen in pixels.
     uint16_t m_start_y;
 
-    // Ending X position of the screen.
+    // Ending X position of the screen in pixels.
     uint16_t m_end_x;
 
-    // Ending Y position of the screen.
+    // Ending Y position of the screen pixels.
     uint16_t m_end_y;
 
     // Width of the screen, measured in characters rounded down.
@@ -109,8 +157,14 @@ private:
     // Height of the font, scaled with the TextRenderingHandler's font size multiplier
     uint16_t m_font_scaled_height;
 
-    // The x position that a new line will "anchor" to (be set to) when placing a new line.
+    // The x position in characters that a new line will be set to when placing a new line.
     uint16_t m_anchor {}; 
+
+    // The y position in characters that the COH will center around, ensuring it is rendered.
+    uint16_t m_focus {};
+
+
+    uint16_t start_character_render_x {0};
 
     /** The scale factor that the space in between the characters along the vertical scale will be
      * multiplied by. */
@@ -126,6 +180,9 @@ private:
 
 
     // Methods
+
+
+    void _calculate_view_around_focus();
 
     /** Returns true if the passed x position, measured in characters, is within the bounds of the
      * screen. */

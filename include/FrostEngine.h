@@ -61,8 +61,11 @@ private:
     // Path to the init data folder to setup the engine.
     std::string m_init_data_directory = "data/init"; 
 
-    // Path to the color data file.
-    const std::string m_color_data_path = "data/init/colors.json";
+    // Path to the base colors data file.
+    const std::string m_BASE_COLOR_PATH = "data/init/base_colors.json";
+
+    // Path to the extended colors data file.
+    const std::string m_EXTENDED_COLOR_PATH = "data/init/extended_colors.json";
 
     TextureHandler m_texture_handler;
     TextRenderingHandler m_text_ren_handler;

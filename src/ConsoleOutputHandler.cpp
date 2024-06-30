@@ -1,6 +1,7 @@
 #include "ConsoleOutputHandler.h"
 #include "ProgramOutputHandler.h"
 
+
 // Constructors / Deconstructor
 
 ConsoleOutputHandler::ConsoleOutputHandler() {}
@@ -148,7 +149,19 @@ void ConsoleOutputHandler::add_new_line(const uint8_t num)
     m_cursor_position.first = m_anchor;
 }
 
+void ConsoleOutputHandler::clear_buffered_content() 
+{ m_text_ren_handler.clear_buffered_content(); }
+
 void ConsoleOutputHandler::reset_cursor_position() { m_cursor_position = {0, 0}; }
+
+void ConsoleOutputHandler::set_anchor(uint16_t new_anchor) { m_anchor = new_anchor; }
+
+void ConsoleOutputHandler::set_focus(uint16_t new_focus) 
+{ 
+    m_focus = new_focus; 
+
+    _calculate_view_around_focus();
+}
 
 void ConsoleOutputHandler::render() 
 { 
@@ -156,9 +169,18 @@ void ConsoleOutputHandler::render()
     reset_cursor_position();    
 }
 
+const std::pair<uint16_t, uint16_t>& ConsoleOutputHandler::get_cursor_position() const
+{ return m_cursor_position; }
 
 
 // Private
+
+void ConsoleOutputHandler::_calculate_view_around_focus()
+{
+    if(m_focus < m_screen_character_height) start_character_render_x = 0;
+
+    start_character_render_x = 
+}
 
 bool ConsoleOutputHandler::
     _is_x_character_position_in_bounds(const uint16_t character_x_position) const

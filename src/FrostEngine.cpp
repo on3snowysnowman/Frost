@@ -25,8 +25,6 @@ FrostEngine::FrostEngine() : m_TARGET_MILISECONDS_PER_FRAME(1000 / m_TARGET_FPS)
     // Initialize SDL and the Engine. 
     _init_SDL_and_engine();
 
-    m_texture_handler = TextureHandler(m_renderer, m_color_data_path);
-
     m_text_ren_handler = TextRenderingHandler(&m_texture_handler);
     m_text_ren_handler.set_size_scale(2.0);
 
@@ -198,9 +196,15 @@ void FrostEngine::_init_SDL_and_engine()
     // Create the Renderer.
     m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED);
 
+    // Enable Vsync
     SDL_RenderSetVSync(m_renderer, 1);
 
     _set_application_icon("assets/Frost_Icon.png");
+
+    if(init_data.at("use_extended_colors")) 
+        m_texture_handler = TextureHandler(m_renderer, m_EXTENDED_COLOR_PATH);
+
+    else m_texture_handler = TextureHandler(m_renderer, m_BASE_COLOR_PATH);
 }
 
 void FrostEngine::_simulation_loop()
@@ -214,7 +218,14 @@ void FrostEngine::_simulation_loop()
         SDL_Rect src {0, 0, 27, 28};
         SDL_Rect dest {10, 50, 81, 84};
 
-        m_coh.add_str("Frost created by Joel Height");
+        m_coh.add_str("Frost created by Joel Height\n\n\n\n\n\n");
+        m_coh.add_str("Colors:\n");
+
+        for(const std::pair<std::string, Color> color : m_texture_handler.get_colors())
+        {
+            m_coh.add_str(color.first, color.first);
+            m_coh.add_new_line();
+        }
 
         _clear_SDL_renderer();
         m_texture_handler.draw(frost_icon, src, dest);
