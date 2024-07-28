@@ -1,8 +1,8 @@
 #include <cmath>
 
-#include "TextRenderingHandler.h"
-#include "JsonHandler.h"
-#include "Fr_Math.h"
+#include "TextRenderingHandler.hpp"
+#include "JsonHandler.hpp"
+#include "Fr_Math.hpp"
 
 
 // Constructors / Deconstructor
@@ -50,6 +50,14 @@ void TextRenderingHandler::increase_size_scale(float amount)
         Frost::clamp_float_to_maximum(m_size_scale_factor, MAXIMUM_SIZE_SCALE_FACTOR);
 }
 
+void TextRenderingHandler::set_size_scale(float amount)
+{
+    amount = std::abs(amount);
+
+    m_size_scale_factor = Frost::clamp_float_to_maximum(amount, MAXIMUM_SIZE_SCALE_FACTOR);
+
+}
+
 void TextRenderingHandler::decrease_size_scale(float amount) 
 {
     m_size_scale_factor -= amount;
@@ -57,13 +65,21 @@ void TextRenderingHandler::decrease_size_scale(float amount)
     m_size_scale_factor = Frost::clamp_float_to_minimum(m_size_scale_factor, 1.0f);
 }
 
-void TextRenderingHandler::set_size_scale(float amount)
+void TextRenderingHandler::draw_character_now(char c, uint16_t x, uint16_t y, std::string color)
 {
-    amount = std::abs(amount);
+    SDL_Rect source, dest;
 
-    m_size_scale_factor = Frost::clamp_float_to_maximum(amount, MAXIMUM_SIZE_SCALE_FACTOR);
+    source.w = m_font_width;
+    source.h = m_font_height;
+    source.x = m_char_source_positions.at(c).first; 
+    source.y = m_char_source_positions.at(c).second; 
 
+    dest.w = get_scaled_font_width();
+    dest.h = get_scaled_font_height();
+    dest.x = x;
+    dest.y = y;
 
+    m_texture_handler->draw(m_font_texture, source, dest, color);
 }
 
 void TextRenderingHandler::add_ch(char c, uint16_t x, uint16_t y, std::string color) 

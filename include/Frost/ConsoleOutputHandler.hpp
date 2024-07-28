@@ -2,10 +2,10 @@
 
 #include <cstdint>
 #include <unordered_set>
-#include <vector>
+#include <queue>
 
-#include "TextRenderingHandler.h"
-#include "TextureHandler.h"
+#include "TextRenderingHandler.hpp"
+#include "TextureHandler.hpp"
 
 /** Allows for printing text to the screen in a structured and bounds friendly way like you would 
  * expect a console to. Has an internal "cursor" that moves across the screen automatically as 
@@ -111,6 +111,9 @@ public:
     /** Renders the content buffered this frame, and resets the cursor's position to the top left. */
     void render();
 
+    /** Returns the focus.  */
+    uint16_t get_focus() const;
+
     // Returns a const reference to the cursor's position.
     const std::pair<uint16_t, uint16_t>& get_cursor_position() const;
 
@@ -125,6 +128,8 @@ private:
         char symbol {};
 
         uint16_t x_character_pos {};
+
+        uint16_t y_character_pos {};
 
         // Color of the character.
         std::string color = "White";
@@ -163,15 +168,25 @@ private:
     // The y position in characters that the COH will center around, ensuring it is rendered.
     uint16_t m_focus {};
 
+    /** The specific y position of the buffered rendered characters that the screen will start
+     * at, based on the focus.
+     */
+    uint16_t m_start_character_render_y {0};
 
-    uint16_t start_character_render_x {0};
+    uint16_t m_end_character_render_y {0};
+
+    // The greatest y position that a character has been queued to render this frame.
+    uint16_t m_greatest_y_position_buffered {0};
 
     /** The scale factor that the space in between the characters along the vertical scale will be
      * multiplied by. */
-    static constexpr const float VERTICAL_SPACE_MODIFIER = 1.5f;
+    static constexpr const float s_VERTICAL_SPACE_MODIFIER = 1.5f;
 
     /** Cursor's position from the start of the COH dimensions. Measured in characters. */
     std::pair<uint16_t, uint16_t> m_cursor_position {0, 0};
+
+    // Characters queued during this frame that will be rendered on the next render call.
+    std::queue<QueuedCharacter> m_queued_characters;
 
     /** Each COH has its own TextRenderingHandler, since if they all shared the same one, the 
      * Engine would be limited to rendering only a single font and single font size at a time.

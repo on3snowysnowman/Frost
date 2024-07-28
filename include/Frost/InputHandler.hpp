@@ -18,6 +18,13 @@ class InputHandler
 
 public:
 
+    /** Delay a key from being active for a set amount of miliseconds.
+     * 
+     * @param key Key to delay.
+     * @param miliseconds Number of miliseconds.
+     */
+    static void delay_key(int32_t key, uint16_t miliseconds = 200);
+
     /** Flags the InputHandler that the passed key is pressed.
      * 
      * @param key Pressed key.

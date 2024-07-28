@@ -1,5 +1,5 @@
-#include "ProgramOutputHandler.h"
-#include "Fr_StringManip.h"
+#include "ProgramOutputHandler.hpp"
+#include "Fr_StringManip.hpp"
 
 
 // Static Members

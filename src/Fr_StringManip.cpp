@@ -1,4 +1,7 @@
-#include "Fr_StringManip.h"
+#include <stdexcept>
+
+#include "Fr_StringManip.hpp"
+#include "Fr_IntLimits.hpp"
 
 void Frost::configure_string_with_line_limit(std::string& content, uint8_t line_limit)
 {
@@ -18,5 +21,37 @@ void Frost::configure_string_with_line_limit(std::string& content, uint8_t line_
         // Increment the index by the line_limit amount, as this will be the next supposed place to
         // put a new line. 
         index_iterator += line_limit;
+    }
+}
+
+uint8_t Frost::str_to_uint8(std::string& _str)
+{
+    // The number this string represents is negative
+    if(_str.at(0) == '-') return 0;
+
+    try
+    {
+        return std::stoi(_str);
+    } 
+    
+    catch(const std::out_of_range& e)
+    {
+        return Frost::UINT8_LIMIT;
+    }
+}
+
+uint16_t Frost::str_to_uint16(std::string& _str)
+{
+    // The number this string represents is negative
+    if(_str.at(0) == '-') return 0;
+
+    try
+    {
+        return std::stoi(_str);
+    } 
+    
+    catch(const std::out_of_range& e)
+    {
+        return Frost::UINT16_LIMIT;
     }
 }

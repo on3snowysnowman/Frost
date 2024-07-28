@@ -1,7 +1,15 @@
-#include "TextureHandler.h"
-#include "JsonHandler.h"
-#include "ProgramOutputHandler.h"
-#include "FileSystemHandler.h"
+#include "TextureHandler.hpp"
+#include "JsonHandler.hpp"
+#include "ProgramOutputHandler.hpp"
+#include "FileSystemHandler.hpp"
+
+// Static Members
+
+std::unordered_map<SDL_Texture*, std::string> TextureHandler::s_textures_to_paths;
+
+std::unordered_map<std::string, SDL_Texture*> TextureHandler::s_paths_to_textures;
+
+
 
 
 // Constructors / Deconstructor
@@ -20,6 +28,14 @@ TextureHandler::TextureHandler(SDL_Renderer* renderer, std::string color_data_pa
     _get_colors_from_disk();
 }
 
+TextureHandler::~TextureHandler()
+{
+    for(std::pair<SDL_Texture*, std::string> _pair : s_textures_to_paths)
+    {
+        SDL_DestroyTexture(_pair.first);
+    }
+}
+
 
 // Public
 
@@ -28,7 +44,22 @@ void TextureHandler::draw(SDL_Texture* texture, const SDL_Rect& source, const SD
     SDL_RenderCopy(m_renderer, texture, &source, &dest);
 }
 
-#include <iostream>
+void TextureHandler::handle_texture_deletion(SDL_Texture* texture)
+{
+    // If this Texture was not found.
+    if(s_textures_to_paths.find(texture) == s_textures_to_paths.end())
+    {
+        ProgramOutputHandler::log("TextureHandler.handle_texture_deletion() -> Attempted to delete"
+            " an SDL_Texture that does not exist.", Frost::WARN);
+        return;
+    }
+
+    SDL_DestroyTexture(texture);
+
+    s_paths_to_textures.erase(s_textures_to_paths.at(texture));
+    s_textures_to_paths.erase(texture);
+}
+
 void TextureHandler::draw(SDL_Texture* texture, const SDL_Rect& source, const SDL_Rect& dest, 
     const std::string color) const
 {
@@ -67,18 +98,28 @@ const std::unordered_map<std::string, Color>& TextureHandler::get_colors() const
 
 SDL_Texture* TextureHandler::create_texture(std::string png_path) const
 {
+    // A texture has been created from this path already. 
+    if(s_paths_to_textures.find(png_path) != s_paths_to_textures.end())
+    {
+        return s_paths_to_textures.at(png_path);
+    }
+
     // If the file does not exist.
     if(!FileSystemHandler::does_directory_exist(png_path))
     {
         ProgramOutputHandler::log("TextureHandler.create_texture()-> Path \""
-            + png_path + "\" does not exist. Returning nullptr.", Frost::WARN);
-        return nullptr;
+            + png_path + "\" does not exist.", Frost::ERR);
+        exit(0);
     }
 
     SDL_Surface* temp_surface = IMG_Load(png_path.c_str());
+
     SDL_Texture* texture = SDL_CreateTextureFromSurface(m_renderer, temp_surface);
 
     SDL_FreeSurface(temp_surface);
+
+    // Register this texture in the known textures that have been created.
+    s_paths_to_textures.emplace(png_path, texture);
 
     return texture;
 }

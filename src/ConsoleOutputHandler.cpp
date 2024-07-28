@@ -1,5 +1,8 @@
-#include "ConsoleOutputHandler.h"
-#include "ProgramOutputHandler.h"
+#include <iostream>
+
+#include "ConsoleOutputHandler.hpp"
+#include "ProgramOutputHandler.hpp"
+#include "Fr_Math.hpp"
 
 
 // Constructors / Deconstructor
@@ -55,7 +58,9 @@ void ConsoleOutputHandler::resize_dimensions(uint16_t start_x, uint16_t start_y,
     m_screen_character_width = (end_x - start_x) / m_font_scaled_width;
 
     m_screen_character_height = (end_y - start_y) / (m_font_scaled_height * 
-        VERTICAL_SPACE_MODIFIER);
+        s_VERTICAL_SPACE_MODIFIER);
+
+    m_end_character_render_y = m_screen_character_height;
 }   
 
 void ConsoleOutputHandler::move_cursor(uint16_t x, uint16_t y)
@@ -114,12 +119,14 @@ void ConsoleOutputHandler::add_ch(const char c, const std::string color)
         return;
     }
 
-    // This character is not a valid renderable charactere.
+    // This character is not a valid renderable character.
     else if(c < '!' || c > '~') return;
 
-    m_text_ren_handler.add_ch(c, m_start_x + (m_cursor_position.first * m_font_scaled_width),
-        m_start_y + (m_cursor_position.second * m_font_scaled_height * VERTICAL_SPACE_MODIFIER), 
-        color);
+    m_queued_characters.push(QueuedCharacter{
+        c,
+        m_cursor_position.first,
+        m_cursor_position.second,
+        color });
 
     // Increment the cursor's x position.
     ++m_cursor_position.first;
@@ -147,6 +154,12 @@ void ConsoleOutputHandler::add_new_line(const uint8_t num)
 
     // Set the cursor's x position to the anchor.
     m_cursor_position.first = m_anchor;
+
+    // Set the greatest y position to the cursor's y position if it is greater. 
+    m_greatest_y_position_buffered = 
+        Frost::return_largest_of_uint16s(m_greatest_y_position_buffered, m_cursor_position.second);
+
+    // std::cout << "Adding new line, greatest y position: " << m_greatest_y_position_buffered << '\n';
 }
 
 void ConsoleOutputHandler::clear_buffered_content() 
@@ -160,14 +173,40 @@ void ConsoleOutputHandler::set_focus(uint16_t new_focus)
 { 
     m_focus = new_focus; 
 
-    _calculate_view_around_focus();
+    // _calculate_view_around_focus();
 }
 
 void ConsoleOutputHandler::render() 
-{ 
-    m_text_ren_handler.render(); 
+{  
+    _calculate_view_around_focus();
+
+    while(!m_queued_characters.empty())
+    {
+        const QueuedCharacter& character = m_queued_characters.front();
+
+        // This character is outside the current viewing bounds.
+        if(character.y_character_pos < m_start_character_render_y || 
+            character.y_character_pos > m_end_character_render_y)
+        {
+            m_queued_characters.pop();
+            continue;
+        }
+
+        // Draw the character to the screen.
+        m_text_ren_handler.draw_character_now(character.symbol, 
+            (m_start_x + (character.x_character_pos * m_font_scaled_width)), 
+            m_start_y + ((character.y_character_pos - m_start_character_render_y) * 
+            m_font_scaled_height * s_VERTICAL_SPACE_MODIFIER), 
+            character.color);
+
+        m_queued_characters.pop();
+    }
+
     reset_cursor_position();    
+    m_greatest_y_position_buffered = 0;
 }
+
+uint16_t ConsoleOutputHandler::get_focus() const { return m_focus; }
 
 const std::pair<uint16_t, uint16_t>& ConsoleOutputHandler::get_cursor_position() const
 { return m_cursor_position; }
@@ -177,9 +216,31 @@ const std::pair<uint16_t, uint16_t>& ConsoleOutputHandler::get_cursor_position()
 
 void ConsoleOutputHandler::_calculate_view_around_focus()
 {
-    if(m_focus < m_screen_character_height) start_character_render_x = 0;
+    uint16_t half_screen_y_position = std::floor(m_screen_character_height * 0.5f);
 
-    start_character_render_x = 
+    // If the focus or greatest y position buffered is within the render of half the screen bounds.
+    if(m_focus < half_screen_y_position) 
+    { 
+        m_start_character_render_y = 0;
+        m_end_character_render_y = m_screen_character_height;
+        return;
+    }
+
+    // If the distance between the greatest y position and the focus is greater than the half the 
+    // screen height.
+    else if (m_greatest_y_position_buffered - m_focus > half_screen_y_position)
+    {
+        m_start_character_render_y = m_focus - half_screen_y_position;
+        m_end_character_render_y = m_focus + (m_screen_character_height - half_screen_y_position);
+        return;
+    }
+
+    // The distance between the greatest y position and the focus is less than half the screen 
+    // height, so set the start y position of the render as the the last 
+    // "m_screen_character_height" characters of the queued_characters.
+
+    m_start_character_render_y = m_greatest_y_position_buffered - m_screen_character_height;
+    m_end_character_render_y = m_greatest_y_position_buffered;
 }
 
 bool ConsoleOutputHandler::

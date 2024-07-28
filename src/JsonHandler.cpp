@@ -1,5 +1,5 @@
-#include "JsonHandler.h"
-#include "ProgramOutputHandler.h"
+#include "JsonHandler.hpp"
+#include "ProgramOutputHandler.hpp"
 
 
 // Static Members

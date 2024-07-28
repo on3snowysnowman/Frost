@@ -12,14 +12,16 @@ add_library(Frost STATIC ${SOURCES}
     src/FrostEngine.cpp
     src/InputHandler.cpp
     src/JsonHandler.cpp
+    src/Menu.cpp
     src/ProgramOutputHandler.cpp
+    src/SpriteHandler.cpp
     src/TextRenderingHandler.cpp
     src/TextureHandler.cpp
 )
 
 target_include_directories(Frost
     PUBLIC 
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/Frost>
     PRIVATE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
 )

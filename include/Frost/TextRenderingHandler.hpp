@@ -7,7 +7,7 @@
 
 #include <SDL2/SDL_image.h>
 
-#include "TextureHandler.h"
+#include "TextureHandler.hpp"
 
 /** Underlying class that handles the rendering of individual characters to the screen. Can be used 
  * on its own, but is typically built on top of by other classes with more convenient methods for 
@@ -55,6 +55,14 @@ public:
      * @param amount Amount to decrease.
     */
     void decrease_size_scale(float amount);
+
+    /** Draws a character to the screen immediately, skipping the buffering process to wait for a 
+     * render call. Only use this method over the add_ch method if it is known that this method is
+     * called between the clear_SDL_renderer() and present_SDL_renderer() method in the engine, 
+     * otherwise the passed character will be erased from the screen before it has a chance to 
+     * render.
+     */
+    void draw_character_now(char c, uint16_t x, uint16_t y, std::string color = "White");
 
     /** Adds a char to the screen at a position with a color. 
      * 

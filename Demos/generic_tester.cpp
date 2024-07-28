@@ -1,6 +1,12 @@
 #define SDL_MAIN_HANDLED
 
-#include "FrostEngine.h"
+#include "FrostEngine.hpp"
+#include "../include/SpriteHandler.hpp"
+
+#include <SDL2/SDL.h>
+#include <SDL2/SDL.h>
+#include <iostream>
+
 
 class FrostTester : public FrostEngine
 {
@@ -14,11 +20,9 @@ private:
 
 };
 
-#include <string>
-#include <iostream>
 int main()
 {
     FrostTester frost_tester;
-
+    
     return 0;
 }

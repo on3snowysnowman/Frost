@@ -6,7 +6,9 @@
         30
     ],
     "fullscreen": true,
-    "screen_height": 1440,
-    "screen_width": 2560,
+    "vsync": true,
+    "frame_limit": 60,
+    "screen_height": 500,
+    "screen_width": 500,
     "use_extended_colors": true
 }

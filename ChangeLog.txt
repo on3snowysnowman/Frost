@@ -3,6 +3,9 @@
 
     CHANGES
 
+    - Began Work on a Manager
+    - Added a Window class
+    - Added a SpriteHandler
     - Added an InputHandler
     - Added ability for TextureHandler to render colors
     - Added a color struct

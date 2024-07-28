@@ -1,6 +1,6 @@
 #include <SDL2/SDL.h>
 
-#include "InputHandler.h"
+#include "InputHandler.hpp"
 
 
 // Static Members
@@ -13,6 +13,11 @@ std::unordered_map<int32_t, uint64_t> InputHandler::s_delayed_keys;
 
 
 // Public
+
+void InputHandler::delay_key(int32_t key, uint16_t miliseconds)
+{
+    s_delayed_keys[key] = SDL_GetTicks64() + miliseconds;
+}
 
 void InputHandler::flag_key_pressed(int32_t key)
 {
@@ -40,7 +45,7 @@ bool InputHandler::is_key_pressed_and_available(int32_t key)
     if(!is_key_pressed(key)) return false;
 
     // The key is not delayed.
-    if(s_delayed_keys.find(key) == s_delayed_keys.end());
+    if(s_delayed_keys.find(key) == s_delayed_keys.end()) return true;
 
     // The key is pressed and delayed, check if the current timestamp is greater than the delay
     // timestamp.

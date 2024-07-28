@@ -5,8 +5,9 @@
 
 #include <SDL2/SDL.h>
 
-#include "TextureHandler.h"
-#include "ConsoleOutputHandler.h"
+#include "TextureHandler.hpp"
+#include "ConsoleOutputHandler.hpp"
+#include "SpriteHandler.hpp"
 
 class FrostEngine
 {
@@ -36,6 +37,7 @@ protected:
      */
     bool _set_application_icon(std::string path_to_png);
 
+
 private:
 
     // Members 
@@ -45,12 +47,17 @@ private:
      * method is called. */
     bool m_is_active; 
 
+    // Whether to use SDL's vsync functionality.
+    bool m_use_vsync = false;
+
     uint8_t m_elapsed_miliseconds_this_frame; // Number of miliseconds this frame took.
 
-    const uint16_t m_TARGET_FPS = 60; // Target frames per second that the Engine will simulate at.
+    uint8_t m_target_fps {}; // Target frames per second that the Engine will simulate at.
 
     // Target miliseconds per frame to achieve target fps.
-    const uint8_t m_TARGET_MILISECONDS_PER_FRAME;  
+    uint8_t m_target_miliseconds_per_frame {};  
+
+    uint16_t limit = 20;
 
     // Timestamp of the beginning of the frame. Used to calculate the miliseconds each frame takes.
     uint64_t m_frame_start_timestamp; 
@@ -70,14 +77,14 @@ private:
     TextureHandler m_texture_handler;
     TextRenderingHandler m_text_ren_handler;
     ConsoleOutputHandler m_coh;
+    SpriteHandler m_sprite_handler;
 
     SDL_Event m_event; // Instance of the SDL_Event.
 
     SDL_Surface* m_application_icon {}; // Icon for the application Window.
-    SDL_Window* m_window; // Instance of the SDL_Window.
-    SDL_Renderer* m_renderer; // Instance of the SDL_Renderer.
 
-    SDL_Texture* frost_icon;
+    SDL_Window* m_window;
+    SDL_Renderer* m_renderer;
 
     // Methods
 
@@ -89,9 +96,16 @@ private:
     void _init_SDL_and_engine();
 
     /** The core loop of the engine. This loop runs as long as the Engine is stil active (until 
+     * the quit method is called). Each process of the engine is contained here, such as the 
+     * updating of components and rendering methods. This simulation loop uses SDL's vsync 
+     * functionality which means a frame limit does not need to be measured and enforced. */
+    void _simulation_loop_vsync();
+
+    /** The core loop of the engine. This loop runs as long as the Engine is stil active (until 
      * the quit method is called). Each process of the engine is contained here, such as the updating 
-     * of components and rendering methods. */
-    void _simulation_loop();
+     * of components and rendering methods. This simulation loop does not use vsync, and therefore
+     * frame times need to be monitored and altered to achieve target FPS. */
+    void _simulation_loop_no_vsync();
 
     /** Handles SDL_Events such as the application exit button being pressed, along with 
      * registering pressed keys on the keyboard. */
@@ -102,4 +116,5 @@ private:
 
     /** Flags the SDL_Renderer to present its buffered content. */
     void _present_SDL_renderer();
+
 };

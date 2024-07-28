@@ -1,7 +1,5 @@
 
-Write SpriteHandler
-Write Window 
 Write Menu
 Write UITools
 Write TextFileHandler
-Wirte BinaryFileHandler?
+Write BinaryFileHandler?

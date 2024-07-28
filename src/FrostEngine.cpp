@@ -1,11 +1,13 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_render.h>
 
-#include "FrostEngine.h"
-#include "ProgramOutputHandler.h"
-#include "FileSystemHandler.h"
-#include "JsonHandler.h"
-#include "InputHandler.h"
+#include "FrostEngine.hpp"
+#include "ProgramOutputHandler.hpp"
+#include "FileSystemHandler.hpp"
+#include "JsonHandler.hpp"
+#include "InputHandler.hpp"
+#include "Fr_Math.hpp"
+#include "Fr_StringManip.hpp"
 
 
 // Static Members
@@ -17,7 +19,7 @@ int FrostEngine::s_screen_height {};
 
 // Constructors / Deconstructor
 
-FrostEngine::FrostEngine() : m_TARGET_MILISECONDS_PER_FRAME(1000 / m_TARGET_FPS) 
+FrostEngine::FrostEngine()
 {
     // Clear the ProgramOutputHandler's output file
     ProgramOutputHandler::clear_output_file();
@@ -29,18 +31,22 @@ FrostEngine::FrostEngine() : m_TARGET_MILISECONDS_PER_FRAME(1000 / m_TARGET_FPS)
     m_text_ren_handler.set_size_scale(2.0);
 
     m_coh = ConsoleOutputHandler(&m_texture_handler, 0, 0, s_screen_width, s_screen_height);
+    m_sprite_handler = SpriteHandler(&m_texture_handler);
 
     m_is_active = true;
 
-    frost_icon = m_texture_handler.create_texture("assets/Frost_Icon.png");
+    // Being Simulation
 
-    // Begin simulation.
-    _simulation_loop();
+    if(m_use_vsync) _simulation_loop_vsync();
+
+    else _simulation_loop_no_vsync();
 }
 
 FrostEngine::~FrostEngine() 
 {
     SDL_Quit();
+    SDL_DestroyRenderer(m_renderer);
+    SDL_DestroyWindow(m_window);
 }
 
 
@@ -169,6 +175,13 @@ void FrostEngine::_init_SDL_and_engine()
 
     if(application_window_name.size() == 0) application_window_name = "Frost";
 
+    if(init_data.at("vsync")) m_use_vsync = true;
+
+    else
+    {
+        m_target_miliseconds_per_frame = 1000 / uint8_t(init_data.at("frame_limit"));
+    }
+
     if(init_data.at("fullscreen"))
     {
         ProgramOutputHandler::log("Fullscreen: true");
@@ -207,38 +220,45 @@ void FrostEngine::_init_SDL_and_engine()
     else m_texture_handler = TextureHandler(m_renderer, m_BASE_COLOR_PATH);
 }
 
-void FrostEngine::_simulation_loop()
+void FrostEngine::_simulation_loop_vsync()
+{
+    while(m_is_active)
+    {
+        _handle_SDL_events(); 
+
+        _clear_SDL_renderer();
+        
+        m_coh.render();
+
+        m_sprite_handler.render();
+
+        _present_SDL_renderer();
+    }
+}
+
+void FrostEngine::_simulation_loop_no_vsync()
 {
     while(m_is_active)
     {
         m_frame_start_timestamp = SDL_GetTicks64();
-        
-        _handle_SDL_events();
 
-        SDL_Rect src {0, 0, 27, 28};
-        SDL_Rect dest {10, 50, 81, 84};
-
-        m_coh.add_str("Frost created by Joel Height\n\n\n\n\n\n");
-        m_coh.add_str("Colors:\n");
-
-        for(const std::pair<std::string, Color> color : m_texture_handler.get_colors())
-        {
-            m_coh.add_str(color.first, color.first);
-            m_coh.add_new_line();
-        }
+        _handle_SDL_events(); 
 
         _clear_SDL_renderer();
-        m_texture_handler.draw(frost_icon, src, dest);
+
         m_coh.render();
+
+        m_sprite_handler.render();
+
         _present_SDL_renderer();
 
         // Calculate the miliseconds this frame took.
         m_elapsed_miliseconds_this_frame = SDL_GetTicks64() - m_frame_start_timestamp;
 
-        if(m_elapsed_miliseconds_this_frame < m_TARGET_MILISECONDS_PER_FRAME)
+        if(m_elapsed_miliseconds_this_frame < m_target_miliseconds_per_frame)
         {
             // Delay for the difference between the elapsed miliseconds and target miliseconds.
-            SDL_Delay(m_TARGET_MILISECONDS_PER_FRAME - m_elapsed_miliseconds_this_frame);
+            SDL_Delay(m_target_miliseconds_per_frame - m_elapsed_miliseconds_this_frame);
         }
     }
 }
@@ -261,8 +281,6 @@ void FrostEngine::_handle_SDL_events()
     }
 }
 
-void FrostEngine::_clear_SDL_renderer() { 
-    SDL_RenderClear(m_renderer); 
-}
+void FrostEngine::_clear_SDL_renderer() { SDL_RenderClear(m_renderer); }
   
 void FrostEngine::_present_SDL_renderer() { SDL_RenderPresent(m_renderer); }

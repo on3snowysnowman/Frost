@@ -3,8 +3,8 @@
 #include <string>
 #include <fstream>
 
-#include "Json.h"
-#include "FileSystemHandler.h"
+#include "Json.hpp"
+#include "FileSystemHandler.hpp"
 
 
 /** A static class that handles fetching and dumping of json objects to and from json files. */
