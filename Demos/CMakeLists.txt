@@ -22,6 +22,7 @@ set_target_properties(Generic_Tester PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJE
 target_include_directories(Generic_Tester
 PUBLIC
     ${FROST_PATH}/include/Frost
+    ${FROST_PATH}/include/Frost/UITools
 )
 
 target_link_libraries(Generic_Tester

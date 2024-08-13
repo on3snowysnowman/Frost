@@ -29,7 +29,19 @@ void handle_input_for_string_manipulation(std::string& str);
 /** Places new lines in a string after each character that breaches the line limit. This will 
  * turn a long string into a modified one that will have newlines placed such that when each line  
  * is printed to a console or file it will not exceed the set line limit. */
-void configure_string_with_line_limit(std::string& content, uint8_t line_limit);
+void configure_string_with_line_limit(std::string& str, uint8_t line_limit);
+
+/** Starting from the end of a string, iterate backwards and stop at the first instance of the 
+ * passed 'c' that exists. The string will be portioned up until that point. If the 
+ * include_searched_char is set to true, the index of 'c' will be included in the portioning.
+ * If the searched for char wasn't found, the string is untouched.
+ * 
+ * @param str String to modify. Passed by reference.
+ * @param c Char to search for.
+ * @param include_searched_char Whether to include the searched char in the portion.
+ */
+void trim_string_to_first_character_from_end(std::string& str, char c, 
+    bool include_searched_char = false);
 
 /** Removes all zeros starting from the beginning of the string, up until the first non zero 
  * character is found.

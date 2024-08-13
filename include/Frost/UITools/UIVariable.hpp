@@ -85,7 +85,7 @@ private:
      * depending on the specified VariableType of this object. Such checks include checking 
      * if the type is an int or float and has letters in it, or if the type is a float if it
      * has more than one decimal point.
-     */
+*/
     void _check_content_on_init();
 
     /** Checks m_content and m_default_content if all characters contained are valid for a Variable

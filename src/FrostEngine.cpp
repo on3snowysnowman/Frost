@@ -32,7 +32,7 @@ FrostEngine::FrostEngine()
     ProgramOutputHandler::clear_output_file();
     ProgramOutputHandler::log("Debug Mode: true\n");
     #endif
-
+ 
     // Initialize SDL and the Engine. 
     _init_SDL_and_engine();
 
@@ -41,6 +41,14 @@ FrostEngine::FrostEngine()
 
     m_coh = ConsoleOutputHandler(&m_texture_handler, 0, 0, s_screen_width, s_screen_height);
     m_sprite_handler = SpriteHandler(&m_texture_handler);
+
+
+    // DEMO
+
+    text = new UIText(m_coh, cursor_color, "Text");
+    variable = new UIVariable(m_coh, cursor_color, UIVariable::INT, "Variable");
+
+    // DEMO
 }
 
 FrostEngine::~FrostEngine() 
@@ -274,8 +282,26 @@ void FrostEngine::_simulation_loop_vsync()
 
         _handle_SDL_events();
 
-        Frost::handle_input_for_string_manipulation(dummy);
-        m_coh.add_str(dummy + '_');
+        // DEMO
+
+        if(status == UIItem::SELECTED)
+        {
+            variable->render_selected();
+            status = variable->handle_input();
+        }
+
+        else
+        {
+            variable->render_hovered();
+
+            if(InputHandler::is_key_pressed_and_available(SDLK_RETURN))
+            {
+                status = UIItem::SELECTED;
+                InputHandler::block_key_until_released(SDLK_RETURN);
+            }
+        }
+
+        // DEMO
 
         _clear_SDL_renderer();
 

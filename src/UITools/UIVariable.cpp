@@ -66,7 +66,7 @@ void UIVariable::render_hovered() const
 
 void UIVariable::render_selected() const
 {
-    m_coh.add_str(" > " + m_NAME + ": " + m_content, m_cursor_color);
+    m_coh.add_str(" > " + m_NAME + ": " + m_content + '_', m_cursor_color);
 }
 
 UIItem::Status UIVariable::handle_input() 
@@ -248,7 +248,11 @@ bool UIVariable::_check_and_handle_deselect()
 
         // If the content was left empty when deselected, set it to the default content.
         if(m_content.size() == 0) m_content = m_default_content;
+
+        return true;
     }
+
+    return false;
 }
 
 UIItem::Status UIVariable::_handle_string_input()
@@ -257,10 +261,73 @@ UIItem::Status UIVariable::_handle_string_input()
     if(_check_and_handle_deselect()) return UIItem::HOVERED;
 
     Frost::handle_input_for_string_manipulation(m_content);
+
+    return UIItem::SELECTED;
 }
 
 UIItem::Status UIVariable::_handle_int_input()
 {
     // If the user deselected this item, return that this item is now HOVERED.
     if(_check_and_handle_deselect()) return UIItem::HOVERED;
+
+    for(const Key& key : InputHandler::get_raw_pressed_keys())
+    {
+        /// If the key is an integer
+        if(key >= '0' && key <= '9') 
+        {
+            m_content.push_back(key); 
+            continue;
+        }
+
+        if(key == SDLK_BACKSPACE)
+        {
+            if(m_content.size() > 0) m_content.pop_back();
+            continue;
+        }
+    }
+
+    return UIItem::SELECTED;
+}
+
+UIItem::Status UIVariable::_handle_float_input()
+{
+    // If the user deselected this item, return that this item is now HOVERED.
+    if(_check_and_handle_deselect()) return UIItem::HOVERED;
+
+    for(const Key& key : InputHandler::get_raw_pressed_keys())
+    {
+        // If the key is an integer
+        if(key >= '0' && key <= '9') 
+        {
+            m_content.push_back(key); 
+            continue;
+        }
+
+        switch(key)
+        {
+            case '.':
+
+                if(!m_has_decimal_point)
+                {
+                    m_has_decimal_point = true;
+                    m_content.push_back('.');
+                }
+
+                continue;
+
+            case SDLK_BACKSPACE:    
+
+                if(m_content.size() == 0) continue;
+
+                if(*(--m_content.end()) == '.')
+                {
+                    m_content.pop_back();
+                    m_has_decimal_point = false;
+                }
+                
+                break;
+        }
+    }
+
+    return UIItem::SELECTED;
 }

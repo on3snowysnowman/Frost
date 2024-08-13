@@ -1,7 +1,6 @@
 #define SDL_MAIN_HANDLED
 
 #include "FrostEngine.hpp"
-#include "Fr_StringManip.hpp"
 
 
 class FrostTester : public FrostEngine

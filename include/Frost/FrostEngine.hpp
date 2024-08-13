@@ -9,6 +9,8 @@
 #include "ConsoleOutputHandler.hpp"
 #include "SpriteHandler.hpp"
 
+#include "UIVariable.hpp"
+#include "UIText.hpp"
 
 class FrostEngine
 {
@@ -121,7 +123,12 @@ private:
     void _present_SDL_renderer();
 
 
-    // Demo
+    // DEMO
 
-    std::string dummy;
+    UIItem::Status status = UIItem::HOVERED;
+
+    std::string cursor_color = "Blue";
+
+    UIText* text;
+    UIVariable* variable;
 };

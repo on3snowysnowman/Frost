@@ -58,7 +58,7 @@ bool InputHandler::is_key_pressed_and_available(int32_t key)
 
     // Return if the pressed key is available.
     return _is_pressed_key_available(key);
-    
+
     return true;
 }
 

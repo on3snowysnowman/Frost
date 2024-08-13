@@ -24,7 +24,7 @@ void UIText::render_hovered() const
 void UIText::render_selected() const 
 {
     m_coh.add_str(" > ", m_cursor_color);
-    m_coh.add_str(m_content, m_cursor_color);
+    m_coh.add_str(m_content + '_', m_cursor_color);
 }
 
 UIItem::Status UIText::handle_input() 
@@ -38,4 +38,6 @@ UIItem::Status UIText::handle_input()
     }
 
     Frost::handle_input_for_string_manipulation(m_content);
+
+    return UIItem::SELECTED;
 }

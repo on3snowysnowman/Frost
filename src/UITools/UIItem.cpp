@@ -15,3 +15,5 @@ void UIItem::render_no_status() const {}
 void UIItem::render_hovered() const {}
 
 void UIItem::render_selected() const {}
+
+UIItem::Status UIItem::handle_input() { return HOVERED; }
