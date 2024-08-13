@@ -44,5 +44,5 @@ bool ProgramOutputHandler::log(std::string content, Frost::OUTPUT_SEVERITY out_s
 
     TextFileHandler::add_to_buffer(content);
 
-    return TextFileHandler::write(s_output_file_path);
+    return TextFileHandler::write(s_output_file_path, Frost::APPEND);
 }

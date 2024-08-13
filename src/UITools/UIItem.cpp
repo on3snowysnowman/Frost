@@ -3,8 +3,9 @@
 
 // Constructors / Deconstructor
 
-UIItem::UIItem(ConsoleOutputHandler& coh, Frost::UIItemType item_type) 
-    : m_ITEM_TYPE(item_type), m_coh(coh) {}
+UIItem::UIItem(ConsoleOutputHandler& coh, std::string& cursor_color, 
+    UIItem::ItemType item_type) : m_ITEM_TYPE(item_type), m_coh(coh), 
+    m_cursor_color(cursor_color) {}
 
 
 // Public

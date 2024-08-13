@@ -38,7 +38,7 @@ bool TextFileHandler::clear_file(std::string file_path)
         #ifdef FROST_DEBUG
 
         ProgramOutputHandler::log("TextFileHandler.clear_file() -> Directory doesn't exist: \""
-            + file_path + "\"", frost::WARN);
+            + file_path + "\"", Frost::WARN);
         #endif
 
         return false;
@@ -52,7 +52,7 @@ bool TextFileHandler::clear_file(std::string file_path)
         #ifdef FROST_DEBUG
         
         ProgramOutputHandler::log("TextFileHandler.clear_file() -> Failed to open file: \""
-            + file_path + "\"", frost::WARN);
+            + file_path + "\"", Frost::WARN);
         #endif
 
         return false;
@@ -63,17 +63,17 @@ bool TextFileHandler::clear_file(std::string file_path)
     return true;
 }
 
-bool TextFileHandler::write(std::string file_path, frost::WriteType write_type, bool clear_buffer)
+bool TextFileHandler::write(std::string file_path, Frost::WriteType write_type, bool clear_buffer)
 {
     // Handle write behavior.
     switch(write_type)
     {
-        case frost::APPEND:
+        case Frost::APPEND:
 
             s_output_stream.open(file_path, std::ios::app);
             break;
 
-        case frost::OVERWRITE:
+        case Frost::OVERWRITE:
 
             s_output_stream.open(file_path, std::ios::out);
             break;
@@ -85,7 +85,7 @@ bool TextFileHandler::write(std::string file_path, frost::WriteType write_type, 
         #ifdef FROST_DEBUG
         
         ProgramOutputHandler::log("TextFileHandler.write() -> Failed to open file: \""
-            + file_path + "\"", frost::WARN);
+            + file_path + "\"", Frost::WARN);
         #endif
 
         return false;
@@ -109,7 +109,7 @@ std::string TextFileHandler::fetch(std::string file_path)
         #ifdef FROST_DEBUG
 
         ProgramOutputHandler::log("TextFileHandler.fetch() -> Directory doesn't exist: \""
-            + file_path + "\", returning nullptr.", frost::WARN);
+            + file_path + "\", returning nullptr.", Frost::WARN);
         #endif
 
         return nullptr;
@@ -123,7 +123,7 @@ std::string TextFileHandler::fetch(std::string file_path)
         #ifdef FROST_DEBUG
         
         ProgramOutputHandler::log("TextFileHandler.fetch() -> Failed to open file: \""
-            + file_path + "\", returning nullptr.", frost::WARN);
+            + file_path + "\", returning nullptr.", Frost::WARN);
         #endif
 
         return nullptr;

@@ -31,10 +31,17 @@ void handle_input_for_string_manipulation(std::string& str);
  * is printed to a console or file it will not exceed the set line limit. */
 void configure_string_with_line_limit(std::string& content, uint8_t line_limit);
 
+/** Removes all zeros starting from the beginning of the string, up until the first non zero 
+ * character is found.
+ * 
+ * @param str String to modify. Passed by reference.
+ */
+void remove_first_zeros(std::string& str);
+
 /** Attempts to convert the passed string to a uint8_t. Returns a max uint8_t if it fails. */
-uint8_t str_to_uint8(std::string& _str);
+uint8_t str_to_uint8(std::string& str);
 
 /** Attempts to convert the passed string to a uint16_t. Returns a max uint8_t if it fails. */
-uint16_t str_to_uint16(std::string& _str);
+uint16_t str_to_uint16(std::string& str);
 
 };

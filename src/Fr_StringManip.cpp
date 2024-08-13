@@ -16,7 +16,6 @@
 #include "Fr_StringManip.hpp"
 #include "Fr_IntLimits.hpp"
 
-#include <iostream>
 void Frost::handle_input_for_string_manipulation(std::string& str)
 {   
     // Ascii characters to their respective characters when pressed with shift.
@@ -192,14 +191,31 @@ void Frost::configure_string_with_line_limit(std::string& content, uint8_t line_
     }
 }
 
-uint8_t Frost::str_to_uint8(std::string& _str)
+void Frost::remove_first_zeros(std::string& str)
+{
+    // There are no trailing zeros since there is only 1 character.
+    if(str.size() <= 1) return;
+
+    int index = 0;
+
+    while(index < str.size())
+    {
+        if(str.at(index) != '0') break;
+
+        ++index;
+    }
+
+    str = str.substr(index);
+}
+
+uint8_t Frost::str_to_uint8(std::string& str)
 {
     // The number this string represents is negative
-    if(_str.at(0) == '-') return 0;
+    if(str.at(0) == '-') return 0;
 
     try
     {
-        return std::stoi(_str);
+        return std::stoi(str);
     } 
     
     catch(const std::out_of_range& e)
@@ -208,14 +224,14 @@ uint8_t Frost::str_to_uint8(std::string& _str)
     }
 }
 
-uint16_t Frost::str_to_uint16(std::string& _str)
+uint16_t Frost::str_to_uint16(std::string& str)
 {
     // The number this string represents is negative
-    if(_str.at(0) == '-') return 0;
+    if(str.at(0) == '-') return 0;
 
     try
     {
-        return std::stoi(_str);
+        return std::stoi(str);
     } 
     
     catch(const std::out_of_range& e)

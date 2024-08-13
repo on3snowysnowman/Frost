@@ -30,7 +30,7 @@ FrostEngine::FrostEngine()
 
     // Clear the ProgramOutputHandler's output file
     ProgramOutputHandler::clear_output_file();
-    ProgramOutputHandler::log("Debug Mode: True");
+    ProgramOutputHandler::log("Debug Mode: true\n");
     #endif
 
     // Initialize SDL and the Engine. 
@@ -202,10 +202,23 @@ void FrostEngine::_init_SDL_and_engine()
 
     if(application_window_name.size() == 0) application_window_name = "Frost";
 
-    if(init_data.at("vsync")) m_use_vsync = true;
+    if(init_data.at("vsync"))
+    {
+        #ifdef FROST_DEBUG
+
+        ProgramOutputHandler::log("Vsync: true\n");
+        #endif
+
+        m_use_vsync = true;
+    }
 
     else
     {
+        #ifdef FROST_DEBUG
+
+        ProgramOutputHandler::log("Vsync: false\n");
+        #endif
+
         m_target_miliseconds_per_frame = 1000 / uint8_t(init_data.at("frame_limit"));
     }
 
@@ -213,7 +226,7 @@ void FrostEngine::_init_SDL_and_engine()
     {
         #ifdef FROST_DEBUG
 
-        ProgramOutputHandler::log("Fullscreen: true");
+        ProgramOutputHandler::log("Fullscreen: true\n");
         #endif
 
         // Create the SDL_Window as fullscreen.
@@ -227,7 +240,7 @@ void FrostEngine::_init_SDL_and_engine()
     {
         #ifdef FROST_DEBUG
 
-        ProgramOutputHandler::log("Fullscreen: false");
+        ProgramOutputHandler::log("Fullscreen: false\n");
         #endif
 
         // Get the width and height from the data file.

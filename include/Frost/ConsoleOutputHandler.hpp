@@ -39,21 +39,21 @@ public:
      * @param x X character position.
      * @param y Y character position
      */
-    void move_cursor(const uint16_t x, const uint16_t y);
+    void move_cursor(uint16_t x, uint16_t y);
 
     /** Moves the cursor's x position to a new position on the screen, measured in characters. 
      * Contains bounds checking for the position.
      * 
      * @param x X character position.
      */
-    void move_cursor_x(const uint16_t x);
+    void move_cursor_x(uint16_t x);
 
     /** Moves the cursor's y position to a new position on the screen, measured in characters. 
      * Contains bounds checking for the position.
      * 
      * @param y Y character position.
      */
-    void move_cursor_y(const uint16_t y);
+    void move_cursor_y(uint16_t y);
 
     /** Modifies the cursor's position by the passed amount, measured in characters. This is an 
      * addition arithmetic. Contains bounds checking for the position, if the x boundary is 
@@ -62,14 +62,14 @@ public:
      * @param x_modify Amount to modify the cursor's x position by. 
      * @param y_modify Amount to modify the cursor's y position by.
      * */
-    void modify_cursor_position(const uint16_t x_modify, const uint16_t y_modify);
+    void modify_cursor_position(uint16_t x_modify, uint16_t y_modify);
 
     /** Adds a character to the screen at the cursor's position.
      * 
      * @param C Character to add.
      * @param color Color of the character, default is White.
      */
-    void add_ch(char c, const std::string color = "White");
+    void add_ch(char c, std::string color = "White");
 
     /** Adds a string to the screen starting at the cursor's position. Supports automatic wrapping
      * of characters if they breach the screen's bounds.
@@ -77,14 +77,14 @@ public:
      * @param str String to add.
      * @param color Color of the string, default is White.
      */
-    void add_str(const std::string str, const std::string color = "White");
+    void add_str(std::string str, std::string color = "White");
 
     /** Moves the cursor's y position down "num" times, and places the x position at the set
      * anchor. 
      * 
      * @param num Number of new lines to add, default is 1.
      */
-    void add_new_line(const uint8_t num = 1);
+    void add_new_line(uint8_t num = 1);
 
     /** Clears the buffered content this frame. Only use this function to clear the content added 
      * this frame before it has a chance to render. Do not use this method as a scheduled clear 
@@ -201,5 +201,5 @@ private:
 
     /** Returns true if the passed x position, measured in characters, is within the bounds of the
      * screen. */
-    bool _is_x_character_position_in_bounds(const uint16_t character_x_position) const;
+    bool _is_x_character_position_in_bounds(uint16_t character_x_position) const;
 };

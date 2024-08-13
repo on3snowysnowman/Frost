@@ -3,7 +3,7 @@
 #include <fstream>
 #include <string>
 
-namespace frost
+namespace Frost
 {
     // Behavior type for writing to files.
     enum WriteType
@@ -57,7 +57,7 @@ public:
      * @param write_type Specifier for file writing behavior. Default is OVERWRITE.
      * @param clear_buffer Whether to clear the buffer. Default to true.
     */
-    static bool write(std::string file_path, frost::WriteType write_type = frost::OVERWRITE, 
+    static bool write(std::string file_path, Frost::WriteType write_type = Frost::OVERWRITE, 
         bool clear_buffer = true);
 
     /** Fetches and returns the contents of a txt file at the path. 

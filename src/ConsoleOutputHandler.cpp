@@ -105,7 +105,7 @@ void ConsoleOutputHandler::modify_cursor_position(uint16_t x_modify, uint16_t y_
     m_cursor_position.first = (m_cursor_position.first + x_modify) % m_screen_character_width;
 }
 
-void ConsoleOutputHandler::add_ch(const char c, const std::string color)
+void ConsoleOutputHandler::add_ch(char c, std::string color)
 {
     if(c == ' ')
     {
@@ -147,7 +147,7 @@ void ConsoleOutputHandler::add_ch(const char c, const std::string color)
     }
 }
 
-void ConsoleOutputHandler::add_str(const std::string str, const std::string color)
+void ConsoleOutputHandler::add_str(std::string str, std::string color)
 {
     for(const char c : str)
     {
@@ -155,7 +155,7 @@ void ConsoleOutputHandler::add_str(const std::string str, const std::string colo
     }
 }
 
-void ConsoleOutputHandler::add_new_line(const uint8_t num)
+void ConsoleOutputHandler::add_new_line(uint8_t num)
 {
     // Increment the cursor's y position by the requested amount.
     m_cursor_position.second += num;
@@ -166,8 +166,6 @@ void ConsoleOutputHandler::add_new_line(const uint8_t num)
     // Set the greatest y position to the cursor's y position if it is greater. 
     m_greatest_y_position_buffered = 
         Frost::return_largest_of_uint16s(m_greatest_y_position_buffered, m_cursor_position.second);
-
-    // std::cout << "Adding new line, greatest y position: " << m_greatest_y_position_buffered << '\n';
 }
 
 void ConsoleOutputHandler::clear_buffered_content() 
@@ -252,7 +250,7 @@ void ConsoleOutputHandler::_calculate_view_around_focus()
 }
 
 bool ConsoleOutputHandler::
-    _is_x_character_position_in_bounds(const uint16_t character_x_position) const
+    _is_x_character_position_in_bounds(uint16_t character_x_position) const
 {
     return character_x_position < m_screen_character_width;
 }

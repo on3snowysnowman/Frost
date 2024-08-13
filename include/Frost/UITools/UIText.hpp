@@ -20,7 +20,7 @@ class UIText : public UIItem
 
 public:
 
-    // Requires a valid instance of the ConsoleOutputHandler.
+    // Requires parameters for construction.
     UIText() = delete;
 
     UIText(ConsoleOutputHandler& coh, std::string& cursor_color, std::string content = "");
@@ -29,14 +29,10 @@ public:
     void render_hovered() const final;
     void render_selected() const final;
 
-    Frost::UIItemStatus handle_input() final;
+    UIItem::Status handle_input() final;
 
 private:
 
-    /** Color of the cursor. The target of this pointer is managed by the Menu that created and is
-     * handling the simulation of this Item. */
-    std::string& m_cursor_color;
-
-    // The content of the item, the text that the user sees and interacts with.
+    // Content of the item, the text that the user sees and interacts with.
     std::string m_content;
 };

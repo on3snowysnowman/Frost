@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <vector>
+#include <array>
 #include <unordered_set>
 #include <unordered_map>
 
@@ -24,6 +25,9 @@ public:
      * @param miliseconds Number of miliseconds.
      */
     static void delay_key(int32_t key, uint16_t miliseconds = 200);
+
+    /** Blocks a key from being available until it is released and pressed again. */
+    static void block_key_until_released(int32_t key);
 
     /** Flags the InputHandler that the passed key is pressed.
      * 
@@ -53,6 +57,9 @@ public:
     */
     static bool is_key_pressed_and_available(int32_t key);
 
+    /** Returns a vector of the pressed keys that are available and not delayed. */
+    static std::vector<int32_t> get_pressed_and_available_keys();
+
     /** Returns a const reference to the internal raw pressed keys. */
     static const std::vector<int32_t>& get_raw_pressed_keys();
 
@@ -60,6 +67,19 @@ public:
     static const std::unordered_set<int32_t> get_pressed_keys();
 
 private:
+
+    /** Returns true if the passed key that is pressed is available. 
+     * 
+     * @param key Key to check.
+    */
+    static bool _is_pressed_key_available(int32_t key);
+
+    /** Processes a key that is pressed and delayed, checking if the current timestamp has
+     * surpassed the target delay timestamp. If it has exceeded the timestamp, remove the key from
+     * the delayed keys vector. Returns true if the current timestamp has surpassed the delayed 
+     * timestamp, meaning the key is available to use.
+     */
+    static bool _check_and_handle_key_delay(int32_t key);
 
     // Raw pressed key from a keyboard, as if you were typing in a text document
     static std::vector<int32_t> s_raw_pressed_keys; 

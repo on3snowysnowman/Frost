@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.24)
 
 project(Frost VERSION "0.1")
 
+# Enable Debug Mode
+add_compile_definitions(FROST_DEBUG)
+
 # Create static library
 add_library(Frost STATIC ${SOURCES}
     
@@ -23,6 +26,7 @@ add_library(Frost STATIC ${SOURCES}
 	src/UITools/UIDisplayTools.cpp
 	src/UITools/UIItem.cpp
 	src/UITools/UIText.cpp
+	src/UITools/UIVariable.cpp
 )
 
 target_include_directories(Frost
