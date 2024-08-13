@@ -3,8 +3,10 @@
 
     CHANGES
 
-    - Began Work on a Manager
-    - Added a Window class
+    - Added an input handling method for strings inside Fr_StringManip.
+    - Added UIItem and UIText
+    - Added UIDisplayTools
+    - Added Menus and MenuManager
     - Added a SpriteHandler
     - Added an InputHandler
     - Added ability for TextureHandler to render colors

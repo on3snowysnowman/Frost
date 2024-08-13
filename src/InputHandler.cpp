@@ -32,6 +32,10 @@ void InputHandler::flag_key_released(int32_t key)
 {
     // Erase this key from the currently pressed keys.
     s_pressed_keys.erase(key);
+
+    // Erase this key from the delayed keys, if it is not delayed this will be handled efficiently
+    // by std::unordered_map
+    s_delayed_keys.erase(key);
 }
 
 void InputHandler::clear_raw_keys() { s_raw_pressed_keys.clear(); }

@@ -1,11 +1,8 @@
 #define SDL_MAIN_HANDLED
+#define FROST_DEBUG
 
 #include "FrostEngine.hpp"
-#include "../include/SpriteHandler.hpp"
-
-#include <SDL2/SDL.h>
-#include <SDL2/SDL.h>
-#include <iostream>
+#include "TimeObserver.hpp"
 
 
 class FrostTester : public FrostEngine
@@ -20,9 +17,11 @@ private:
 
 };
 
+#include <unordered_map>
 int main()
 {
     FrostTester frost_tester;
-    
+    frost_tester.start();
+
     return 0;
 }

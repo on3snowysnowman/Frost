@@ -1,9 +1,13 @@
 #include <algorithm>
 
-#include "Fr_Math.hpp"
-#include "ProgramOutputHandler.hpp"
-
 #include "SpriteHandler.hpp"
+#include "Fr_Math.hpp"
+
+#ifdef FROST_DEBUG
+
+#include "ProgramOutputHandler.hpp"
+#endif
+
 
 
 // Static Members
@@ -58,8 +62,13 @@ void SpriteHandler::set_sprite_position(const sprite_id id, uint16_t x, uint16_t
     if(!_is_id_valid(id))
     {
         // Crash the program, since no valid Sprite object exists for this ID.
+
+        #ifdef FROST_DEBUG
+
         ProgramOutputHandler::log("SpriteHandler.set_sprite_position() -> Sprite ID : \"" + 
             std::to_string(id) + "\" does not exist.", Frost::ERR);
+        #endif
+
         exit(1);
     }
 
@@ -74,9 +83,13 @@ void SpriteHandler::flag_render(const sprite_id id)
 { 
     if(!_is_id_valid(id)) 
     {
+        #ifdef FROST_DEBUG
+
         // Crash the program, since no valid Sprite object exists for this ID.
         ProgramOutputHandler::log("SpriteHandler.flag_render() -> Sprite ID : \"" + 
             std::to_string(id) + "\" does not exist.", Frost::ERR);
+        #endif
+
         exit(1);
     }
 
@@ -95,8 +108,13 @@ void SpriteHandler::deflag_render(const sprite_id id)
     if(!_is_id_valid(id))
     {
         // Crash the program, since no valid Sprite object exists for this ID.
+        
+        #ifdef FROST_DEBUG
+
         ProgramOutputHandler::log("SpriteHandler.deflag_render() -> Sprite ID : \"" + 
             std::to_string(id) + "\" does not exist.", Frost::ERR);
+        #endif
+        
         exit(1);
     }
 
@@ -115,8 +133,13 @@ void SpriteHandler::delete_sprite(const sprite_id id)
     if(!_is_id_valid(id))
     {
         // Crash the program, since no valid Sprite object exists for this ID.
+
+        #ifdef FROST_DEBUG
+
         ProgramOutputHandler::log("SpriteHandler.delete_sprite() -> Sprite ID : \"" + 
             std::to_string(id) + "\" does not exist.", Frost::ERR);
+        #endif
+
         exit(1);
     }
 
@@ -170,8 +193,13 @@ const Sprite& SpriteHandler::get_sprite(const sprite_id id)
     if(!_is_id_valid(id)) 
     {
         // Crash the program, since no valid Sprite object exists for this ID.
+
+        #ifdef FROST_DEBUG
+
         ProgramOutputHandler::log("SpriteHandler.get_sprite() -> Sprite ID : \"" + 
             std::to_string(id) + "\" does not exist.", Frost::ERR);
+        #endif
+
         exit(1);
     }
 

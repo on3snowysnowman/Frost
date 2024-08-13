@@ -4,9 +4,6 @@
 #include <cstdint>
 
 
-class MenuManager;
-
-
 /**
  * @brief Provides a base framework for modular user created Menu classes to inherit from and 
  * provide unique behavior each frame.

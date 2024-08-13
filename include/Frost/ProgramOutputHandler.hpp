@@ -42,6 +42,4 @@ public:
 private:
 
     static std::string s_output_file_path; // Path to the output file
-
-    static std::fstream s_file_stream;
 };

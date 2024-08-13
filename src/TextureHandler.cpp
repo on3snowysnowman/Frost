@@ -1,7 +1,11 @@
 #include "TextureHandler.hpp"
 #include "JsonHandler.hpp"
-#include "ProgramOutputHandler.hpp"
 #include "FileSystemHandler.hpp"
+
+#ifdef FROST_DEBUG
+
+#include "ProgramOutputHandler.hpp"
+#endif
 
 // Static Members
 
@@ -49,8 +53,12 @@ void TextureHandler::handle_texture_deletion(SDL_Texture* texture)
     // If this Texture was not found.
     if(s_textures_to_paths.find(texture) == s_textures_to_paths.end())
     {
+        #ifdef FROST_DEBUG
+
         ProgramOutputHandler::log("TextureHandler.handle_texture_deletion() -> Attempted to delete"
             " an SDL_Texture that does not exist.", Frost::WARN);
+        #endif
+
         return;
     }
 
@@ -66,8 +74,11 @@ void TextureHandler::draw(SDL_Texture* texture, const SDL_Rect& source, const SD
     // If this color isn't registered.
     if(m_colors.find(color) == m_colors.end())
     {
+        #ifdef FROST_DEBUG
+
         ProgramOutputHandler::log("TextureHandler.draw() -> Color: \"" + color 
             + "\" is not a registered color", Frost::ERR);
+        #endif
 
         exit(1);
     }
@@ -107,8 +118,12 @@ SDL_Texture* TextureHandler::create_texture(std::string png_path) const
     // If the file does not exist.
     if(!FileSystemHandler::does_directory_exist(png_path))
     {
+        #ifdef FROST_DEBUG
+
         ProgramOutputHandler::log("TextureHandler.create_texture()-> Path \""
             + png_path + "\" does not exist.", Frost::ERR);
+        #endif
+
         exit(0);
     }
 

@@ -9,6 +9,7 @@
 #include "ConsoleOutputHandler.hpp"
 #include "SpriteHandler.hpp"
 
+
 class FrostEngine
 {
 
@@ -17,11 +18,15 @@ public:
     FrostEngine();
     ~FrostEngine();
 
+    /** Starts the Engine. */
+    void start();
+
     /** Gets the screen width in pixels. */
     static int get_screen_width();
 
     /** Gets the screen height in pixels. */
     static int get_screen_height();
+
 
 protected:
 
@@ -56,8 +61,6 @@ private:
 
     // Target miliseconds per frame to achieve target fps.
     uint8_t m_target_miliseconds_per_frame {};  
-
-    uint16_t limit = 20;
 
     // Timestamp of the beginning of the frame. Used to calculate the miliseconds each frame takes.
     uint64_t m_frame_start_timestamp; 
@@ -117,4 +120,8 @@ private:
     /** Flags the SDL_Renderer to present its buffered content. */
     void _present_SDL_renderer();
 
+
+    // Demo
+
+    std::string dummy;
 };

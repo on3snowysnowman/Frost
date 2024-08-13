@@ -9,19 +9,26 @@ add_library(Frost STATIC ${SOURCES}
     src/FileSystemHandler.cpp
     src/Fr_Math.cpp
     src/Fr_StringManip.cpp
-    src/FrostEngine.cpp
+	src/Fr_StringManip.cpp
+	src/FrostEngine.cpp
     src/InputHandler.cpp
     src/JsonHandler.cpp
     src/Menu.cpp
     src/ProgramOutputHandler.cpp
     src/SpriteHandler.cpp
+	src/TextFileHandler.cpp
     src/TextRenderingHandler.cpp
     src/TextureHandler.cpp
+	src/TimeObserver.cpp
+	src/UITools/UIDisplayTools.cpp
+	src/UITools/UIItem.cpp
+	src/UITools/UIText.cpp
 )
 
 target_include_directories(Frost
     PUBLIC 
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/Frost>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/Frost/UITools>
     PRIVATE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
 )

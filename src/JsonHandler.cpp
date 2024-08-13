@@ -1,6 +1,9 @@
 #include "JsonHandler.hpp"
-#include "ProgramOutputHandler.hpp"
 
+#ifdef FROST_DEBUG
+
+#include "ProgramOutputHandler.hpp"
+#endif
 
 // Static Members
 
@@ -14,8 +17,12 @@ bool JsonHandler::clear(std::string file_path)
     // If the path does not exist.
     if(!FileSystemHandler::does_directory_exist(file_path))
     {
+        #ifdef FROST_DEBUG
+
         ProgramOutputHandler::log("JsonHelper.clear() -> Directory doesn't exist: \"" 
             + file_path + "\"", Frost::WARN);
+        #endif
+
         return false;
     }
 
@@ -24,8 +31,12 @@ bool JsonHandler::clear(std::string file_path)
     // If the file failed to open.
     if(!s_file_stream.is_open())
     {
+        #ifdef FROST_DEBUG
+
         ProgramOutputHandler::log("JsonHelper.clear() -> Failed to open file: \"" 
             + file_path + "\"", Frost::WARN);
+        #endif
+
         return false;
     }
 
@@ -43,8 +54,11 @@ bool JsonHandler::dump(json& json_obj, std::string file_path)
         // Create the file.
         FileSystemHandler::make_file(file_path);
 
+        #ifdef FROST_DEBUG
+
         ProgramOutputHandler::log("JsonHandler.dump() -> File: \"" + file_path + "\" doesn't "
             "exist, creating file.");
+        #endif
     }
 
     s_file_stream.open(file_path, std::ios::out);
@@ -52,8 +66,11 @@ bool JsonHandler::dump(json& json_obj, std::string file_path)
     // If the file failed to open.
     if(!s_file_stream.is_open())
     {
+        #ifdef FROST_DEBUG
         ProgramOutputHandler::log("JsonHandler.dump() -> Failed to open file: \""
             + file_path + "\"", Frost::WARN);
+        #endif
+        
         return false;
     }
 
@@ -67,8 +84,11 @@ json JsonHandler::get(std::string file_path)
     // If the path does not exist.
     if(!FileSystemHandler::does_directory_exist(file_path))
     {
+        #ifdef FROST_DEBUG
+
         ProgramOutputHandler::log("JsonHelper.get() -> Directory doesn't exist: \"" 
             + file_path + "\"", Frost::WARN);
+        #endif
         return json{};
     }
 
@@ -77,8 +97,13 @@ json JsonHandler::get(std::string file_path)
     // If the file failed to open.
     if(!s_file_stream.is_open())
     {
+
+        #ifdef FROST_DEBUG
+
         ProgramOutputHandler::log("JsonHelper.get() -> Failed to open file: \"" 
             + file_path + "\"", Frost::WARN);
+        #endif
+        
         return json{};
     }
 

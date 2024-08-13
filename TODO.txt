@@ -1,5 +1,5 @@
 
-Write Menu
 Write UITools
-Write TextFileHandler
 Write BinaryFileHandler?
+
+Reconfigure ConsoleOutputHandler rendering?

@@ -1,8 +1,12 @@
 #include <iostream>
 
 #include "ConsoleOutputHandler.hpp"
-#include "ProgramOutputHandler.hpp"
 #include "Fr_Math.hpp"
+
+#ifdef FROST_DEBUG
+
+#include "ProgramOutputHandler.hpp"
+#endif
 
 
 // Constructors / Deconstructor
@@ -38,8 +42,12 @@ void ConsoleOutputHandler::resize_dimensions(uint16_t start_x, uint16_t start_y,
 {
     if(end_x < start_x || end_y < start_y)
     {
+        #ifdef FROST_DEBUG
+
         ProgramOutputHandler::log("ConsoleOutputHandler.resize_dimensions() -> Attempted to create"
             " with invalid dimensions. Setting dimensions to 0. ", Frost::WARN);
+        #endif
+        
         start_x = 0;
         start_y = 0;
         end_x = 0;

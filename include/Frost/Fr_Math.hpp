@@ -34,6 +34,16 @@ namespace Frost
      */
     uint16_t return_largest_of_uint16s(uint16_t first, uint16_t second);
 
+    /** Calculates the ratio of num to its min and max, and applies this ratio to the 
+     * passed range to return the portioned value.
+     * 
+     * @param num Value to calculate the ratio from the min and max.
+     * @param min Minimum value of the num.
+     * @param max Maximum value of the num.
+     * @param range Value that the ratio will portion.
+     */
+    int get_ratio_of_range(int num, int min, int max, int range);
+
     /** Returns the passed float clamped to the minimum if it is below it. 
      * 
      * @param num Num to clamp.

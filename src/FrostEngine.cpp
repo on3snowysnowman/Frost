@@ -2,12 +2,17 @@
 #include <SDL2/SDL_render.h>
 
 #include "FrostEngine.hpp"
-#include "ProgramOutputHandler.hpp"
 #include "FileSystemHandler.hpp"
 #include "JsonHandler.hpp"
 #include "InputHandler.hpp"
 #include "Fr_Math.hpp"
 #include "Fr_StringManip.hpp"
+#include "Fr_StringManip.hpp"
+
+#ifdef FROST_DEBUG
+#include "ProgramOutputHandler.hpp"
+
+#endif
 
 
 // Static Members
@@ -20,9 +25,13 @@ int FrostEngine::s_screen_height {};
 // Constructors / Deconstructor
 
 FrostEngine::FrostEngine()
-{
+{ 
+    #ifdef FROST_DEBUG
+
     // Clear the ProgramOutputHandler's output file
     ProgramOutputHandler::clear_output_file();
+    ProgramOutputHandler::log("Debug Mode: True");
+    #endif
 
     // Initialize SDL and the Engine. 
     _init_SDL_and_engine();
@@ -32,14 +41,6 @@ FrostEngine::FrostEngine()
 
     m_coh = ConsoleOutputHandler(&m_texture_handler, 0, 0, s_screen_width, s_screen_height);
     m_sprite_handler = SpriteHandler(&m_texture_handler);
-
-    m_is_active = true;
-
-    // Being Simulation
-
-    if(m_use_vsync) _simulation_loop_vsync();
-
-    else _simulation_loop_no_vsync();
 }
 
 FrostEngine::~FrostEngine() 
@@ -52,10 +53,20 @@ FrostEngine::~FrostEngine()
 
 // Public
 
+void FrostEngine::start()
+{
+    m_is_active = true;
+
+    // Begin Simulation
+
+    if(m_use_vsync) _simulation_loop_vsync();
+
+    else _simulation_loop_no_vsync();
+}
+
 int FrostEngine::get_screen_width() { return s_screen_width; }
 
 int FrostEngine::get_screen_height() { return s_screen_height; }
-
 
 
 // Protected
@@ -67,8 +78,12 @@ bool FrostEngine::_set_application_icon(std::string path_to_png)
     // If the directory does not exist.
     if(!FileSystemHandler::does_directory_exist(path_to_png))
     {
+        #ifdef FROST_DEBUG
+
         ProgramOutputHandler::log("FrostEnginer._set_application_icon() -> File: \""
             + path_to_png + "\" does not exist.", Frost::WARN);
+        #endif
+
         return false;
     }
 
@@ -83,6 +98,7 @@ bool FrostEngine::_set_application_icon(std::string path_to_png)
     return true;
 }
 
+
 // Private
 
 void FrostEngine::_create_default_init_files_and_engine()
@@ -90,7 +106,10 @@ void FrostEngine::_create_default_init_files_and_engine()
     // Create the data directory.
     FileSystemHandler::make_directory(m_init_data_directory);
 
+    #ifdef FROST_DEBUG
+
     ProgramOutputHandler::log("Fullscreen: true");
+    #endif
 
     // Create the SDL Window
     m_window = SDL_CreateWindow("Frost", 0, 0, 0, 0, SDL_WINDOW_FULLSCREEN_DESKTOP);
@@ -151,8 +170,12 @@ void FrostEngine::_init_SDL_and_engine()
     // If SDL failed to initialize.
     if(SDL_Init(SDL_INIT_EVENTS) != 0 || SDL_Init(SDL_INIT_VIDEO) != 0)
     {
+        #ifdef FROST_DEBUG
+
         ProgramOutputHandler::log("FrostEngine::_init_SDL() -> SDL failed to initialize.", 
             Frost::ERR);
+        #endif
+
         exit(1);
     }
 
@@ -162,8 +185,12 @@ void FrostEngine::_init_SDL_and_engine()
     // If the init folder does not exist in the working directory.
     if(!FileSystemHandler::does_directory_exist("data"))
     {
+        #ifdef FROST_DEBUG
+
         ProgramOutputHandler::log("FrostEngine::_init_SDL_and_engine() -> \"data\" folder "
             "not found", Frost::ERR);
+        #endif
+
         exit(1);
     }
 
@@ -184,7 +211,10 @@ void FrostEngine::_init_SDL_and_engine()
 
     if(init_data.at("fullscreen"))
     {
+        #ifdef FROST_DEBUG
+
         ProgramOutputHandler::log("Fullscreen: true");
+        #endif
 
         // Create the SDL_Window as fullscreen.
         m_window = SDL_CreateWindow(application_window_name.c_str(), 0, 0, 0, 0, 
@@ -195,7 +225,10 @@ void FrostEngine::_init_SDL_and_engine()
 
     else
     {
+        #ifdef FROST_DEBUG
+
         ProgramOutputHandler::log("Fullscreen: false");
+        #endif
 
         // Get the width and height from the data file.
         s_screen_width = init_data.at("screen_width");
@@ -224,10 +257,15 @@ void FrostEngine::_simulation_loop_vsync()
 {
     while(m_is_active)
     {
-        _handle_SDL_events(); 
+        InputHandler::clear_raw_keys();
+
+        _handle_SDL_events();
+
+        Frost::handle_input_for_string_manipulation(dummy);
+        m_coh.add_str(dummy + '_');
 
         _clear_SDL_renderer();
-        
+
         m_coh.render();
 
         m_sprite_handler.render();
@@ -241,6 +279,8 @@ void FrostEngine::_simulation_loop_no_vsync()
     while(m_is_active)
     {
         m_frame_start_timestamp = SDL_GetTicks64();
+
+        InputHandler::clear_raw_keys();
 
         _handle_SDL_events(); 
 

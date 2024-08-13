@@ -1,12 +1,11 @@
 #include "ProgramOutputHandler.hpp"
 #include "Fr_StringManip.hpp"
+#include "TextFileHandler.hpp"
 
 
 // Static Members
 
 std::string ProgramOutputHandler::s_output_file_path = "OutputLog.txt";
-
-std::fstream ProgramOutputHandler::s_file_stream;
 
 // Public
 
@@ -17,45 +16,33 @@ void ProgramOutputHandler::change_output_file_path(std::string new_path)
 
 bool ProgramOutputHandler::clear_output_file()
 {
-    s_file_stream.open(s_output_file_path, std::ios::out);
-
-    // Failed to open file
-    if(!s_file_stream.is_open()) return false;
-
-    s_file_stream.close();
-    return true;
+    return TextFileHandler::clear_file(s_output_file_path);
 }
 
 bool ProgramOutputHandler::log(std::string content, Frost::OUTPUT_SEVERITY out_severity)
 {
-    s_file_stream.open(s_output_file_path, std::ios::app);
-
-    // Failed to open file
-    if(!s_file_stream.is_open()) return false;
-
     switch(out_severity)
     {
         case Frost::LOG:
 
-            s_file_stream << "[LOG] ";
+            TextFileHandler::add_to_buffer("[LOG] ");
             break;
 
         case Frost::WARN:
 
-            s_file_stream << "[WARN] ";
+            TextFileHandler::add_to_buffer("[WARN] ");
             break;
 
         case Frost::ERR:   
 
-            s_file_stream << "[ERR] ";
+            TextFileHandler::add_to_buffer("[ERR] ");
             break;
     }
 
     // Trim the output so that each line does not exceed 90 characters
     Frost::configure_string_with_line_limit(content, 90);
 
-    s_file_stream << content << '\n';
+    TextFileHandler::add_to_buffer(content);
 
-    s_file_stream.close();
-    return true;
+    return TextFileHandler::write(s_output_file_path);
 }

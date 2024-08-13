@@ -21,4 +21,4 @@ const std::string& Menu::get_id() const { return m_ID; }
 
 // Private
 
-void Menu::_deactivate_menu() const { MenuManager}
+void Menu::_deactivate_menu() const { MenuManager::deactivate_menu(this); }
