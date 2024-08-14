@@ -108,46 +108,9 @@ void Frost::handle_input_for_string_manipulation(std::string& str)
                     continue;
                 }
 
-                // Control is not pressed.
-                
-                // This snippet of code finds the beginning of the first word from the end
-                // of the string and trims it to that portion.
+                // Control is pressed.
 
-                // If the string is not long enough to worry about this functionality.
-                if(str.size() == 1) continue;
-
-                index = str.size() - 2;
-
-                // If the character at the end of the string is a space
-                if(*(--str.end()) == ' ')
-                {
-                    // Iterate backwards until the first non space character is found.
-
-                    while(index > 0)
-                    {
-                        if(str.at(index) != ' ') break;
-
-                        --index;
-                    }
-
-                    // Use ++index, as the character that is currently parsed is the first 
-                    // character before the spaces that were skipped, and that should not be 
-                    // trimmed out. So, increment index inside substr to include the character that
-                    // is currently parsed.
-                    str = str.substr(0, ++index);
-                    continue;
-                }
-
-                // Iterate backwards until the first space is found.
-
-                while(index > 0)
-                {
-                    if(str.at(index) == ' ') break;
-
-                    --index;
-                }
-
-                str = str.substr(0, index);
+                trim_string_with_ctrl_backspace_behavior(str);
                 continue;
                 
 
@@ -166,26 +129,6 @@ void Frost::handle_input_for_string_manipulation(std::string& str)
         {
             str.push_back(key);
         }
-    }
-}
-
-void Frost::trim_string_to_first_character_from_end(std::string& str, char c, 
-    bool include_searched_char)
-{
-    for(int i = str.size(); i > 0; ++i)
-    {
-        if(str.at(i) != c) continue;
-        
-        // Found the searched char.
-
-        if(include_searched_char)
-        {
-            str = str.substr(0, i);
-            return;
-        }
-
-        str = str.substr(0, i - 1);
-        return;
     }
 }
 
@@ -208,6 +151,45 @@ void Frost::configure_string_with_line_limit(std::string& str, uint8_t line_limi
         // put a new line. 
         index_iterator += line_limit;
     }
+}
+
+void Frost::trim_string_with_ctrl_backspace_behavior(std::string& str)
+{
+    // If the string is not long enough to worry about this functionality.
+    if(str.size() <= 1) return;
+
+    int index = str.size() - 2;
+
+    // If the character at the end of the string is a space
+    if(*(--str.end()) == ' ')
+    {
+        // Iterate backwards until the first non space character is found.
+
+        while(index > 0)
+        {
+            if(str.at(index) != ' ') break;
+
+            --index;
+        }
+
+        // Use ++index, as the character that is currently parsed is the first 
+        // character before the spaces that were skipped, and that should not be 
+        // trimmed out. So, increment index inside substr to include the character that
+        // is currently parsed.
+        str = str.substr(0, ++index);
+        return;
+    }
+
+    // Iterate backwards until the first space is found.
+
+    while(index > 0)
+    {
+        if(str.at(index) == ' ') break;
+
+        --index;
+    }
+
+    str = str.substr(0, index);
 }
 
 void Frost::remove_first_zeros(std::string& str)

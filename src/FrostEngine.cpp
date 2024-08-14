@@ -46,7 +46,7 @@ FrostEngine::FrostEngine()
     // DEMO
 
     text = new UIText(m_coh, cursor_color, "Text");
-    variable = new UIVariable(m_coh, cursor_color, UIVariable::INT, "Variable");
+    variable = new UIVariable(m_coh, cursor_color, UIVariable::FLOAT, "Variable");
 
     // DEMO
 }

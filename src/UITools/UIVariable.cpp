@@ -120,6 +120,8 @@ void UIVariable::_check_content_for_int_type()
     
     }
 
+    Frost::remove_first_zeros(m_content);
+
     if(m_default_content.size() == 0)
     {
         // There is nothing in the default content, therefore the checks for its contents can be 
@@ -146,6 +148,8 @@ void UIVariable::_check_content_for_int_type()
         m_default_content = "";
         return;
     }
+
+    Frost::remove_first_zeros(m_default_content);
 }
 
 void UIVariable::_check_content_for_float_type() 
@@ -167,6 +171,7 @@ void UIVariable::_check_content_for_float_type()
             #endif
 
             m_content = "";
+            m_has_decimal_point = false;
             break;
         }
 
@@ -187,7 +192,15 @@ void UIVariable::_check_content_for_float_type()
         #endif
 
         m_content = "";
+        m_has_decimal_point = false;
         break;
+    }
+
+    Frost::remove_first_zeros(m_content);
+
+    if(m_content.size() > 0 && m_content.at(0) == '.')
+    {
+        m_content.insert(m_content.begin(), '0');
     }
 
     if(m_default_content.size() == 0)
@@ -214,14 +227,15 @@ void UIVariable::_check_content_for_float_type()
                 "invalid characters.", Frost::WARN);
             #endif
 
-            m_content = "";
+            m_default_content = "";
+            m_default_has_decimal_point = false;
             break;
         }
 
         // m_content does not contain a decimal yet.
-        if(!m_has_decimal_point)
+        if(!m_default_has_decimal_point)
         {
-            m_has_decimal_point = true;
+            m_default_has_decimal_point = true;
             continue;
         }
 
@@ -234,10 +248,17 @@ void UIVariable::_check_content_for_float_type()
             "multiple decimal points.", Frost::WARN);
         #endif
 
-        m_content = "";
+        m_default_content = "";
+        m_default_has_decimal_point = false;
         break;
     }
 
+    Frost::remove_first_zeros(m_default_content);
+
+    if(m_default_content.size() > 0 && m_default_content.at(0) == '.')
+    {
+        m_default_content.insert(m_default_content.begin(), '0');
+    }
 }
 
 bool UIVariable::_check_and_handle_deselect()
@@ -268,7 +289,14 @@ UIItem::Status UIVariable::_handle_string_input()
 UIItem::Status UIVariable::_handle_int_input()
 {
     // If the user deselected this item, return that this item is now HOVERED.
-    if(_check_and_handle_deselect()) return UIItem::HOVERED;
+    if(_check_and_handle_deselect()) 
+    {
+        Frost::remove_first_zeros(m_content);
+
+        if(m_content.size() == 0) m_content = m_default_content;
+
+        return UIItem::HOVERED;
+    }
 
     for(const Key& key : InputHandler::get_raw_pressed_keys())
     {
@@ -281,6 +309,14 @@ UIItem::Status UIVariable::_handle_int_input()
 
         if(key == SDLK_BACKSPACE)
         {
+            if(m_content.size() == 0) continue;
+
+            if(InputHandler::is_key_pressed(SDLK_LSHIFT))
+            {
+                m_content = "";
+                continue;
+            }
+
             if(m_content.size() > 0) m_content.pop_back();
             continue;
         }
@@ -292,7 +328,19 @@ UIItem::Status UIVariable::_handle_int_input()
 UIItem::Status UIVariable::_handle_float_input()
 {
     // If the user deselected this item, return that this item is now HOVERED.
-    if(_check_and_handle_deselect()) return UIItem::HOVERED;
+    if(_check_and_handle_deselect()) 
+    {
+        Frost::remove_first_zeros(m_content);
+
+        if(m_content.size() == 0) m_content = m_default_content;
+
+        else
+        {
+            if(m_content.at(0) == '.') m_content.insert(m_content.begin(), '0');
+        }
+
+        return UIItem::HOVERED;
+    }
 
     for(const Key& key : InputHandler::get_raw_pressed_keys())
     {
@@ -319,11 +367,19 @@ UIItem::Status UIVariable::_handle_float_input()
 
                 if(m_content.size() == 0) continue;
 
+                if(InputHandler::is_key_pressed(SDLK_LSHIFT))
+                {
+                    m_content = "";
+                    m_has_decimal_point = false;
+                    continue;
+                }
+
                 if(*(--m_content.end()) == '.')
                 {
-                    m_content.pop_back();
                     m_has_decimal_point = false;
                 }
+
+                m_content.pop_back();
                 
                 break;
         }

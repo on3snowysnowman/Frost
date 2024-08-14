@@ -59,9 +59,13 @@ private:
      */
     input_han_func m_targ_input_handling_function;
 
-    /* If a decimal point is currently placed in the content for a float value. If m_var_type is 
+    /**  If a decimal point is currently placed in the content for a float value. If m_var_type is 
     not FLOAT, this boolean is ignored. */
     bool m_has_decimal_point = false;
+
+    /** If a decimal point exists in the default content for a float value. If m_var_type is not
+     * FLOAT, this boolean is ignored.*/
+    bool m_default_has_decimal_point = false;
 
     /** Variable type of this object. Determines what kind of characters can be stored in the 
      * content.*/

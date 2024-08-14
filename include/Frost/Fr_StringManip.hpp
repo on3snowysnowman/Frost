@@ -31,17 +31,14 @@ void handle_input_for_string_manipulation(std::string& str);
  * is printed to a console or file it will not exceed the set line limit. */
 void configure_string_with_line_limit(std::string& str, uint8_t line_limit);
 
-/** Starting from the end of a string, iterate backwards and stop at the first instance of the 
- * passed 'c' that exists. The string will be portioned up until that point. If the 
- * include_searched_char is set to true, the index of 'c' will be included in the portioning.
- * If the searched for char wasn't found, the string is untouched.
- * 
- * @param str String to modify. Passed by reference.
- * @param c Char to search for.
- * @param include_searched_char Whether to include the searched char in the portion.
+
+/** Trims a string like you would expect text to be trimmed inside notepad when you press
+ * Ctrl + Backspace. If the last character of the string is not a space, iterate backwards until
+ * the first space is found, and substring the str until that point. If the last character of hte 
+ * string is a space, iterate backwards until the first non space character is found, then perform 
+ * the first process of finding the first space character and substringing until that point.
  */
-void trim_string_to_first_character_from_end(std::string& str, char c, 
-    bool include_searched_char = false);
+void trim_string_with_ctrl_backspace_behavior(std::string& str);
 
 /** Removes all zeros starting from the beginning of the string, up until the first non zero 
  * character is found.

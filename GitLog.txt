@@ -1,0 +1,5 @@
+0 : 
+
+    - Added GitLog.txt
+    - Finished UIVariable. 
+    - Added a new method for handling ctrl-backspace behavior in Fr_StringManip
