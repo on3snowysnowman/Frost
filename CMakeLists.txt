@@ -23,10 +23,14 @@ add_library(Frost STATIC ${SOURCES}
     src/TextRenderingHandler.cpp
     src/TextureHandler.cpp
 	src/TimeObserver.cpp
+	src/UITools/UIChoice.cpp
 	src/UITools/UIDisplayTools.cpp
+	src/UITools/UIFloatVariable.cpp
+	src/UITools/UIIntVariable.cpp
 	src/UITools/UIItem.cpp
+	src/UITools/UIStringVariable.cpp
 	src/UITools/UIText.cpp
-	src/UITools/UIVariable.cpp
+	src/UITools/UITextList.cpp
 )
 
 target_include_directories(Frost

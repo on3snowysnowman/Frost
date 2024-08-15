@@ -9,8 +9,7 @@
 #include "ConsoleOutputHandler.hpp"
 #include "SpriteHandler.hpp"
 
-#include "UIVariable.hpp"
-#include "UIText.hpp"
+#include "UIChoice.hpp"
 
 class FrostEngine
 {
@@ -128,7 +127,4 @@ private:
     UIItem::Status status = UIItem::HOVERED;
 
     std::string cursor_color = "Blue";
-
-    UIText* text;
-    UIVariable* variable;
 };

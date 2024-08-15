@@ -1,5 +1,14 @@
-0 : 
+1 :
 
+    - Began work on a UITextList class.
+
+    - Added a UIChoice class. 
+
+    - Reconfigured UIVariable into three distinct classes, UIStringVariable UIIntVariable and 
+      UIFloatVariable. This will remove all type checking logic that had to exist in the original
+      UIVariable, since now there is a class for each specific type.
+
+0 : 
     - Added GitLog.txt
     - Finished UIVariable. 
     - Added a new method for handling ctrl-backspace behavior in Fr_StringManip

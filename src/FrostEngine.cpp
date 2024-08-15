@@ -45,9 +45,6 @@ FrostEngine::FrostEngine()
 
     // DEMO
 
-    text = new UIText(m_coh, cursor_color, "Text");
-    variable = new UIVariable(m_coh, cursor_color, UIVariable::FLOAT, "Variable");
-
     // DEMO
 }
 
@@ -283,23 +280,6 @@ void FrostEngine::_simulation_loop_vsync()
         _handle_SDL_events();
 
         // DEMO
-
-        if(status == UIItem::SELECTED)
-        {
-            variable->render_selected();
-            status = variable->handle_input();
-        }
-
-        else
-        {
-            variable->render_hovered();
-
-            if(InputHandler::is_key_pressed_and_available(SDLK_RETURN))
-            {
-                status = UIItem::SELECTED;
-                InputHandler::block_key_until_released(SDLK_RETURN);
-            }
-        }
 
         // DEMO
 

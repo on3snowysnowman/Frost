@@ -34,22 +34,10 @@ public:
         SELECTED
     };
 
-
-    /** Different types of UIItems that exist. */
-    enum ItemType
-    {
-        BUTTON,
-        TEXT,
-        VARIABLE,
-        CHOICE,
-        TEXT_LIST,
-        ITEM_LIST
-    };
-
     // Requires ctor with item type specifier
     UIItem() = delete;
 
-    UIItem(ConsoleOutputHandler& coh, std::string& cursor_color, UIItem::ItemType item_type);
+    UIItem(ConsoleOutputHandler& coh, std::string& cursor_color, std::string item_type);
 
     /** Renders this UIItem with respect to having no status. */
     virtual void render_no_status() const;
@@ -66,10 +54,13 @@ public:
      */
     virtual Status handle_input();
 
+    /** Returns a const reference to this Item's type, represented as a string.  */
+    const std::string& get_item_type() const;
+
 protected:
 
-    // Item type of this UIItem, specifically which derived class type.
-    const ItemType m_ITEM_TYPE;
+    // Item type of this UIItem, specifically which derived class type. Example would be "CHOICE".
+    const std::string m_ITEM_TYPE;
 
     /** Color of the cursor. The target of this pointer is managed by the Menu that created and is
      * handling the simulation of this Item. */

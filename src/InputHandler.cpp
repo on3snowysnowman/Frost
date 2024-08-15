@@ -22,8 +22,8 @@ void InputHandler::delay_key(int32_t key, uint16_t miliseconds)
 
 void InputHandler::block_key_until_released(int32_t key)
 {
-    // Set the delay equal to the limit of a uint64_t, which realistically, is never going to be
-    // reached.
+    // Set the delay timestamp equal to the limit of a uint64_t, which realistically, is never 
+    // going to be reached.
     s_delayed_keys[key] = Frost::UINT16_LIMIT;
 }
 
@@ -53,13 +53,13 @@ bool InputHandler::is_key_pressed(int32_t key)
 
 bool InputHandler::is_key_pressed_and_available(int32_t key)
 {
-    // The key is not pressed.
-    if(!is_key_pressed(key)) return false;
+    // // The key is not pressed.
+    // if(!is_key_pressed(key)) return false;
 
-    // Return if the pressed key is available.
-    return _is_pressed_key_available(key);
+    // // Return if the pressed key is available.
+    // return _is_pressed_key_available(key);
 
-    return true;
+    return is_key_pressed(key) && _is_pressed_key_available(key);
 }
 
 std::vector<int32_t> InputHandler::get_pressed_and_available_keys()

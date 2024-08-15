@@ -3,6 +3,8 @@
 
     CHANGES
 
+    - Added UITextList
+    - Added UIVariable Items and UIChoice
     - Added an input handling method for strings inside Fr_StringManip.
     - Added UIItem and UIText
     - Added UIDisplayTools

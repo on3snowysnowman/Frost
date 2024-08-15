@@ -194,7 +194,7 @@ void Frost::trim_string_with_ctrl_backspace_behavior(std::string& str)
 
 void Frost::remove_first_zeros(std::string& str)
 {
-    // There are no trailing zeros since there is only 1 character.
+    // There are no trailing zeros since there is not more than 1 character.
     if(str.size() <= 1) return;
 
     int index = 0;

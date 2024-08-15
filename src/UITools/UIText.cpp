@@ -6,7 +6,7 @@
 // Constructors / Deconstructor
 
 UIText::UIText(ConsoleOutputHandler& coh, std::string& cursor_color, std::string content) 
-    : UIItem(coh, cursor_color, UIItem::TEXT) { m_content = content; }
+    : UIItem(coh, cursor_color, "TEXT") { m_content = content; }
 
 // Public
 
@@ -41,3 +41,5 @@ UIItem::Status UIText::handle_input()
 
     return UIItem::SELECTED;
 }
+
+const std::string& UIItem::get_item_type() const { return m_ITEM_TYPE; }

@@ -59,11 +59,11 @@ private:
      */
     input_han_func m_targ_input_handling_function;
 
-    /**  If a decimal point is currently placed in the content for a float value. If m_var_type is 
+    /**  If a decimal point is currently placed in the m_content for a float value. If m_var_type is 
     not FLOAT, this boolean is ignored. */
     bool m_has_decimal_point = false;
 
-    /** If a decimal point exists in the default content for a float value. If m_var_type is not
+    /** If a decimal point exists in the m_default_content for a float value. If m_var_type is not
      * FLOAT, this boolean is ignored.*/
     bool m_default_has_decimal_point = false;
 
@@ -103,10 +103,17 @@ private:
      */
     void _check_content_for_float_type();
 
+    /** Called when the user deselects this UIVariable inside UISimulation. This checks if the
+     * m_content was left blank, and if so 
+     */
+    void _check_handle_deselection_int_type();
+
+    void _check_handle_deselction_float_type();
+
     /** Returns true if the user has deselected this item by pressing enter. If so, handle if 
      * the content is left empty. 
      */
-    bool _check_and_handle_deselect();
+    bool _handle_deselect();
 
     /**
      * @brief Specific function for handling input from the user if the 
