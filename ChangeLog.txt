@@ -1,9 +1,12 @@
 
+This file tracks overall changes and fixes to the Engine.
+
+
 # Version 0.1
 
     CHANGES
 
-    - Added UITextList
+    - Added UITextList and UIList
     - Added UIVariable Items and UIChoice
     - Added an input handling method for strings inside Fr_StringManip.
     - Added UIItem and UIText

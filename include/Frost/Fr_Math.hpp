@@ -6,12 +6,19 @@
 
 namespace Frost
 {
+    /** Returns if the passed num is even.
+     * 
+     * @param num Num to check.
+     */
+    bool is_even(int num);
+
     /** Returns the passed num clamped to the maximum if it exceeds it. 
      * 
      * @param num Num to clamp.
      * @param max Maximum value.
      */
     uint8_t clamp_uint8_to_maximum(uint8_t num, uint8_t max);
+
 
     /** Returns the passed num clamped to the minimum if it is below it. 
      * 
@@ -26,6 +33,8 @@ namespace Frost
      * @param max Maximum value.
      */
     uint16_t clamp_uint16_to_maximum(uint16_t num, uint16_t max);
+
+    int16_t clamp_int16_to_maximum(int16_t num, int16_t max);
 
     /** Returns the larger of two uint16_ts.
      * 

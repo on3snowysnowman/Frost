@@ -40,13 +40,15 @@ public:
 
 private:
 
+    // Members
+
     // If a decimal point currently exists inside m_content.
     bool m_content_has_decimal = false;
 
     // If a decimal point exists m_default_content.
     bool m_default_content_has_decimal = false;
 
-    // Name of the variable.
+    // Name of this variable.
     std::string m_name;
 
     // Content of the variable, the value that the user sees and interacts with.

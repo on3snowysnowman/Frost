@@ -1,6 +1,8 @@
 
 Write UITools
-Write BinaryFileHandler?
+Write a Random class.
+Add an ECS?
+Add a SceneManager
 
 Reconfigure FileSystem & TextFile Handlers to use universal OS libraries.
 Reconfigure ConsoleOutputHandler rendering?

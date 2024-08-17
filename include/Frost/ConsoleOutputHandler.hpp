@@ -102,6 +102,9 @@ public:
      */
     void set_anchor(uint16_t new_anchor);
 
+    /** Sets the anchor to the current X position of the cursor.  */
+    void set_anchor_here();
+
     /** Sets the focus to a new value.
      * 
      * @param new_focus New value.

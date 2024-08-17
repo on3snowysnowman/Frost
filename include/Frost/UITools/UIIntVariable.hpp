@@ -35,7 +35,10 @@ public:
 
 private:
 
-    // Name of the variable.
+    // Members 
+    
+
+    // Name of this variable.
     std::string m_name;
 
     // Content of the variable, the value that the user sees and interacts with.

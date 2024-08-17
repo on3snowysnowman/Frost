@@ -37,7 +37,7 @@ private:
 
     // Members
 
-    // Name of the variable.
+    // Name of thisw variable.
     std::string m_name;
 
     // Content of the variable, the value that the user sees and interacts with.

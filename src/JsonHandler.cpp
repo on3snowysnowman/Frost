@@ -48,18 +48,7 @@ bool JsonHandler::clear(std::string file_path)
 
 bool JsonHandler::dump(json& json_obj, std::string file_path)
 {
-    // If the file doesn't exist.
-    if(!FileSystemHandler::does_directory_exist(file_path))
-    {
-        // Create the file.
-        FileSystemHandler::make_file(file_path);
-
-        #ifdef FROST_DEBUG
-
-        ProgramOutputHandler::log("JsonHandler.dump() -> File: \"" + file_path + "\" doesn't "
-            "exist, creating file.");
-        #endif
-    }
+    // File is automatically created if it doesn't exist.
 
     s_file_stream.open(file_path, std::ios::out);
 

@@ -54,16 +54,16 @@ public:
 
 private:
 
-    // Name of the choice.
-    std::string m_name;
-
     // Index of the cursor inside m_content.
     uint16_t m_cursor_index;
 
-    /** Index of the current selected item inside m_content. If this value is -1 there is no item
-     * selected.
+    /** Index of the current selected item inside m_content.
      */
     uint16_t m_selected_index;
 
+    // Name of this choice.
+    std::string m_name;
+
+    // Vector of choices the user can select.
     std::vector<ColorString> m_content;
 };

@@ -175,6 +175,8 @@ void ConsoleOutputHandler::reset_cursor_position() { m_cursor_position = {0, 0};
 
 void ConsoleOutputHandler::set_anchor(uint16_t new_anchor) { m_anchor = new_anchor; }
 
+void ConsoleOutputHandler::set_anchor_here() { m_anchor = m_cursor_position.first; }
+
 void ConsoleOutputHandler::set_focus(uint16_t new_focus) 
 { 
     m_focus = new_focus; 

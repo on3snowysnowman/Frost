@@ -32,7 +32,7 @@ FrostEngine::FrostEngine()
     ProgramOutputHandler::clear_output_file();
     ProgramOutputHandler::log("Debug Mode: true\n");
     #endif
- 
+
     // Initialize SDL and the Engine. 
     _init_SDL_and_engine();
 
@@ -41,11 +41,6 @@ FrostEngine::FrostEngine()
 
     m_coh = ConsoleOutputHandler(&m_texture_handler, 0, 0, s_screen_width, s_screen_height);
     m_sprite_handler = SpriteHandler(&m_texture_handler);
-
-
-    // DEMO
-
-    // DEMO
 }
 
 FrostEngine::~FrostEngine() 
@@ -278,10 +273,6 @@ void FrostEngine::_simulation_loop_vsync()
         InputHandler::clear_raw_keys();
 
         _handle_SDL_events();
-
-        // DEMO
-
-        // DEMO
 
         _clear_SDL_renderer();
 

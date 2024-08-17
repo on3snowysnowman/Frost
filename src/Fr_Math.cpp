@@ -1,13 +1,19 @@
 #include "Fr_Math.hpp"
 
 
+bool Frost::is_even(int num)
+{ return num & 1; }
+
 uint8_t Frost::clamp_uint8_to_maximum(uint8_t num, uint8_t max)
-{ return num > max ? max : num; }
+{return num > max ? max : num; }
 
 uint16_t Frost::clamp_uint16_to_minimum(uint16_t num, uint16_t min)
 { return num < min ? min : num; }
 
 uint16_t Frost::clamp_uint16_to_maximum(uint16_t num, uint16_t max)
+{ return num > max ? max : num; }
+
+int16_t Frost::clamp_int16_to_maximum(int16_t num, int16_t max)
 { return num > max ? max : num; }
 
 uint16_t Frost::return_largest_of_uint16s(uint16_t first, uint16_t second)

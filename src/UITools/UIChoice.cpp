@@ -53,6 +53,8 @@ void UIChoice::render_hovered() const
 
 void UIChoice::render_selected() const
 {
+    m_coh.set_anchor_here();
+
     m_coh.add_str("   " + m_name + ": ");
 
     // Render choices before the cursor index.
@@ -90,7 +92,7 @@ UIItem::Status UIChoice::handle_input()
             InputHandler::block_key_until_released(SDLK_RETURN);
             return HOVERED;
 
-        // Deselect this item.
+        // Flag this UIChoice as deselected.
         case SDLK_f:
 
             InputHandler::block_key_until_released(SDLK_f);
@@ -98,16 +100,12 @@ UIItem::Status UIChoice::handle_input()
 
         case SDLK_w:    
 
-            // While these two arithmetic expression may be harder to read, it removes the 
-            // branch statement of having to check if shift is pressed. Although the downside is
-            // that both these expression will calculate each time, regardless if shift is pressed. 
-            // However, I believe the performance gain, while minimal, of removing the branch here
-            // and ensuring the CPU can cache instructions will far outweigh the perfomance loss on
-            // having to execute both expressions each time. The same applies for SDLK_s.
-
-            // If shift is pressed, set the cursor to 0.
-            m_cursor_index = 
-                m_cursor_index * !InputHandler::is_key_pressed_and_available(SDLK_LSHIFT);
+            if(InputHandler::is_key_pressed_and_available(SDLK_LSHIFT))
+            {   
+                m_cursor_index = 0;
+                InputHandler::delay_key(SDLK_w);
+                return SELECTED;
+            }
 
             // Deduct the cursor if it is not at 0.
             m_cursor_index -= (m_cursor_index != 0);
@@ -118,13 +116,14 @@ UIItem::Status UIChoice::handle_input()
 
         case SDLK_s:    
 
-            // Read above in SDLK_w about these two expressions.
-
             bool shift_pressed = InputHandler::is_key_pressed_and_available(SDLK_LSHIFT);
 
-            // If shift is pressed, set the cursor to the end of m_content.
-            m_cursor_index = (shift_pressed * (m_content.size() - 1)) 
-                + (!shift_pressed * m_cursor_index);
+            if(InputHandler::is_key_pressed_and_available(SDLK_LSHIFT))
+            {
+                m_cursor_index = m_content.size() - 1;
+                InputHandler::delay_key(SDLK_s);
+                return SELECTED;
+            }
 
             // Increment the cursor if it is not at the end of the list.
             m_cursor_index += (m_cursor_index != m_content.size() - 1);

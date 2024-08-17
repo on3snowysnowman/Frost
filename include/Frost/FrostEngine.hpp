@@ -9,8 +9,6 @@
 #include "ConsoleOutputHandler.hpp"
 #include "SpriteHandler.hpp"
 
-#include "UIChoice.hpp"
-
 class FrostEngine
 {
 
@@ -120,11 +118,4 @@ private:
 
     /** Flags the SDL_Renderer to present its buffered content. */
     void _present_SDL_renderer();
-
-
-    // DEMO
-
-    UIItem::Status status = UIItem::HOVERED;
-
-    std::string cursor_color = "Blue";
 };

@@ -1,3 +1,22 @@
+
+This file tracks specific details on what was changed each git push.
+
+
+2 : 
+
+   - Began work on UISimulationTools
+
+   - Added set_anchor_here to ConsoleOutputHandler.
+
+   - Finished UITextList, and started work on UIList.
+
+   - Added is_even to Fr_Math.
+
+   - Removed redundant block in JsonHandler::dump that created a file if it didn't exist, which is
+     done automatically anyways by std::fstream.
+
+   - Removed typo in UIChoice::m_selected_index's description.
+
 1 :
 
     - Began work on a UITextList class.

@@ -2,7 +2,7 @@
 
 #include "FrostEngine.hpp"
 
-
+#include <SDL2/SDL.h>
 class FrostTester : public FrostEngine
 {
 

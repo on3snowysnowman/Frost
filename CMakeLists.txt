@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.24)
 
 project(Frost VERSION "0.1")
 
+set(CMAKE_VERBOSE_MAKEFILE ON)
+
+
 # Enable Debug Mode
 add_compile_definitions(FROST_DEBUG)
 
@@ -28,6 +31,8 @@ add_library(Frost STATIC ${SOURCES}
 	src/UITools/UIFloatVariable.cpp
 	src/UITools/UIIntVariable.cpp
 	src/UITools/UIItem.cpp
+	src/UITools/UIList.cpp
+	src/UITools/UISimulationTools.cpp
 	src/UITools/UIStringVariable.cpp
 	src/UITools/UIText.cpp
 	src/UITools/UITextList.cpp
@@ -87,6 +92,7 @@ install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/ DESTINATION "${FROST_PATH}/Frost/
     PATTERN "old_files" EXCLUDE
     PATTERN "Demos" EXCLUDE
     PATTERN "documentation" EXCLUDE
+    PATTERN "scrapped" EXCLUDE
     PATTERN "assets" EXCLUDE
     PATTERN "Paths" EXCLUDE
     PATTERN "data" EXCLUDE
