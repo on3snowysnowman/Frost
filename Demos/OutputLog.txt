@@ -1,3 +1,0 @@
-[LOG] Debug Mode: true
-[LOG] Vsync: true
-[LOG] Fullscreen: true

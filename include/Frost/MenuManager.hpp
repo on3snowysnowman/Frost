@@ -29,7 +29,7 @@ public:
      * @param m Menu to register.
      * @param id Unique ID of the Menu.
     */
-    static void _register_menu(const Menu* m, std::string id);
+    static void _register_menu(Menu* m, const std::string& id);
 
     /** Activate a Menu.
      * 

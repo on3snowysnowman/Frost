@@ -16,7 +16,7 @@ void MenuManager::update_active_menus()
     for(Menu* m : active_menus) m->update();
 }
 
-void MenuManager::_register_menu(const Menu* m, std::string id)
+void MenuManager::_register_menu(Menu* m, const std::string& id)
 {
     all_menus->emplace(id, m);
 }

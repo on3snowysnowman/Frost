@@ -5,7 +5,7 @@
         20,
         30
     ],
-    "fullscreen": true,
+    "fullscreen": false,
     "vsync": true,
     "frame_limit": 60,
     "screen_height": 500,

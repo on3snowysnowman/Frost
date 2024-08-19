@@ -5,21 +5,20 @@
 #include "FileSystemHandler.hpp"
 #include "JsonHandler.hpp"
 #include "InputHandler.hpp"
-#include "Fr_Math.hpp"
-#include "Fr_StringManip.hpp"
-#include "Fr_StringManip.hpp"
+#include "MenuManager.hpp"
 
 #ifdef FROST_DEBUG
 #include "ProgramOutputHandler.hpp"
+#include "TimeObserver.hpp"
 
 #endif
 
 
 // Static Members
 
-int FrostEngine::s_screen_width {};
+int FrostEngine::s_screen_width;
 
-int FrostEngine::s_screen_height {};
+int FrostEngine::s_screen_height;
 
 
 // Constructors / Deconstructor
@@ -30,6 +29,8 @@ FrostEngine::FrostEngine()
 
     // Clear the ProgramOutputHandler's output file
     ProgramOutputHandler::clear_output_file();
+    ProgramOutputHandler::log("Program Started: " + TimeObserver::get_date() + " @ " + 
+        TimeObserver::get_time() + '\n');
     ProgramOutputHandler::log("Debug Mode: true\n");
     #endif
 
@@ -45,9 +46,9 @@ FrostEngine::FrostEngine()
 
 FrostEngine::~FrostEngine() 
 {
-    SDL_Quit();
     SDL_DestroyRenderer(m_renderer);
     SDL_DestroyWindow(m_window);
+    SDL_Quit();
 }
 
 
@@ -255,7 +256,7 @@ void FrostEngine::_init_SDL_and_engine()
     // Create the Renderer.
     m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED);
 
-    // Enable Vsync
+    // // Enable Vsync
     SDL_RenderSetVSync(m_renderer, 1);
 
     _set_application_icon("assets/Frost_Icon.png");
@@ -273,6 +274,8 @@ void FrostEngine::_simulation_loop_vsync()
         InputHandler::clear_raw_keys();
 
         _handle_SDL_events();
+
+        MenuManager::update_active_menus();
 
         _clear_SDL_renderer();
 
@@ -293,6 +296,8 @@ void FrostEngine::_simulation_loop_no_vsync()
         InputHandler::clear_raw_keys();
 
         _handle_SDL_events(); 
+
+        MenuManager::update_active_menus();
 
         _clear_SDL_renderer();
 

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <vector>
-#include <filesystem>
 #include <fstream>
 #include <cstdio>
 
@@ -26,13 +25,13 @@ public:
     static bool make_file(std::string file_path);
 
     /** Delete the directory and its contents at the passed path. Returns true if the directory was
-     * successfuly deleted. 
+     * successfully deleted. 
      * 
      * @param directory_path Path to the directory to delete. 
      * */
     static bool delete_directory(std::string directory_path);
 
-    /** Delete the file at the passed path. Returns true if the file was successfuly deleted.
+    /** Delete the file at the passed path. Returns true if the file was successfully deleted.
      * 
      * @param file_path Path to the file to delete.
      */

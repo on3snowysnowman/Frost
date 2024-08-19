@@ -1,9 +1,9 @@
 
 Write UITools
 Write a Random class.
+Write an Event System
 Add an ECS?
-Add a SceneManager
+Add a SceneManager?
 
-Reconfigure FileSystem & TextFile Handlers to use universal OS libraries.
 Reconfigure ConsoleOutputHandler rendering?
 Add functionality for UITool Items to be able to move the cursor when editing any text.

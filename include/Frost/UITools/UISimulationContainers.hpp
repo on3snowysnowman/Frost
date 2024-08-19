@@ -12,39 +12,94 @@
 #pragma once
 
 
-#include <array>
+#include <vector>
 #include <initializer_list>
+#include <string>
 
 #include "ColorString.hpp"
+#include "UIItem.hpp"
+#include "ConsoleOutputHandler.hpp"
 
 
-/** Pure storage struct. Stores data that UISimulationTools::UISimulateSelelection processes. */
-template<std::size_t N>
-struct UISelectionContainer
+/**
+ * Stores data that UISimulationTools::simulate_UI_selection uses to simulate
+ * a selection interface. */
+class UISelectionContainer
 {
+
+public:
 
     UISelectionContainer() {}
 
-    UISelectionContainer(std::initializer_list<ColorString> _content)
+    UISelectionContainer(ConsoleOutputHandler& _coh, std::initializer_list<ColorString> _content)
     {
-        for(int i = 0; i < _content.size(); ++i)
+        coh = &_coh;
+
+        for(const ColorString& str : _content)
         {
-            content.at(i) = std::move(_content.at(i));
+            content.push_back(std::move(str));
         }
     }
 
-    // If an item has been selected during simulation.
-    bool item_is_selected = false;
+    /** Resets the selected_index and cursor_index to their default position.  */
+    void reset() 
+    {
+        cursor_index = 0;
+        selected_index = -1;
+    }
+
+    // Index of the cursor inside content.
+    int16_t cursor_index {};
+
+    /**
+     * Index of the selected item inside content. If this value is -1, this specifies there is no 
+     * item selected. */
+    int16_t selected_index = -1;
+
+    // Pointer to the string that determines the cursor color.
+    std::string* cursor_color; 
 
     // The choices that can be selected during simulation.
-    std::array<ColorString, N> content;
+    std::vector<ColorString> content;
 
-    // Position of the cursor inside content.
-    int16_t cursor_position {};
+    ConsoleOutputHandler* coh;
 };
 
-/** Pure storage struct. Stoes data that UISimulationTools::UISimulateMenu processes. */
-struct UISimulationContainer
+/** Stores data that UISimulationTools::simulate_UI_panel uses to simulate a 
+ * menu interface. */
+class UIPanelContainer
 {
 
+public:
+
+    UIPanelContainer() {}
+
+    UIPanelContainer(ConsoleOutputHandler& _coh)
+    {
+        coh = &_coh;
+    }
+
+    /** Resets the selected_index and cursor_index to their default position.  */
+    void reset() 
+    {
+        cursor_index = 0;
+        selected_index = -1;
+    }
+
+
+    // Index of the cursor inside content.
+    int16_t cursor_index {};
+
+    /**
+     * Index of the selected item inside content. If this value is -1, this specifies there is no 
+     * item selected. */
+    int16_t selected_index = -1;
+
+    // Pointer to the string that determines the cursor color.
+    std::string* cursor_color; 
+
+    // The UIItems that are used to simulate the menu in UISimulationTools::UISimulateMenu.
+    std::vector<UIItem*> content;
+
+    ConsoleOutputHandler* coh;
 };

@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "ConsoleOutputHandler.hpp"
 #include "Fr_Math.hpp"
 

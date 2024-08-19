@@ -38,12 +38,9 @@ SpriteHandler::SpriteHandler(TextureHandler* texture_handler)
 
 // Public
 
-
-#include <iostream>
-
 void SpriteHandler::render()
 {
-    for(const sprite_id id : *m_sprites_to_render)
+    for(const sprite_id& id : *m_sprites_to_render)
     {
         Sprite& sprite = s_all_sprites->at(id);
 
@@ -234,10 +231,8 @@ void SpriteHandler::_remove_texture_dependency(SDL_Texture* texture)
 
 void SpriteHandler::_place_id_in_rendering_ids(const sprite_id id)
 {
-    // const std::vector<sprite_id>
-
     // Find the position in the sorted vector where this ID should be placed.
-
+    
     const std::vector<sprite_id>::const_iterator it = 
         std::lower_bound(m_sprites_to_render->begin(), m_sprites_to_render->end(), id);
 

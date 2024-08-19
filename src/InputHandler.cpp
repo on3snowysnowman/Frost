@@ -3,7 +3,6 @@
 #include "InputHandler.hpp"
 #include "Fr_IntLimits.hpp"
 
-
 // Static Members
 
 std::vector<int32_t> InputHandler::s_raw_pressed_keys;
@@ -98,10 +97,13 @@ bool InputHandler::_check_and_handle_key_delay(int32_t key)
     // this method is called.
 
     // If the delayed timestamp is greater than the current timestamp.
-    if(s_delayed_keys.at(key) > SDL_GetTicks64()) return false;
+    if(s_delayed_keys.at(key) > SDL_GetTicks64())
+    {
+        return false;
+    }
 
-    // The current timestamp has passed the delayed timestamp, therefore this key is available.
-    
     // Remove the key from the delayed keys, since it is no longer delayed.
     s_delayed_keys.erase(key);
+
+    return true;
 }

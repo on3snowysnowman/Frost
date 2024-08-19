@@ -1,4 +1,5 @@
 #include "JsonHandler.hpp"
+#include "FileSystemHandler.hpp"
 
 #ifdef FROST_DEBUG
 

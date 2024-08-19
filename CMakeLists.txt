@@ -20,6 +20,7 @@ add_library(Frost STATIC ${SOURCES}
     src/InputHandler.cpp
     src/JsonHandler.cpp
     src/Menu.cpp
+    src/MenuManager.cpp
     src/ProgramOutputHandler.cpp
     src/SpriteHandler.cpp
 	src/TextFileHandler.cpp
@@ -82,21 +83,4 @@ file(READ "Paths/Frost_Path.txt" FROST_PATH)
 
 install(TARGETS Frost ARCHIVE DESTINATION "${FROST_PATH}/Frost/lib")
 
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/ DESTINATION "${FROST_PATH}/Frost/"
-    PATTERN "build" EXCLUDE
-    PATTERN "src" EXCLUDE
-    PATTERN ".vscode" EXCLUDE
-    PATTERN ".git" EXCLUDE
-    PATTERN ".gitignore" EXCLUDE
-    PATTERN ".vscode" EXCLUDE
-    PATTERN "old_files" EXCLUDE
-    PATTERN "Demos" EXCLUDE
-    PATTERN "documentation" EXCLUDE
-    PATTERN "scrapped" EXCLUDE
-    PATTERN "assets" EXCLUDE
-    PATTERN "Paths" EXCLUDE
-    PATTERN "data" EXCLUDE
-    PATTERN "*.exe" EXCLUDE
-    PATTERN "*.txt" EXCLUDE
-    PATTERN "*.cpp" EXCLUDE
-    PATTERN "*.bat" EXCLUDE)
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/Frost DESTINATION "${FROST_PATH}/Frost/include")

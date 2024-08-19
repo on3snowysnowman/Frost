@@ -92,7 +92,10 @@ void UIList::render_selected() const
     }
 }
 
-UIItem::Status handle_input() {}
+UIItem::Status UIList::handle_input() 
+{
+    return SELECTED;
+}
 
 
 // Private

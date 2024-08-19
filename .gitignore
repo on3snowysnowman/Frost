@@ -1,6 +1,8 @@
 
 build
-demos/build_demo
+Demos/build_demo
+Demos/OutputLog.txt
 .vscode
 Paths
 *.exe
+.cache

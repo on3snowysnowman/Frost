@@ -5,9 +5,9 @@ project(Frost_Demos)
 
 # Path to the Frost Library on disk. This should be the same path as the one specified in the 
 # "Frost_Path.txt" file.
-set(FROST_PATH C:/Users/on3sn/Frost)
+set(FROST_PATH /home/joel/Tools/Frost)
 
-# Finds the Frost library on disk, this line does not need to be modified.  
+# Finds the Frost library on disk.
 find_library(FROST_LIB NAMES Frost PATHS "${FROST_PATH}/lib")
 
 # Finds the required packages for Frost. nlohmann::json was found during the installation process

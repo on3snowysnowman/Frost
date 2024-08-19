@@ -35,12 +35,16 @@ protected:
     void _quit();
 
     /** Sets the icon of the application window to a new png at the passed path. Returns true
-     * if the png was sucessfuly set.
+     * if the png was successfully set.
      * 
      * @param path_to_png Path to the new png.
      */
     bool _set_application_icon(std::string path_to_png);
-
+    
+    TextureHandler m_texture_handler;
+    TextRenderingHandler m_text_ren_handler;
+    ConsoleOutputHandler m_coh;
+    SpriteHandler m_sprite_handler;
 
 private:
 
@@ -75,11 +79,6 @@ private:
 
     // Path to the extended colors data file.
     const std::string m_EXTENDED_COLOR_PATH = "data/init/extended_colors.json";
-
-    TextureHandler m_texture_handler;
-    TextRenderingHandler m_text_ren_handler;
-    ConsoleOutputHandler m_coh;
-    SpriteHandler m_sprite_handler;
 
     SDL_Event m_event; // Instance of the SDL_Event.
 
