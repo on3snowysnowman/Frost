@@ -25,7 +25,7 @@ public:
      * @param key Key to delay.
      * @param miliseconds Number of miliseconds.
      */
-    static void delay_key(Key key, uint16_t miliseconds = 200);
+    static void delay_key(Key key, uint16_t miliseconds = 160);
 
     /** Blocks a key from being available until it is released and pressed again. */
     static void block_key_until_released(Key key);

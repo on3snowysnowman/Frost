@@ -1,33 +1,33 @@
-
 cmake_minimum_required(VERSION 3.24)
 
 project(Frost_Demos)
 
-# Path to the Frost Library on disk. This should be the same path as the one specified in the 
-# "Frost_Path.txt" file.
-set(FROST_PATH /home/joel/Tools/Frost)
+# Set the paths for the lib and include files of the Frost Engine.
+set(FROST_LIB_PATH /usr/lib)
+set(FROST_INCLUDE_PATH /usr/include/Frost)
 
 # Finds the Frost library on disk.
-find_library(FROST_LIB NAMES Frost PATHS "${FROST_PATH}/lib")
+find_library(FROST_LIB NAMES Frost PATHS "${FROST_LIB_PATH}")
 
 # Finds the required packages for Frost. nlohmann::json was found during the installation process
 # since it is a purely header library.
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
 
-add_executable(Generic_Tester generic_tester.cpp)
+add_executable(Demo demo.cpp)
 
-set_target_properties(Generic_Tester PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR})
+set_target_properties(Demo PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR})
 
-target_include_directories(Generic_Tester
+target_include_directories(Demo
 PUBLIC
-    ${FROST_PATH}/include/Frost
-    ${FROST_PATH}/include/Frost/UITools
+    ${FROST_INCLUDE_PATH}
+    ${FROST_INCLUDE_PATH}/UITools
 )
 
-target_link_libraries(Generic_Tester
+target_link_libraries(Demo
 PRIVATE
     ${FROST_LIB}
     SDL2::SDL2
     SDL2_image
 )
+

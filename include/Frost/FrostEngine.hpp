@@ -9,6 +9,8 @@
 #include "ConsoleOutputHandler.hpp"
 #include "SpriteHandler.hpp"
 
+
+/** Frost Engine by Joel Height. Version 0.2. */
 class FrostEngine
 {
 

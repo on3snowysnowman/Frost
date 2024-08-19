@@ -114,8 +114,11 @@ public:
     /** Renders the content buffered this frame, and resets the cursor's position to the top left. */
     void render();
 
-    /** Returns the focus.  */
+    /** Returns the focus. */
     uint16_t get_focus() const;
+
+    /** Returns the anchor. */
+    uint16_t get_anchor() const;
 
     // Returns a const reference to the cursor's position.
     const std::pair<uint16_t, uint16_t>& get_cursor_position() const;

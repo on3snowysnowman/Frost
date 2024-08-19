@@ -28,6 +28,8 @@ UITextList::UITextList(ConsoleOutputHandler& coh, std::string& cursor_color, std
         m_content.push_back(std::move(str));
     }
 
+    m_content.push_back(std::string{"Add Text"});
+
     Frost::clamp_int16_to_maximum(m_cursor_index, m_content.size());
     Frost::clamp_int16_to_maximum(m_selected_index, m_content.size());
 
@@ -51,6 +53,9 @@ void UITextList::render_hovered() const
 
 void UITextList::render_selected() const 
 {
+    // Save the anchor so it can be restored after this method is finished.
+    uint16_t previous_anchor = m_coh.get_anchor();
+
     m_coh.set_anchor_here();
 
     m_coh.add_str("   " + m_name + ":");
@@ -66,14 +71,14 @@ void UITextList::render_selected() const
     {
         // Render this text item as selected.
         
-        m_coh.add_str("    > " + m_content.at(m_selected_index), m_cursor_color);
+        m_coh.add_str("\n    > " + m_content.at(m_cursor_index), m_cursor_color);
     }
 
     // This Text is only hovered.
     else
     {
-        m_coh.add_str("    > ", m_cursor_color);
-        m_coh.add_str(m_content.at(m_selected_index));
+        m_coh.add_str("\n    > ", m_cursor_color);
+        m_coh.add_str(m_content.at(m_cursor_index));
     }
 
     // Render Text after the cursor's index.
@@ -81,6 +86,9 @@ void UITextList::render_selected() const
     {
         m_coh.add_str("\n      " + m_content.at(i));
     }
+
+    // Reset anchor to what it originally was before this method.
+    m_coh.set_anchor(previous_anchor);
 }
 
 UIItem::Status UITextList::handle_input() 
@@ -105,6 +113,10 @@ UIItem::Status UITextList::handle_input()
 
     // Nothing is selected.
 
+    const std::vector<Key>& keys = InputHandler::get_pressed_and_available_keys();
+
+    if(keys.size() == 0) return SELECTED;
+
     // Handle the first registered key that is pressed.
     switch(InputHandler::get_pressed_and_available_keys().at(0))
     {
@@ -115,7 +127,7 @@ UIItem::Status UITextList::handle_input()
             // If the "Add Text" button was selected
             if(m_cursor_index == m_content.size() - 1)
             {
-                m_content.push_back("Text");
+                m_content.insert(m_content.begin() + m_cursor_index, "Text");
                 ++m_cursor_index;
                 return SELECTED;
             }
@@ -133,29 +145,34 @@ UIItem::Status UITextList::handle_input()
 
         case SDLK_BACKSPACE:    
 
+            InputHandler::block_key_until_released(SDLK_BACKSPACE);
+
             // If the attempted deleted item is the "Add Text" button.
             if(m_cursor_index == m_content.size() - 1) return SELECTED;
 
             // Erase the item at the cursor's position.
             m_content.erase(m_content.begin() + m_cursor_index);
 
+            m_cursor_index -= m_cursor_index != 0;
+
             return SELECTED;
 
         case SDLK_w:
 
+            InputHandler::delay_key(SDLK_w);
+
             m_cursor_index -= m_cursor_index != 0;
 
-            break;
+            return SELECTED;;
 
         case SDLK_s:
 
-            m_cursor_index -= m_cursor_index != m_content.size() - 1;
+            InputHandler::delay_key(SDLK_s);
 
-            break;
+            m_cursor_index += m_cursor_index != m_content.size() - 1;
+
+            return SELECTED;;
     }
+
+    return SELECTED;
 }
-
-
-// Private
-
-

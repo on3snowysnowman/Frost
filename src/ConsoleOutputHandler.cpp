@@ -214,6 +214,8 @@ void ConsoleOutputHandler::render()
 
 uint16_t ConsoleOutputHandler::get_focus() const { return m_focus; }
 
+uint16_t ConsoleOutputHandler::get_anchor() const { return m_anchor; }
+
 const std::pair<uint16_t, uint16_t>& ConsoleOutputHandler::get_cursor_position() const
 { return m_cursor_position; }
 

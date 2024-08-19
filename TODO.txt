@@ -1,9 +1,9 @@
 
-Write UITools
-Write a Random class.
 Write an Event System
 Add an ECS?
 Add a SceneManager?
 
+Reconfigure InputHandler such that it only calculates all available keys once per frame.
+Reconfigure TextRenderingHandler to use SDL_ttf fonts.
 Reconfigure ConsoleOutputHandler rendering?
 Add functionality for UITool Items to be able to move the cursor when editing any text.

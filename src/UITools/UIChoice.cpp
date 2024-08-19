@@ -53,6 +53,9 @@ void UIChoice::render_hovered() const
 
 void UIChoice::render_selected() const
 {
+    // Save the anchor so it can be restored after this method is finished.
+    uint16_t previous_anchor = m_coh.get_anchor();
+
     m_coh.set_anchor_here();
 
     m_coh.add_str("   " + m_name + ": ");
@@ -72,6 +75,9 @@ void UIChoice::render_selected() const
     {
         m_coh.add_str("\n      " + m_content.at(i).content, m_content.at(i).color);
     }
+
+    // Reset anchor to what it originally was before this method.
+    m_coh.set_anchor(previous_anchor);
 }
 
 void UIChoice::add_choice(ColorString& new_choice) { m_content.push_back(std::move(new_choice)); }

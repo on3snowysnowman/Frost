@@ -1,6 +1,18 @@
 
 This file tracks specific details on what was changed each git push.
 
+
+4 :
+
+   - Added a FrostRandom class under Fr_Random for getting random numbers.
+
+   - Added get_anchor() method to ConsoleOutputHandler.
+
+   - Reconfigured the way cmake installs to the disk and handles building.
+
+   - Added UIButton. UISimulation should now be fully functional.
+
+
 3 :
    
    - Finished UISimulationTools.
@@ -12,7 +24,7 @@ This file tracks specific details on what was changed each git push.
 
 2 : 
 
-   - Began work on UISimulationTools
+   - Began work on UISimulationTools.
 
    - Added set_anchor_here to ConsoleOutputHandler.
 
@@ -36,6 +48,6 @@ This file tracks specific details on what was changed each git push.
       UIVariable, since now there is a class for each specific type.
 
 0 : 
-    - Added GitLog.txt
+    - Added GitLog.txt.
     - Finished UIVariable. 
-    - Added a new method for handling ctrl-backspace behavior in Fr_StringManip
+    - Added a new method for handling ctrl-backspace behavior in Fr_StringManip.

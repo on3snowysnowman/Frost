@@ -1,0 +1,3 @@
+/usr/lib
+/usr/include
+/home/joel/Documents/Code/Frost/Demos

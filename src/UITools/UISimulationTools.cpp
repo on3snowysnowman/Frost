@@ -106,7 +106,7 @@ void Frost::simulate_UI_panel(UIPanelContainer& data)
     // Input Handling 
 
     // An item is selected
-    if(data.selected_index != -1)
+    if(data.selected_index > -1)
     {
         // Flag the selected item to handle input, and process the return status. If the return 
         // status is HOVERED, this item is no longer selected.
@@ -161,7 +161,5 @@ void Frost::simulate_UI_panel(UIPanelContainer& data)
 
             // Add 1 to the cursor index if it is not at the end of the content.
             data.cursor_index += data.cursor_index != data.content.size() - 1; 
-
-
     }
 }
