@@ -15,6 +15,8 @@
  #include <random>
 
 
+/** Static class that provides useful functions for generating psuedo random numbers. Internal 
+ * generator can be seeded using the $seed method for reproducing output. */
 class FrostRandom
 {
 

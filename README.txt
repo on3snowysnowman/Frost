@@ -40,10 +40,9 @@ handling events such as keyboard presses.
     SETUP:
 
         Frost requires two dependencies to be installed on your pc, and available to the compiler. 
-    These two dependencies are SDL2 (Simple Direct Media Library) and nlohmann::json. I recommend
-    using a package manager like pacman in MSYS to install these packages. 
+    These two dependencies are SDL2 (Simple Direct Media Library) and nlohmann::json.
 
-        The first step to the setting up Frost is to install it to your system. Frost installs as a
+        The first step to setting up Frost is to install it to your system. Frost installs as a
     statically linked library that your program will link to on compile. To specify where Frost 
     should install on your computer, navigate to the "Paths" directory. In here, you will find two
     files: 

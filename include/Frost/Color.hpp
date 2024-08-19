@@ -13,7 +13,7 @@ struct Color
         r = _r;
         g = _g;
         b = _b;
-        name = std::move(name);
+        name = std::move(_name);
     }
 
     uint8_t r;

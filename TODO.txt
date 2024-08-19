@@ -7,3 +7,4 @@ Reconfigure InputHandler such that it only calculates all available keys once pe
 Reconfigure TextRenderingHandler to use SDL_ttf fonts.
 Reconfigure ConsoleOutputHandler rendering?
 Add functionality for UITool Items to be able to move the cursor when editing any text.
+Finish README.txt and other documentation.

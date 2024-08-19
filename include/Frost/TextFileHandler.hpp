@@ -14,7 +14,7 @@ namespace Frost
 };
 
 
-/** @brief Handles writing to and fetching from txt files.
+/** @brief Static class that handles writing to and fetching from txt files.
  * 
  * The TextFileHandler uses a buffering system for text, to remove the possibily of a file being
  * opened and closed many times per frame if many strings are added invidividually. When the 

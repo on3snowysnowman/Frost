@@ -1,6 +1,15 @@
 
 This file tracks specific details on what was changed each git push.
 
+5 :
+
+   - Fixed typos in README.txt
+
+   - Fixed bug in color constructor when initializing color name. 
+
+   - Added documentation for FrostRandom.
+
+   - Updated documentation for TextFileHandler.hpp
 
 4 :
 
