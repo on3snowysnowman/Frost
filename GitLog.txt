@@ -1,6 +1,14 @@
 
 This file tracks specific details on what was changed each git push.
 
+3 :
+   
+   - Finished UISimulationTools.
+
+   - Created a shell script for automatic building on arch linux.
+
+   - Fixed bug in MenuManager where a wierd issue was happening with a const Menu*.
+
 
 2 : 
 
