@@ -112,7 +112,7 @@ std::string TextFileHandler::fetch(std::string file_path)
             + file_path + "\", returning nullptr.", Frost::WARN);
         #endif
 
-        return nullptr;
+        return std::string {};
     }
 
     s_input_stream.open(file_path);
@@ -126,7 +126,7 @@ std::string TextFileHandler::fetch(std::string file_path)
             + file_path + "\", returning nullptr.", Frost::WARN);
         #endif
 
-        return nullptr;
+        return std::string {};
     }
 
     // Get the underlying data stream and read it into the stringstream.

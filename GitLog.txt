@@ -4,7 +4,8 @@ This file tracks specific details on what was changed each git push.
 
 7 :
 
-   - Fixed documentation of TextFileHandler::fetch().
+   - Fixed documentation of TextFileHandler::fetch(), along with a invalid nullptr return in its 
+     implementation.
 
 6 :
 
