@@ -61,5 +61,5 @@ private:
     static std::list<Menu*> active_menus;
 
     // All Menus that are tracked by the MenuManager. Menu's IDs are used as the key.
-    static std::unordered_map<std::string, Menu*>* all_menus;
+    static std::unordered_map<std::string, Menu*> all_menus;
 };

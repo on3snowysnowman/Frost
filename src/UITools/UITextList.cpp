@@ -71,7 +71,7 @@ void UITextList::render_selected() const
     {
         // Render this text item as selected.
         
-        m_coh.add_str("\n    > " + m_content.at(m_cursor_index), m_cursor_color);
+        m_coh.add_str("\n    > " + m_content.at(m_cursor_index) + '_', m_cursor_color);
     }
 
     // This Text is only hovered.

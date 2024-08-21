@@ -89,6 +89,6 @@ private:
     static std::unordered_set<Key> s_pressed_keys;
 
     // Keys that have been assigned a delay.
-    static std::unordered_map<Key, uint64_t> s_delayed_keys;
+    static std::unordered_map<Key, uint32_t> s_delayed_keys;
 
 };

@@ -1,7 +1,6 @@
 
-Write an Event System
-Add an ECS?
-Add a SceneManager?
+Fix bug in InputHandler where when the program runs for "long enough?" the block key method does
+   not function anymore.
 
 Reconfigure InputHandler such that it only calculates all available keys once per frame.
 Reconfigure TextRenderingHandler to use SDL_ttf fonts?

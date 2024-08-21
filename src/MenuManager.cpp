@@ -5,8 +5,7 @@
 
 std::list<Menu*> MenuManager::active_menus;
 
-std::unordered_map<std::string, Menu*>* MenuManager::all_menus =
-    new std::unordered_map<std::string, Menu*>;
+std::unordered_map<std::string, Menu*> MenuManager::all_menus;
 
 
 // Public
@@ -18,12 +17,12 @@ void MenuManager::update_active_menus()
 
 void MenuManager::_register_menu(Menu* m, const std::string& id)
 {
-    all_menus->emplace(id, m);
+    all_menus.emplace(id, m);
 }
 
 void MenuManager::activate_menu(Menu* m) { active_menus.push_back(m); }
 
-void MenuManager::activate_menu(std::string id) { activate_menu(all_menus->at(id)); }
+void MenuManager::activate_menu(std::string id) { activate_menu(all_menus.at(id)); }
 
 void MenuManager::deactivate_menu(const Menu* m)
 {
@@ -40,7 +39,7 @@ void MenuManager::deactivate_menu(const Menu* m)
     }
 }
 
-void MenuManager::deactivate_menu(std::string id) { deactivate_menu(all_menus->at(id)); }
+void MenuManager::deactivate_menu(std::string id) { deactivate_menu(all_menus.at(id)); }
 
 
 // Private

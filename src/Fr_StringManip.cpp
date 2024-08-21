@@ -91,8 +91,6 @@ void Frost::handle_input_for_string_manipulation(std::string& str)
 
     // Shift is not pressed.
 
-    int index = 0;
-
     for(int32_t key : InputHandler::get_raw_pressed_keys())
     {
         switch(key)

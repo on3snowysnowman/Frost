@@ -22,7 +22,7 @@ UIFloatVariable::UIFloatVariable(ConsoleOutputHandler& coh, std::string& cursor_
 {
     m_name = name;
     m_content = content;
-    m_default_content = content;
+    m_default_content = default_content;
 
     _check_default_content_on_init();
     _check_content_on_init();

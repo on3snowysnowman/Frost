@@ -6,38 +6,13 @@ project(Frost VERSION "0.2")
 # Enable Degug Mode 
 add_compile_definitions(FROST_DEBUG)
 
-# Create static library
-add_library(Frost STATIC 
-    src/ConsoleOutputHandler.cpp
-    src/FileSystemHandler.cpp
-    src/Fr_Math.cpp
-    src/Fr_Random.cpp
-    src/Fr_StringManip.cpp
-	src/Fr_StringManip.cpp
-	src/FrostEngine.cpp
-    src/InputHandler.cpp
-    src/JsonHandler.cpp
-    src/Menu.cpp
-    src/MenuManager.cpp
-    src/ProgramOutputHandler.cpp
-    src/SpriteHandler.cpp
-	src/TextFileHandler.cpp
-    src/TextRenderingHandler.cpp
-    src/TextureHandler.cpp
-	src/TimeObserver.cpp
-	src/UITools/UIChoice.cpp
-	src/UITools/UIDisplayTools.cpp
-	src/UITools/UIFloatVariable.cpp
-	src/UITools/UIIntVariable.cpp
-	src/UITools/UIItem.cpp
-	src/UITools/UIList.cpp
-	src/UITools/UISimulationTools.cpp
-	src/UITools/UIStringVariable.cpp
-	src/UITools/UIText.cpp
-	src/UITools/UITextList.cpp
-)
+# Collect all .cpp files in the source directory and subdirectories (recursive)
+file(GLOB_RECURSE SOURCES "src/*.cpp")
 
-target_include_directories(Frost
+# Create static library and link it with the sources.
+add_library(${PROJECT_NAME} STATIC ${SOURCES})
+
+target_include_directories(${PROJECT_NAME}
     PUBLIC
         ${CMAKE_SOURCE_DIR}/include/Frost
         ${CMAKE_SOURCE_DIR}/include/Frost/UITools
@@ -49,11 +24,15 @@ find_package(SDL2_image REQUIRED)
 find_package(nlohmann_json REQUIRED)
 
 # Link Libraries
-target_link_libraries(Frost
+target_link_libraries(${PROJECT_NAME}
     PUBLIC
         SDL2::SDL2
         SDL2_image
 )
+
+target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic)
+
+target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
 
 # Fetch content of path file
 file(READ "TargetPaths.txt" PATH_FILE_CONTENTS)
@@ -71,7 +50,7 @@ message(STATUS "Target Include Path:" ${TARGET_INCLUDE_PATH})
 message(STATUS "Target Data/Assets Path:" ${TARGET_DATA_ASSETS_PATH})
 
 # Install each component to their target directory.
-install(TARGETS Frost ARCHIVE DESTINATION ${TARGET_LIB_PATH})
+install(TARGETS ${PROJECT_NAME} ARCHIVE DESTINATION ${TARGET_LIB_PATH})
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/Frost DESTINATION ${TARGET_INCLUDE_PATH})
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/data DESTINATION ${TARGET_DATA_ASSETS_PATH})
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/assets DESTINATION ${TARGET_DATA_ASSETS_PATH})

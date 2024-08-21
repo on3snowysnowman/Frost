@@ -6,6 +6,7 @@
 #include "JsonHandler.hpp"
 #include "InputHandler.hpp"
 #include "MenuManager.hpp"
+#include "EventSystem.hpp"
 
 #ifdef FROST_DEBUG
 #include "ProgramOutputHandler.hpp"
@@ -42,6 +43,8 @@ FrostEngine::FrostEngine()
 
     m_coh = ConsoleOutputHandler(&m_texture_handler, 0, 0, s_screen_width, s_screen_height);
     m_sprite_handler = SpriteHandler(&m_texture_handler);
+
+    EventSystem::subscribe<FrostEngine>("QUIT_SIMULATION", this, &FrostEngine::_quit);
 }
 
 FrostEngine::~FrostEngine() 
@@ -72,7 +75,17 @@ int FrostEngine::get_screen_height() { return s_screen_height; }
 
 // Protected
 
-void FrostEngine::_quit() { m_is_active = false; }
+void FrostEngine::_quit() 
+{ 
+    #ifdef FROST_DEBUG
+
+    ProgramOutputHandler::log("Terminated Engine: " + TimeObserver::get_date() + " @ " + 
+        TimeObserver::get_time() + '\n');
+    #endif
+    
+    m_is_active = false; 
+    
+}
 
 bool FrostEngine::_set_application_icon(std::string path_to_png)
 {
@@ -274,6 +287,8 @@ void FrostEngine::_simulation_loop_vsync()
         InputHandler::clear_raw_keys();
 
         _handle_SDL_events();
+
+        if(InputHandler::is_key_pressed(SDLK_ESCAPE)) EventSystem::invoke_event("QUIT_SIMULATION");
 
         MenuManager::update_active_menus();
 

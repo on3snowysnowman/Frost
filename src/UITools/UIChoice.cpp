@@ -13,11 +13,6 @@
 #include "Fr_Math.hpp"
 #include "InputHandler.hpp"
 
-#ifdef FROST_DEBUG
-
-#include "ProgramOutputHandler.hpp"
-#endif
-
 
 // Constructors / Deconstructor
 
@@ -121,8 +116,6 @@ UIItem::Status UIChoice::handle_input()
             return SELECTED;
 
         case SDLK_s:    
-
-            bool shift_pressed = InputHandler::is_key_pressed_and_available(SDLK_LSHIFT);
 
             if(InputHandler::is_key_pressed_and_available(SDLK_LSHIFT))
             {

@@ -109,7 +109,7 @@ std::string TextFileHandler::fetch(std::string file_path)
         #ifdef FROST_DEBUG
 
         ProgramOutputHandler::log("TextFileHandler.fetch() -> Directory doesn't exist: \""
-            + file_path + "\", returning nullptr.", Frost::WARN);
+            + file_path + "\", returning empty string.", Frost::WARN);
         #endif
 
         return std::string {};
@@ -123,7 +123,7 @@ std::string TextFileHandler::fetch(std::string file_path)
         #ifdef FROST_DEBUG
         
         ProgramOutputHandler::log("TextFileHandler.fetch() -> Failed to open file: \""
-            + file_path + "\", returning nullptr.", Frost::WARN);
+            + file_path + "\", empty string.", Frost::WARN);
         #endif
 
         return std::string {};
@@ -139,5 +139,5 @@ std::string TextFileHandler::fetch(std::string file_path)
 
     s_input_stream.close();
 
-    return std::move(s_fetched_content);
+    return s_fetched_content;
 }

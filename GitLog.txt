@@ -2,6 +2,22 @@
 This file tracks specific details on what was changed each git push.
 
 
+8:
+
+   - Began work on a Tilemap architecture. 
+
+   - Fixed issue with UIDisplayTools meter methods not properly calculating meter numbers.
+
+   - Removed some unused variables.
+
+   - Removed several redundant allocations of vector and unordered_map on the heap. 
+
+   - Began work on an EventSystem
+
+   - Configured cmake to automatically find and compile src files rather than directly declaring 
+     them.
+
+
 7 :
 
    - Fixed documentation of TextFileHandler::fetch(), along with a invalid nullptr return in its 

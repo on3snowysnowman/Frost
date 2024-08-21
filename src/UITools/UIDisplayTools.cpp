@@ -27,11 +27,14 @@ void Frost::display_colored_int(ConsoleOutputHandler& coh, int num, int min, int
 void Frost::display_single_color_meter(ConsoleOutputHandler& coh, int num, int min, 
     int max, const std::string color)
 {
+
+    int num_meter_bars = ((num - min) / (1.0 * (max - min)) * 10);
+
     coh.add_str(std::to_string(num) + " [");
 
-    for(int i = 0; i < num; ++i) coh.add_ch('/', color);
+    for(int i = 0; i < num_meter_bars; ++i) coh.add_ch('/', color);
     
-    for(int i = num; i < 10; ++i) coh.add_ch('/');
+    for(int i = num_meter_bars; i < 10; ++i) coh.add_ch('/');
 
     coh.add_str("] " + std::to_string(max));
 }
@@ -42,11 +45,13 @@ void Frost::display_multi_color_meter(ConsoleOutputHandler& coh, int num, int mi
     const std::string& TARG_COLOR = color_distribution.at(
     Frost::get_ratio_of_range(num, min, max, color_distribution.size()));
 
+    int num_meter_bars = ((num - min) / (1.0 * (max - min)) * 10);
+
     coh.add_str(std::to_string(num) + " [");
 
-    for(int i = 0; i < num; ++i) coh.add_ch('/', TARG_COLOR);
+    for(int i = 0; i < num_meter_bars; ++i) coh.add_ch('/', TARG_COLOR);
     
-    for(int i = num; i < 10; ++i) coh.add_ch('/');
+    for(int i = num_meter_bars; i < 10; ++i) coh.add_ch('/');
 
     coh.add_str("] " + std::to_string(max));
 }

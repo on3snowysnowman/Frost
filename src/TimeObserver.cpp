@@ -19,7 +19,7 @@ std::string TimeObserver::get_date()
 
     s_out_str_stream << std::put_time(std::localtime(&time), "%y-%m-%d");
 
-    return std::move(s_out_str_stream.str());
+    return s_out_str_stream.str();
 }
 
 std::string TimeObserver::get_time() 
@@ -30,7 +30,7 @@ std::string TimeObserver::get_time()
 
     s_out_str_stream << std::put_time(std::localtime(&time), "%I:%M:%S %p");
 
-    return std::move(s_out_str_stream.str());
+    return s_out_str_stream.str();
 }
 
 

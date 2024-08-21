@@ -4,8 +4,7 @@
 // Constructors / Deconstructor
 
 UIItem::UIItem(ConsoleOutputHandler& coh, std::string& cursor_color, 
-    std::string item_type) : m_ITEM_TYPE(item_type), m_coh(coh), 
-    m_cursor_color(cursor_color) {}
+    std::string item_type) : m_ITEM_TYPE(item_type), m_cursor_color(cursor_color), m_coh(coh) {}
 
 
 // Public
