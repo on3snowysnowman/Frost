@@ -1,6 +1,18 @@
 
 This file tracks specific details on what was changed each git push.
 
+
+6 :
+
+   - Reconfigured text font files to use ints to resemble characters rather than strings, also 
+     reconfigured the way TextRenderingHandler reads them.
+
+   - Added a new font, "Other_Font". Most likely will become the default one, looks much nicer
+     than my custom made one. 
+
+   - Changed the default vertical space modifier for the ConsoleOutputHandler to be 1.0f, since
+     the new font supplies space vertically between characters.
+
 5 :
 
    - Fixed typos in README.txt

@@ -124,7 +124,7 @@ SDL_Texture* TextureHandler::create_texture(std::string png_path) const
             + png_path + "\" does not exist.", Frost::ERR);
         #endif
 
-        exit(0);
+        exit(1);
     }
 
     SDL_Surface* temp_surface = IMG_Load(png_path.c_str());

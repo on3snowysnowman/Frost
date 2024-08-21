@@ -106,7 +106,7 @@ private:
     // Members
 
     // Path to the active font's data file. 
-    std::string m_font_data_path = "data/Frost_font_data.json"; 
+    std::string m_font_data_path = "data/Other_font_data.json"; 
 
     uint8_t m_font_width; // Width of each character in the active font in pixels.
     uint8_t m_font_height; // Height of each character in the active font in pixels.
@@ -120,7 +120,7 @@ private:
     std::queue<QueuedCharacter> m_queued_characters;
 
     // Character symbols to their source positions inside the font texture.
-    std::unordered_map<char, std::pair<uint8_t, uint8_t>> m_char_source_positions;
+    std::unordered_map<char, std::pair<uint16_t, uint16_t>> m_char_source_positions;
 
     SDL_Texture* m_font_texture; // Full texture of the font, contains all the characters.
 

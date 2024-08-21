@@ -186,7 +186,7 @@ private:
 
     /** The scale factor that the space in between the characters along the vertical scale will be
      * multiplied by. */
-    static constexpr const float s_VERTICAL_SPACE_MODIFIER = 1.5f;
+    static constexpr const float s_VERTICAL_SPACE_MODIFIER = 1.0f;
 
     /** Cursor's position from the start of the COH dimensions. Measured in characters. */
     std::pair<uint16_t, uint16_t> m_cursor_position {0, 0};

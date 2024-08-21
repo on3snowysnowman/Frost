@@ -14,7 +14,7 @@ ConsoleOutputHandler::ConsoleOutputHandler() {}
 ConsoleOutputHandler::ConsoleOutputHandler(TextureHandler* texture_handler) 
 { 
     m_text_ren_handler = TextRenderingHandler(texture_handler);
-    m_text_ren_handler.set_size_scale(2.0);
+    // m_text_ren_handler.set_size_scale(2.0);
 
     m_font_scaled_width = m_text_ren_handler.get_scaled_font_width();
     m_font_scaled_height = m_text_ren_handler.get_scaled_font_height(); 
@@ -25,7 +25,7 @@ ConsoleOutputHandler::ConsoleOutputHandler(TextureHandler* texture_handler, uint
     uint16_t start_y, uint16_t end_x, uint16_t end_y)
 {
     m_text_ren_handler = TextRenderingHandler(texture_handler);
-    m_text_ren_handler.set_size_scale(2.0);
+    // m_text_ren_handler.set_size_scale(2.0);
     
     m_font_scaled_width = m_text_ren_handler.get_scaled_font_width();
     m_font_scaled_height = m_text_ren_handler.get_scaled_font_height(); 

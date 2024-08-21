@@ -4,7 +4,9 @@ Add an ECS?
 Add a SceneManager?
 
 Reconfigure InputHandler such that it only calculates all available keys once per frame.
-Reconfigure TextRenderingHandler to use SDL_ttf fonts.
+Reconfigure TextRenderingHandler to use SDL_ttf fonts?
+Reconfigure TextRenderingHandler to specify the number of characters per row and number of rows
+   there are in the font texture so each character's splice data does not need to be provided.
 Reconfigure ConsoleOutputHandler rendering?
 Add functionality for UITool Items to be able to move the cursor when editing any text.
 Finish README.txt and other documentation.

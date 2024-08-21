@@ -1,3 +1,4 @@
+#include <SDL_keycode.h>
 #include <cmath>
 
 #include "TextRenderingHandler.hpp"
@@ -116,7 +117,7 @@ uint16_t TextRenderingHandler::get_scaled_font_height() const
 
 
 // Private
-
+#include <iostream>
 void TextRenderingHandler::_load_font_from_disk()
 {
     // Contains the path to the font png, along with the positions of each character in the png.
@@ -132,9 +133,10 @@ void TextRenderingHandler::_load_font_from_disk()
     for(const json& char_data : font_data.at("character_data"))
     {
         // Get the data for this specific character from the json file, and register it into the 
-        // map. The conversion from a json object to a character for the key is a bit cryptic here, 
-        // but I am unaware of any easier way.
-        m_char_source_positions[std::string(char_data.at(0)).at(0)] = 
+        // map. Casting to a uint8_t here instead of char is required for casting the return value
+        // nlohmann::json. nlohmann::json does not support casting to a char directly. 
+
+        m_char_source_positions[uint8_t(char_data.at(0))] = 
             std::make_pair(char_data.at(1), char_data.at(2));
     }
 }
