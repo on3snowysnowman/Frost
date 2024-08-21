@@ -62,9 +62,6 @@ public:
 
     /** Fetches and returns the contents of a txt file at the path. 
      * 
-     * @attention The contents of the file are stored in a heap allocated string, the user is 
-     * responsible for managing this memory.
-     * 
      * @param file_path Path to the file.
      */
     static std::string fetch(std::string file_path);

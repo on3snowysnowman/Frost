@@ -2,6 +2,10 @@
 This file tracks specific details on what was changed each git push.
 
 
+7 :
+
+   - Fixed documentation of TextFileHandler::fetch().
+
 6 :
 
    - Reconfigured text font files to use ints to resemble characters rather than strings, also 
