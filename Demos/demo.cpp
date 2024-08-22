@@ -48,7 +48,7 @@ public:
 
     void update() final 
     {
-        m_coh.add_str("Panel: \n");
+        m_coh.add_str("Panel:\n");
         Frost::simulate_UI_panel(pan_cont);
     }
 

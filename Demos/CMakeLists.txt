@@ -3,8 +3,8 @@ cmake_minimum_required(VERSION 3.24)
 project(Frost_Demos)
 
 # Set the paths for the lib and include files of the Frost Engine.
-set(FROST_LIB_PATH /usr/lib)
-set(FROST_INCLUDE_PATH /usr/include/Frost)
+set(FROST_LIB_PATH C:/msys64/mingw64/lib)
+set(FROST_INCLUDE_PATH C:/msys64/mingw64/include/Frost)
 
 # Finds the Frost library on disk.
 find_library(FROST_LIB NAMES Frost PATHS "${FROST_LIB_PATH}")

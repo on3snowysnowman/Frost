@@ -62,7 +62,7 @@ public:
      * @param x_modify Amount to modify the cursor's x position by. 
      * @param y_modify Amount to modify the cursor's y position by.
      * */
-    void modify_cursor_position(uint16_t x_modify, uint16_t y_modify);
+    void modify_cursor_position(int16_t x_modify, int16_t y_modify);
 
     /** Adds a character to the screen at the cursor's position.
      * 

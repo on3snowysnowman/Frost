@@ -1,6 +1,13 @@
 
 This file tracks specific details on what was changed each git push.
 
+9: 
+
+   - Fixed bug in ConsoleOutputHandler's move_cursor and move_cursor_y where it was setting the
+     first cursor's position to 0, not the second.
+
+   - Added a Component class. 
+
 
 8:
 

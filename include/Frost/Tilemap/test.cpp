@@ -2,20 +2,20 @@
 
 #include <iostream>
 
-class FirstComp : public Component<FirstComp>
+class FirstComp : public Component
 {
 
 public:
 
-    FirstComp() : Component<FirstComp>() {}
+    FirstComp() {}
 
 };
 
-class SecondComp : public Component<SecondComp>
+class SecondComp : public Component
 {
 public:
 
-    SecondComp() : Component<SecondComp>() {}
+    SecondComp() {}
 };
 
 
@@ -25,7 +25,6 @@ int main()
     SecondComp two;
     SecondComp three;
 
-    std::cout << one.get_id() << '\n' << two.get_id() << "\n" << three.get_id() << '\n';
-
+    std::cout << get_component_id<FirstComp>() << '\n' << get_component_id<SecondComp>() << '\n';
     return 0;
 }

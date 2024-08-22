@@ -87,10 +87,10 @@ void ConsoleOutputHandler::move_cursor_y(uint16_t y)
 {
     if(y > m_screen_character_height) return;
 
-    m_cursor_position.first = y;
+    m_cursor_position.second = y;
 }
 
-void ConsoleOutputHandler::modify_cursor_position(uint16_t x_modify, uint16_t y_modify)
+void ConsoleOutputHandler::modify_cursor_position(int16_t x_modify, int16_t y_modify)
 {
     // If the modified x position is not in bounds.
     if(!_is_x_character_position_in_bounds(m_cursor_position.first + x_modify))

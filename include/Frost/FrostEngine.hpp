@@ -31,7 +31,7 @@ public:
 
 protected:
 
-    /** Terminates Engine simulate. This function simply flags the Engine to stop on the next 
+    /** Terminates Engine simulation. This function simply flags the Engine to stop on the next 
      * frame completion. Any change made between this function call and the end of the frame will
      * still happen. */
     void _quit();
