@@ -1,6 +1,11 @@
 
 This file tracks specific details on what was changed each git push.
 
+10:
+
+   - Added high precision timing to TimeObserver using chrono.
+
+
 9: 
 
    - Fixed bug in ConsoleOutputHandler's move_cursor and move_cursor_y where it was setting the
