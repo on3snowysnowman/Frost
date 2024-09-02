@@ -1,0 +1,10 @@
+
+build
+Demos/build_demo
+Demos/OutputLog.txt
+Demos/Demo
+TargetPaths.txt
+.vscode
+Paths
+*.exe
+.cache

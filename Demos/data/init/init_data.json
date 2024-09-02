@@ -1,0 +1,14 @@
+{
+    "application_window_name": "Frost",
+    "background_color": [
+        20,
+        20,
+        30
+    ],
+    "fullscreen": true,
+    "vsync": true,
+    "frame_limit": 60,
+    "screen_height": 500,
+    "screen_width": 500,
+    "use_extended_colors": true
+}
