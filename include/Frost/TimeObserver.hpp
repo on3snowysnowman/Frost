@@ -14,6 +14,9 @@
 #include <sstream>
 #include <chrono>
 
+
+typedef std::chrono::time_point<std::chrono::system_clock> c_time_point;
+
 /** Static class that contains useful methods for fetching the current time and date, as well
  * as returning a high resolution time_point from chrono and returning the interval of two time 
  * points, allowing for high precision time measuring. */
@@ -29,22 +32,16 @@ public:
     static std::string get_local_time();
 
     /** Returns a std::chrono::time_point of the current time. */
-    static std::chrono::time_point<std::chrono::system_clock> get_time_point()
-    {
-        return std::chrono::high_resolution_clock::now();
-    }
+    static  c_time_point get_time_point();
 
-    /** Returns a high precision value of the time interval between two std::chrono::time_points, 
+    /** Returns a high precision value of the time interval in miliseconds between two c_time_points, 
      * from $start to $end.
      *
      * @param start Starting time point.
      * @param end Ending time point. */
     static double calculate_interval_from_timepoints(
             std::chrono::time_point<std::chrono::system_clock> start, 
-            std::chrono::time_point<std::chrono::system_clock> end)
-    {
-        return std::chrono::duration<double, std::milli>(end - start).count();
-    }
+            std::chrono::time_point<std::chrono::system_clock> end);
 
 private:
 

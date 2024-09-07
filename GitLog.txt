@@ -1,6 +1,18 @@
 
 This file tracks specific details on what was changed each git push.
 
+11:
+
+   - Fixed naming in TimeObserver.
+ 
+   - Added typedef to TimeObserver for ease of access to chrono time points.
+ 
+   - Added a "Redesigns" folder for classes that are being redesigned/overhauled but can't be 
+     integrated into the engine yet, due to naming conflicts.
+
+   - Fixed typo(s) in documentation.
+
+
 10:
 
    - Added high precision timing to TimeObserver using chrono.

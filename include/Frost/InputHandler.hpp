@@ -2,7 +2,6 @@
 
 #include <cstdint>
 #include <vector>
-#include <array>
 #include <unordered_set>
 #include <unordered_map>
 

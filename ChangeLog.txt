@@ -8,6 +8,10 @@ This file tracks overall changes and fixes to the Engine.
 
     - Added an EventSystem
 
+    FIXES
+
+    - Fixed InputHandler not properly blocking keys after about a minute of simulation.
+
 
 # Version 0.1
 

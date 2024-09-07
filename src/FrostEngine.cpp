@@ -30,8 +30,8 @@ FrostEngine::FrostEngine()
 
     // Clear the ProgramOutputHandler's output file
     ProgramOutputHandler::clear_output_file();
-    ProgramOutputHandler::log("Program Started: " + TimeObserver::get_date() + " @ " + 
-        TimeObserver::get_time() + '\n');
+    ProgramOutputHandler::log("Program Started: " + TimeObserver::get_local_date() + " @ " + 
+        TimeObserver::get_local_time() + '\n');
     ProgramOutputHandler::log("Debug Mode: true\n");
     #endif
 
@@ -79,8 +79,8 @@ void FrostEngine::_quit()
 { 
     #ifdef FROST_DEBUG
 
-    ProgramOutputHandler::log("Terminated Engine: " + TimeObserver::get_date() + " @ " + 
-        TimeObserver::get_time() + '\n');
+    ProgramOutputHandler::log("Terminated Engine: " + TimeObserver::get_local_date() + " @ " + 
+        TimeObserver::get_local_time() + '\n');
     #endif
     
     m_is_active = false; 
@@ -94,7 +94,7 @@ bool FrostEngine::_set_application_icon(std::string path_to_png)
     {
         #ifdef FROST_DEBUG
 
-        ProgramOutputHandler::log("FrostEnginer._set_application_icon() -> File: \""
+        ProgramOutputHandler::log("FrostEngine._set_application_icon() -> File: \""
             + path_to_png + "\" does not exist.", Frost::WARN);
         #endif
 
@@ -115,10 +115,26 @@ bool FrostEngine::_set_application_icon(std::string path_to_png)
 
 // Private
 
+void FrostEngine::_create_default_data_components()
+{
+    // Create the data directory.
+    FileSystemHandler::make_directory("data");
+
+    // Create the init directory
+    FileSystemHandler::make_directory("data/init");
+
+    #ifdef FROST_DEBUG
+
+    ProgramOutputHandler::log("Fullscreen: true");
+    #endif
+
+
+}
+
 void FrostEngine::_create_default_init_files_and_engine()
 {
     // Create the data directory.
-    FileSystemHandler::make_directory(m_init_data_directory);
+    FileSystemHandler::make_directory(m_INIT_DATA_DIRECTORY);
 
     #ifdef FROST_DEBUG
 
@@ -153,7 +169,7 @@ void FrostEngine::_create_default_init_files_and_engine()
     temp["background_color"] = json::array({20, 20, 30});
 
     // Dump the init data to the init file.
-    JsonHandler::dump(temp, m_init_data_directory + "/init_data.json");
+    JsonHandler::dump(temp, m_INIT_DATA_DIRECTORY + "/init_data.json");
 
     temp.clear();
 
@@ -174,7 +190,7 @@ void FrostEngine::_create_default_init_files_and_engine()
     temp.push_back(json::array({"White", 235, 235, 247}));
 
     // Dump the color data to the colors file.
-    JsonHandler::dump(temp, m_init_data_directory + "/colors.json");
+    JsonHandler::dump(temp,     m_INIT_DATA_DIRECTORY + "/colors.json");
 
     // #TODO Place the color loading for the TextureHandler here.
 }
@@ -210,7 +226,7 @@ void FrostEngine::_init_SDL_and_engine()
 
     // The data folder exists, assume the init files already exist.
 
-    json init_data = JsonHandler::get(m_init_data_directory + "/init_data.json");
+    json init_data = JsonHandler::get(m_INIT_DATA_DIRECTORY + "/init_data.json");
 
     std::string application_window_name = init_data.at("application_window_name");
 

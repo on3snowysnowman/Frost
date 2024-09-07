@@ -74,7 +74,7 @@ private:
     static int s_screen_height; // Screen height in pixels.
 
     // Path to the init data folder to setup the engine.
-    std::string m_init_data_directory = "data/init"; 
+    const std::string m_INIT_DATA_DIRECTORY = "data/init"; 
 
     // Path to the base colors data file.
     const std::string m_BASE_COLOR_PATH = "data/init/base_colors.json";
@@ -90,6 +90,8 @@ private:
     SDL_Renderer* m_renderer;
 
     // Methods
+
+    void _create_default_data_components();
 
     /** Creates default init files, along with initializing the engine with default values. This 
      * method is called on Engine construction when no user created init files were found. */
