@@ -12,7 +12,7 @@ cmake  --build build --target install
 cd demos
 
 if not exist "build" (
-    mkdir build_demo
+    mkdir build
 )
 
 cmake -G "Ninja" -S . -B build

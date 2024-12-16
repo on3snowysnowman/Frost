@@ -3,8 +3,8 @@ cmake_minimum_required(VERSION 3.24)
 project(Frost_Demos)
 
 # Set the paths for the lib and include files of the Frost Engine.
-set(FROST_LIB_PATH /usr/lib)
-set(FROST_INCLUDE_PATH /usr/include/Frost)
+set(FROST_LIB_PATH C:/Users/on3sn/Frost/lib)
+set(FROST_INCLUDE_PATH C:/Users/on3sn/Frost/include/Frost)
 
 # Finds the Frost library on disk.
 find_library(FROST_LIB NAMES Frost PATHS "${FROST_LIB_PATH}")
@@ -14,7 +14,7 @@ find_library(FROST_LIB NAMES Frost PATHS "${FROST_LIB_PATH}")
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
 
-add_executable(Demo demo.cpp)
+add_executable(Demo text_handler_demo.cpp)
 
 set_target_properties(Demo PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR})
 
@@ -30,4 +30,5 @@ PRIVATE
     SDL2::SDL2
     SDL2_image
 )
+
 

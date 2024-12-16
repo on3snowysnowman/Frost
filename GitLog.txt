@@ -1,6 +1,13 @@
 
 This file tracks specific details on what was changed each git push.
 
+12:
+
+   - Began work on a new TextRenderer that uses SDL_ttf. 
+
+   - Made a new Demo file.
+
+
 11:
 
    - Fixed naming in TimeObserver.

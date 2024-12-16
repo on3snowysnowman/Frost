@@ -20,8 +20,8 @@ class DemoMenu : public Menu
 
 public:
 
-    DemoMenu(ConsoleOutputHandler& coh, std::string& cursor_color) : Menu("DemoMenu"), m_cursor_color(cursor_color),
-        m_coh(coh) 
+    DemoMenu(ConsoleOutputHandler& coh, std::string& cursor_color) : Menu("DemoMenu"), 
+        m_cursor_color(cursor_color), m_coh(coh) 
     {
         pan_cont.coh = &m_coh;
         pan_cont.cursor_color = &m_cursor_color;

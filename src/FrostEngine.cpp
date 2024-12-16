@@ -1,5 +1,6 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_render.h>
+#include <SDL2/SDL_ttf.h>
 
 #include "FrostEngine.hpp"
 #include "FileSystemHandler.hpp"
@@ -197,8 +198,8 @@ void FrostEngine::_create_default_init_files_and_engine()
 
 void FrostEngine::_init_SDL_and_engine() 
 {
-    // If SDL failed to initialize.
-    if(SDL_Init(SDL_INIT_EVENTS) != 0 || SDL_Init(SDL_INIT_VIDEO) != 0)
+    // If SDL subsystems failed to initialize.
+    if(SDL_Init(SDL_INIT_EVENTS) || SDL_Init(SDL_INIT_VIDEO))
     {
         #ifdef FROST_DEBUG
 
@@ -209,6 +210,17 @@ void FrostEngine::_init_SDL_and_engine()
         exit(1);
     }
 
+    // IF SDL_ttf failed to initialize.
+    if(TTF_Init())
+    {
+        #ifdef FROST_DEBUG
+        ProgramOutputHandler::log("FrostEngine::_init_SDL() -> SDL_TTF failed to initialize.",
+            Frost::ERR);
+        #endif
+
+        exit(1);
+    }
+    
     // Disable the cursor
     SDL_ShowCursor(SDL_DISABLE);
 
