@@ -3,6 +3,7 @@ build
 Demos/build_demo
 Demos/OutputLog.txt
 Demos/Demo
+AutoFileGen
 TargetPaths.txt
 .vscode
 Paths

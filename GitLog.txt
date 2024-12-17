@@ -1,6 +1,15 @@
 
 This file tracks specific details on what was changed each git push.
 
+13:
+
+   - Fixed the SDL_Renderer background not properly being set.
+
+   - Implemented a basic TextRenderingHandler using SDL_ttf. Reconfigured the ConsoleOutputHandler 
+     to utilize this new TextRenderingHandler.
+
+   - Added function to the TextureHandler that saves a static SDL_Texture to disk as a png.
+
 12:
 
    - Began work on a new TextRenderer that uses SDL_ttf. 

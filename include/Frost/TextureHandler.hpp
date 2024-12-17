@@ -5,7 +5,8 @@
 #include <unordered_set>
 #include <list>
 
-#include <SDL2/SDL_image.h>
+#include <SDL_image.h>
+#include <SDL_ttf.h>
 
 #include "Color.hpp"
 
@@ -55,6 +56,8 @@ public:
     */
     void handle_texture_deletion(SDL_Texture* texture);
 
+    bool create_png_from_static_texture(SDL_Texture* staticTexture, const std::string& filePath);
+
     /** Returns a const reference to the internal map of colors. */
     const std::unordered_map<std::string, Color>& get_colors() const;
 
@@ -64,6 +67,9 @@ public:
      * @param png_path Path to the png.
      */
     SDL_Texture* create_texture(std::string png_path) const;
+
+    /** Given an open font, create an atlas texture containing all renderable characters. */
+    SDL_Texture* create_font_atlas_texture(TTF_Font* font, int font_width, int font_height) const;
 
 private:
 

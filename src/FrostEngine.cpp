@@ -40,7 +40,6 @@ FrostEngine::FrostEngine()
     _init_SDL_and_engine();
 
     m_text_ren_handler = TextRenderingHandler(&m_texture_handler);
-    m_text_ren_handler.set_size_scale(2.0);
 
     m_coh = ConsoleOutputHandler(&m_texture_handler, 0, 0, s_screen_width, s_screen_height);
     m_sprite_handler = SpriteHandler(&m_texture_handler);
@@ -52,6 +51,7 @@ FrostEngine::~FrostEngine()
 {
     SDL_DestroyRenderer(m_renderer);
     SDL_DestroyWindow(m_window);
+    TTF_Quit();
     SDL_Quit();
 }
 
@@ -199,7 +199,7 @@ void FrostEngine::_create_default_init_files_and_engine()
 void FrostEngine::_init_SDL_and_engine() 
 {
     // If SDL subsystems failed to initialize.
-    if(SDL_Init(SDL_INIT_EVENTS) || SDL_Init(SDL_INIT_VIDEO))
+    if(SDL_Init(SDL_INIT_VIDEO))
     {
         #ifdef FROST_DEBUG
 
@@ -297,10 +297,15 @@ void FrostEngine::_init_SDL_and_engine()
     // Create the Renderer.
     m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED);
 
-    // // Enable Vsync
+    // Enable Vsync
     SDL_RenderSetVSync(m_renderer, 1);
 
     _set_application_icon("assets/Frost_Icon.png");
+
+    json background_color = init_data.at("background_color");
+
+    SDL_SetRenderDrawColor(m_renderer, background_color.at(0), background_color.at(1), 
+        background_color.at(2), 255);
 
     if(init_data.at("use_extended_colors")) 
         m_texture_handler = TextureHandler(m_renderer, m_EXTENDED_COLOR_PATH);
@@ -308,54 +313,53 @@ void FrostEngine::_init_SDL_and_engine()
     else m_texture_handler = TextureHandler(m_renderer, m_BASE_COLOR_PATH);
 }
 
+void FrostEngine::_update()
+{
+    _clear_SDL_renderer();
+
+    InputHandler::clear_raw_keys();
+
+    _handle_SDL_events();
+
+    if(InputHandler::is_key_pressed(SDLK_ESCAPE)) EventSystem::invoke_event("QUIT_SIMULATION");
+
+    MenuManager::update_active_menus();
+
+    m_coh.render();
+
+    // m_text_ren_handler.render();
+
+    // m_sprite_handler.render();
+
+    _present_SDL_renderer();
+}
+
 void FrostEngine::_simulation_loop_vsync()
 {
     while(m_is_active)
     {
-        InputHandler::clear_raw_keys();
+        // Since SDL vsync is enabled, no manual frame delay is needed.
 
-        _handle_SDL_events();
-
-        if(InputHandler::is_key_pressed(SDLK_ESCAPE)) EventSystem::invoke_event("QUIT_SIMULATION");
-
-        MenuManager::update_active_menus();
-
-        _clear_SDL_renderer();
-
-        m_coh.render();
-
-        m_sprite_handler.render();
-
-        _present_SDL_renderer();
+        _update();
     }
 }
 
-void FrostEngine::_simulation_loop_no_vsync()
+void FrostEngine:: _simulation_loop_no_vsync()
 {
     while(m_is_active)
     {
+        // Esablish timestamp of the start of the frame.
         m_frame_start_timestamp = SDL_GetTicks64();
 
-        InputHandler::clear_raw_keys();
-
-        _handle_SDL_events(); 
-
-        MenuManager::update_active_menus();
-
-        _clear_SDL_renderer();
-
-        m_coh.render();
-
-        m_sprite_handler.render();
-
-        _present_SDL_renderer();
+        _update();
 
         // Calculate the miliseconds this frame took.
         m_elapsed_miliseconds_this_frame = SDL_GetTicks64() - m_frame_start_timestamp;
 
+        // If the measured frame time is less than the target frame time.
         if(m_elapsed_miliseconds_this_frame < m_target_miliseconds_per_frame)
         {
-            // Delay for the difference between the elapsed miliseconds and target miliseconds.
+            // Delay for the difference between the measured miliseconds and target miliseconds.
             SDL_Delay(m_target_miliseconds_per_frame - m_elapsed_miliseconds_this_frame);
         }
     }

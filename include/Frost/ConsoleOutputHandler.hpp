@@ -85,13 +85,7 @@ public:
      * @param num Number of new lines to add, default is 1.
      */
     void add_new_line(uint8_t num = 1);
-
-    /** Clears the buffered content this frame. Only use this function to clear the content added 
-     * this frame before it has a chance to render. Do not use this method as a scheduled clear 
-     * screen after each frame.
-     */
-    void clear_buffered_content();
-
+    
     /** Resets the cursor's position to the top left. This is called automatically during each 
      * render call. */
     void reset_cursor_position();
@@ -162,11 +156,11 @@ private:
     // Height of the screen, measure in characters rounded down.
     uint16_t m_screen_character_height;
 
-    // Width of the font, scaled with the TextRenderingHandler's font size multiplier.
-    uint16_t m_font_scaled_width;
+    // Width of the font.
+    uint16_t m_font_width;
 
-    // Height of the font, scaled with the TextRenderingHandler's font size multiplier
-    uint16_t m_font_scaled_height;
+    // Height of the font.
+    uint16_t m_font_height;
 
     // The x position in characters that a new line will be set to when placing a new line.
     uint16_t m_anchor {}; 

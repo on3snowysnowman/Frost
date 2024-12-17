@@ -1,146 +1,118 @@
-#include <SDL_keycode.h>
-#include <cmath>
+/**
+ * @file TextRenderingHandler.cpp
+ * @author Joel Height (On3SnowySnowman@gmail.com)
+ * @brief Single class implementation.
+ * @version 0.1
+ * @date 24-12-15
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
 
 #include "TextRenderingHandler.hpp"
-#include "JsonHandler.hpp"
-#include "Fr_Math.hpp"
+
 
 
 // Constructors / Deconstructor
 
-TextRenderingHandler::TextRenderingHandler() 
+TextRenderingHandler::TextRenderingHandler()
 {
-    m_font_texture = nullptr;
-    m_texture_handler = nullptr;
+    // Default constructor should only be called for a placeholder object.
+
+    m_font_point_size = 0;
+    m_font_width = 0;
+    m_font_height = 0;
+    m_tex_handler = nullptr;
+    m_atlas_texture = nullptr;
 }
+#include <iostream>
 
-TextRenderingHandler::TextRenderingHandler(TextureHandler* texture_handler)
+TextRenderingHandler::TextRenderingHandler(TextureHandler* texture_handler, uint8_t font_point_size)
 {
-    m_texture_handler = texture_handler;
+    m_tex_handler = texture_handler;
 
-    // Register the font from the disk.
-    _load_font_from_disk();
+    // This will automatically call the atlas creation method. 
+    set_font_size(font_point_size);
 }
 
 
 // Public
 
-void TextRenderingHandler::render() 
+void TextRenderingHandler::add_ch(char c, uint16_t x, uint16_t y, std::string color)
 {
-    // While there are queued characters
-    while(!m_queued_characters.empty())
-    {
-        const QueuedCharacter& q_char = m_queued_characters.front();
-        m_queued_characters.pop();
+    // Subtracting the ascii '!' here to calculate the "index" of the target character in the font
+    // atlas. Since the atlas starts at '!' and progresses linearly through the ascii values, 
+    // simply calculate the index by the ascii value of this char deducted by '!'. Then multiply
+    // by the font size to get the pixel value in the font atlas.
+    src.x = (c - '!') * m_font_width;
 
-        // Draw the character on the screen. 
-        m_texture_handler->draw(m_font_texture, q_char.source, q_char.dest, q_char.color);
-    }
-}
-
-void TextRenderingHandler::clear_buffered_content() 
-{
-    while(!m_queued_characters.empty()) m_queued_characters.pop();
-}
-
-void TextRenderingHandler::increase_size_scale(float amount) 
-{ 
-    m_size_scale_factor += amount;
-
-    m_size_scale_factor = 
-        Frost::clamp_float_to_maximum(m_size_scale_factor, MAXIMUM_SIZE_SCALE_FACTOR);
-}
-
-void TextRenderingHandler::set_size_scale(float amount)
-{
-    amount = std::abs(amount);
-
-    m_size_scale_factor = Frost::clamp_float_to_maximum(amount, MAXIMUM_SIZE_SCALE_FACTOR);
-
-}
-
-void TextRenderingHandler::decrease_size_scale(float amount) 
-{
-    m_size_scale_factor -= amount;
-
-    m_size_scale_factor = Frost::clamp_float_to_minimum(m_size_scale_factor, 1.0f);
-}
-
-void TextRenderingHandler::draw_character_now(char c, uint16_t x, uint16_t y, std::string color)
-{
-    SDL_Rect source, dest;
-
-    source.w = m_font_width;
-    source.h = m_font_height;
-    source.x = m_char_source_positions.at(c).first; 
-    source.y = m_char_source_positions.at(c).second; 
-
-    dest.w = get_scaled_font_width();
-    dest.h = get_scaled_font_height();
     dest.x = x;
     dest.y = y;
 
-    m_texture_handler->draw(m_font_texture, source, dest, color);
+    m_tex_handler->draw(m_atlas_texture, src, dest);
 }
 
-void TextRenderingHandler::add_ch(char c, uint16_t x, uint16_t y, std::string color) 
+void TextRenderingHandler::set_font_size(uint8_t new_font_point_size)
 {
-    QueuedCharacter character_to_render;
+    if(new_font_point_size < 5) new_font_point_size = 5;
 
-    // Set the data for the queued character object.
+    m_font_point_size = new_font_point_size;
 
-    character_to_render.symbol = c;
-
-    character_to_render.color = color;
-
-    character_to_render.source.w = m_font_width;
-    character_to_render.source.h = m_font_height;
-    character_to_render.source.x = m_char_source_positions.at(c).first; 
-    character_to_render.source.y = m_char_source_positions.at(c).second; 
-
-    character_to_render.dest.w = get_scaled_font_width();
-    character_to_render.dest.h = get_scaled_font_height();
-    character_to_render.dest.x = x;
-    character_to_render.dest.y = y;
-
-    // Add this queued character object to the queue of characters to be rendered.
-    m_queued_characters.push(std::move(character_to_render));
+    // Update the font dimensions and atlas since it has now changed.
+    _init_font_dimensions_and_atlas();
 }
 
-float TextRenderingHandler::get_size_scale() const { return m_size_scale_factor; }
+void TextRenderingHandler::set_font_path(std::string new_font_path)
+{
+    m_font_path = new_font_path;
 
-uint16_t TextRenderingHandler::get_scaled_font_width() const 
-{ return _get_scaled_value(m_font_width); }
+    _init_font_dimensions_and_atlas();
+}
 
-uint16_t TextRenderingHandler::get_scaled_font_height() const
-{ return _get_scaled_value(m_font_height); }
+uint8_t TextRenderingHandler::get_font_point_size() const { return m_font_point_size; }
+
+uint8_t TextRenderingHandler::get_font_width() const { return m_font_width; }
+
+uint8_t TextRenderingHandler::get_font_height() const { return m_font_height; }
+
 
 
 // Private
-#include <iostream>
-void TextRenderingHandler::_load_font_from_disk()
+
+void TextRenderingHandler::_init_font_dimensions_and_atlas()
 {
-    // Contains the path to the font png, along with the positions of each character in the png.
-    const json font_data = JsonHandler::get(m_font_data_path);
+    // Create font object from the font file.
+    TTF_Font* font = TTF_OpenFont(m_font_path.c_str(), m_font_point_size);
 
-    // Create the texture of the font.
-    m_font_texture = m_texture_handler->create_texture(font_data.at("png_path"));
+    TTF_SetFontHinting(font, TTF_HINTING_MONO); // Force better clarity for monospace fonts
 
-    m_font_width = font_data.at("font_width");
-    m_font_height = font_data.at("font_height");
+    // Temp variables to grab the font dimensions from SDL. Using temp integers to later store in
+    // uint8_ts for efficiency. Sure, it's negligable but it makes me feel good about memory 
+    // efficiency.
+    int font_width, font_height;
 
-    // Iterate through each character container in all the characters.
-    for(const json& char_data : font_data.at("character_data"))
+    // Get the size in pixels of a single character. Since the engine only supports Monospaces 
+    // fonts, the size of one character represents the size of them all.
+    TTF_SizeText(font, "A", &font_width, &font_height);
+
+    m_font_width = font_width;
+    m_font_height = font_height;
+
+    src.y = 0;
+    src.w = m_font_width;
+    src.h = m_font_height;
+
+    dest.w = m_font_width;
+    dest.h = m_font_height;
+
+    // If a font texture already exists, destroy it as it will be replaced.
+    if(m_atlas_texture)
     {
-        // Get the data for this specific character from the json file, and register it into the 
-        // map. Casting to a uint8_t here instead of char is required for casting the return value
-        // nlohmann::json. nlohmann::json does not support casting to a char directly. 
-
-        m_char_source_positions[uint8_t(char_data.at(0))] = 
-            std::make_pair(char_data.at(1), char_data.at(2));
+        SDL_DestroyTexture(m_atlas_texture);
     }
-}
 
-uint16_t TextRenderingHandler::_get_scaled_value(uint16_t value) const 
-{ return std::floor(value * m_size_scale_factor); }
+    m_atlas_texture = m_tex_handler->create_font_atlas_texture(font, m_font_width, m_font_height);
+
+    TTF_CloseFont(font);
+}
 

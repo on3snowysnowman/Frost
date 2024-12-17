@@ -14,10 +14,9 @@ ConsoleOutputHandler::ConsoleOutputHandler() {}
 ConsoleOutputHandler::ConsoleOutputHandler(TextureHandler* texture_handler) 
 { 
     m_text_ren_handler = TextRenderingHandler(texture_handler);
-    // m_text_ren_handler.set_size_scale(2.0);
 
-    m_font_scaled_width = m_text_ren_handler.get_scaled_font_width();
-    m_font_scaled_height = m_text_ren_handler.get_scaled_font_height(); 
+    m_font_width = m_text_ren_handler.get_font_width();
+    m_font_height = m_text_ren_handler.get_font_height(); 
     resize_dimensions(0, 0, 0, 0);
 }
 
@@ -25,10 +24,9 @@ ConsoleOutputHandler::ConsoleOutputHandler(TextureHandler* texture_handler, uint
     uint16_t start_y, uint16_t end_x, uint16_t end_y)
 {
     m_text_ren_handler = TextRenderingHandler(texture_handler);
-    // m_text_ren_handler.set_size_scale(2.0);
     
-    m_font_scaled_width = m_text_ren_handler.get_scaled_font_width();
-    m_font_scaled_height = m_text_ren_handler.get_scaled_font_height(); 
+    m_font_width = m_text_ren_handler.get_font_width();
+    m_font_height = m_text_ren_handler.get_font_height(); 
     resize_dimensions(start_x, start_y, end_x, end_y);
 }
 
@@ -61,9 +59,9 @@ void ConsoleOutputHandler::resize_dimensions(uint16_t start_x, uint16_t start_y,
     m_end_y = end_y;
 
     // Calculate screen width in characters. 
-    m_screen_character_width = (end_x - start_x) / m_font_scaled_width;
+    m_screen_character_width = (end_x - start_x) / m_font_width;
 
-    m_screen_character_height = (end_y - start_y) / (m_font_scaled_height * 
+    m_screen_character_height = (end_y - start_y) / (m_font_height * 
         s_VERTICAL_SPACE_MODIFIER);
 
     m_end_character_render_y = m_screen_character_height;
@@ -166,9 +164,6 @@ void ConsoleOutputHandler::add_new_line(uint8_t num)
         Frost::return_largest_of_uint16s(m_greatest_y_position_buffered, m_cursor_position.second);
 }
 
-void ConsoleOutputHandler::clear_buffered_content() 
-{ m_text_ren_handler.clear_buffered_content(); }
-
 void ConsoleOutputHandler::reset_cursor_position() { m_cursor_position = {0, 0}; }
 
 void ConsoleOutputHandler::set_anchor(uint16_t new_anchor) { m_anchor = new_anchor; }
@@ -182,6 +177,8 @@ void ConsoleOutputHandler::set_focus(uint16_t new_focus)
     // _calculate_view_around_focus();
 }
 
+#include <iostream>
+
 void ConsoleOutputHandler::render() 
 {  
     _calculate_view_around_focus();
@@ -189,6 +186,10 @@ void ConsoleOutputHandler::render()
     while(!m_queued_characters.empty())
     {
         const QueuedCharacter& character = m_queued_characters.front();
+
+        // std::cout << character.symbol << "  ";
+        // std::cout << character.x_character_pos << "  ";
+        // std::cout << character.y_character_pos << "\n\n";
 
         // This character is outside the current viewing bounds.
         if(character.y_character_pos < m_start_character_render_y || 
@@ -199,15 +200,15 @@ void ConsoleOutputHandler::render()
         }
 
         // Draw the character to the screen.
-        m_text_ren_handler.draw_character_now(character.symbol, 
-            (m_start_x + (character.x_character_pos * m_font_scaled_width)), 
+        m_text_ren_handler.add_ch(character.symbol, 
+            (m_start_x + (character.x_character_pos * m_font_width)), 
             m_start_y + ((character.y_character_pos - m_start_character_render_y) * 
-            m_font_scaled_height * s_VERTICAL_SPACE_MODIFIER), 
+            m_font_height * s_VERTICAL_SPACE_MODIFIER), 
             character.color);
 
         m_queued_characters.pop();
     }
-
+    // exit(0);
     reset_cursor_position();    
     m_greatest_y_position_buffered = 0;
 }

@@ -8,6 +8,7 @@
 #include "TextureHandler.hpp"
 #include "ConsoleOutputHandler.hpp"
 #include "SpriteHandler.hpp"
+#include "TextRenderingHandler.hpp"
 
 
 /** Frost Engine by Joel Height. Version 0.2. */
@@ -100,16 +101,19 @@ private:
     /** Initializes SDL and creates SDL Components, along with the rest of the Engine. */
     void _init_SDL_and_engine();
 
-    /** The core loop of the engine. This loop runs as long as the Engine is stil active (until 
-     * the quit method is called). Each process of the engine is contained here, such as the 
-     * updating of components and rendering methods. This simulation loop uses SDL's vsync 
-     * functionality which means a frame limit does not need to be measured and enforced. */
+    /** The core of the Engine. All processes are contained here, whether that be updating
+     * components or rendering sprites to the screen. This update method is called each frame until
+     * the Engine quits.
+    */
+    void _update();
+
+    /** Loops the update() method with SDL vsync enabled, so no frame time delaying is 
+     * needed. */
     void _simulation_loop_vsync();
 
-    /** The core loop of the engine. This loop runs as long as the Engine is stil active (until 
-     * the quit method is called). Each process of the engine is contained here, such as the updating 
-     * of components and rendering methods. This simulation loop does not use vsync, and therefore
-     * frame times need to be monitored and altered to achieve target FPS. */
+    /** Loops the update() method while tracking frame times and delaying to ensure the 
+     * FPS is throttled to the target FPS.
+    */
     void _simulation_loop_no_vsync();
 
     /** Handles SDL_Events such as the application exit button being pressed, along with 
