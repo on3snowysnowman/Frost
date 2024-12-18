@@ -1,3 +1,14 @@
+/**
+ * @file SpriteHandler.cpp
+ * @author Joel Height (On3SnowySnowman@gmail.com)
+ * @brief Single class implementation.
+ * @version 0.1
+ * @date ?
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
+
 #include <algorithm>
 
 #include "SpriteHandler.hpp"

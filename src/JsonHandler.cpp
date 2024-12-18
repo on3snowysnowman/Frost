@@ -1,3 +1,14 @@
+/**
+ * @file JsonHandler.cpp
+ * @author Joel Height (On3SnowySnowman@gmail.com)
+ * @brief Single class implementation.
+ * @version 0.1
+ * @date ?
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
+
 #include "JsonHandler.hpp"
 #include "FileSystemHandler.hpp"
 

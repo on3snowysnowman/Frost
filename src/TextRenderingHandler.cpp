@@ -12,7 +12,6 @@
 #include "TextRenderingHandler.hpp"
 
 
-
 // Constructors / Deconstructor
 
 TextRenderingHandler::TextRenderingHandler()
@@ -25,7 +24,6 @@ TextRenderingHandler::TextRenderingHandler()
     m_tex_handler = nullptr;
     m_atlas_texture = nullptr;
 }
-#include <iostream>
 
 TextRenderingHandler::TextRenderingHandler(TextureHandler* texture_handler, uint8_t font_point_size)
 {
@@ -33,6 +31,68 @@ TextRenderingHandler::TextRenderingHandler(TextureHandler* texture_handler, uint
 
     // This will automatically call the atlas creation method. 
     set_font_size(font_point_size);
+}
+
+TextRenderingHandler::TextRenderingHandler(const TextRenderingHandler& source)
+{
+    m_tex_handler = source.m_tex_handler;
+    m_font_path = source.m_font_path; 
+
+    _init_font_dimensions_and_atlas();
+}
+
+TextRenderingHandler::TextRenderingHandler(TextRenderingHandler&& source)
+{
+    m_font_point_size = source.m_font_point_size;
+    m_font_width = source.m_font_width;
+    m_font_height = source.m_font_height;
+    m_src = source.m_src;
+    m_dest = source.m_dest;
+    m_font_path = std::move(source.m_font_path);
+
+    m_tex_handler = source.m_tex_handler;
+    m_atlas_texture = source.m_atlas_texture;
+
+    source.m_atlas_texture = nullptr;
+    source.m_tex_handler = nullptr;
+}
+
+TextRenderingHandler& TextRenderingHandler::operator=(TextRenderingHandler&& source)
+{
+    m_font_point_size = source.m_font_point_size;
+    m_font_width = source.m_font_width;
+    m_font_height = source.m_font_height;
+    m_src = source.m_src;
+    m_dest = source.m_dest;
+    m_font_path = std::move(source.m_font_path);
+
+    m_tex_handler = source.m_tex_handler;
+
+    // Destroy original texture of this object before transferring the source's one.
+    SDL_DestroyTexture(m_atlas_texture);
+    m_atlas_texture = source.m_atlas_texture;
+
+    source.m_atlas_texture = nullptr;
+    source.m_tex_handler = nullptr;
+
+    return *this;
+}
+
+TextRenderingHandler& TextRenderingHandler::operator=(const TextRenderingHandler& source)
+{
+    m_tex_handler = source.m_tex_handler;
+    m_font_path = source.m_font_path; 
+
+    // This object's atlas texture will be automatically destroyed in this function before being
+    // replaced.
+    _init_font_dimensions_and_atlas();
+
+    return *this;
+}
+
+TextRenderingHandler::~TextRenderingHandler()
+{
+    if(m_atlas_texture) SDL_DestroyTexture(m_atlas_texture);
 }
 
 
@@ -44,12 +104,12 @@ void TextRenderingHandler::add_ch(char c, uint16_t x, uint16_t y, std::string co
     // atlas. Since the atlas starts at '!' and progresses linearly through the ascii values, 
     // simply calculate the index by the ascii value of this char deducted by '!'. Then multiply
     // by the font size to get the pixel value in the font atlas.
-    src.x = (c - '!') * m_font_width;
+    m_src.x = (c - '!') * m_font_width;
 
-    dest.x = x;
-    dest.y = y;
+    m_dest.x = x;
+    m_dest.y = y;
 
-    m_tex_handler->draw(m_atlas_texture, src, dest);
+    m_tex_handler->draw(m_atlas_texture, m_src, m_dest, color);
 }
 
 void TextRenderingHandler::set_font_size(uint8_t new_font_point_size)
@@ -98,12 +158,12 @@ void TextRenderingHandler::_init_font_dimensions_and_atlas()
     m_font_width = font_width;
     m_font_height = font_height;
 
-    src.y = 0;
-    src.w = m_font_width;
-    src.h = m_font_height;
+    m_src.y = 0;
+    m_src.w = m_font_width;
+    m_src.h = m_font_height;
 
-    dest.w = m_font_width;
-    dest.h = m_font_height;
+    m_dest.w = m_font_width;
+    m_dest.h = m_font_height;
 
     // If a font texture already exists, destroy it as it will be replaced.
     if(m_atlas_texture)

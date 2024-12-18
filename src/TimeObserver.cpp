@@ -1,3 +1,14 @@
+/**
+ * @file TimeObserver.cpp
+ * @author Joel Height (On3SnowySnowman@gmail.com)
+ * @brief Single class implementation.
+ * @version 0.1
+ * @date ?
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
+
 #include <chrono>
 #include <iomanip>
 
@@ -13,18 +24,18 @@ std::ostringstream TimeObserver::s_out_str_stream;
 
 std::string TimeObserver::get_local_date()
 {
-    reset_out_stream();
+    _reset_out_stream();
 
     std::time_t time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 
-    s_out_str_stream << std::put_time(std::localtime(&time), "%y-%m-%d");
+    s_out_str_stream << std::put_time(std::localtime(&time), "%m-%d-%y");
 
     return s_out_str_stream.str();
 }
 
 std::string TimeObserver::get_local_time() 
 {
-    reset_out_stream();
+    _reset_out_stream();
 
     std::time_t time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 
@@ -48,7 +59,7 @@ double TimeObserver::calculate_interval_from_timepoints(
 
 // Private
 
-void TimeObserver::reset_out_stream()
+void TimeObserver::_reset_out_stream()
 {
     s_out_str_stream.str("");
 }

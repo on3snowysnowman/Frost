@@ -1,3 +1,14 @@
+/**
+ * @file TextureHandler.cpp
+ * @author Joel Height (On3SnowySnowman@gmail.com)
+ * @brief Single class implementation.
+ * @version 0.1
+ * @date ?
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
+
 #include "TextureHandler.hpp"
 #include "JsonHandler.hpp"
 #include "FileSystemHandler.hpp"
@@ -106,6 +117,8 @@ void TextureHandler::handle_texture_deletion(SDL_Texture* texture)
 
 bool TextureHandler::create_png_from_static_texture(SDL_Texture* staticTexture, const std::string& filePath) 
 {
+    // Written by ChatGPT
+
     if (!m_renderer || !staticTexture) {
         // std::cerr << "Invalid renderer or static texture.\n";
         return false;
@@ -162,8 +175,6 @@ bool TextureHandler::create_png_from_static_texture(SDL_Texture* staticTexture, 
         SDL_DestroyTexture(targetTexture);
         return false;
     }
-
-    // std::cout << "Saved texture to PNG: " << filePath << "\n";
 
     // Cleanup
     SDL_FreeSurface(surface);

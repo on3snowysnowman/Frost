@@ -24,6 +24,14 @@ public:
     ConsoleOutputHandler(TextureHandler* texture_handler, uint16_t start_x, uint16_t start_y, 
         uint16_t end_x, uint16_t end_y);
 
+    ConsoleOutputHandler(const ConsoleOutputHandler& source);
+
+    ConsoleOutputHandler(ConsoleOutputHandler&& source);
+
+    ConsoleOutputHandler& operator=(const ConsoleOutputHandler& source);
+
+    ConsoleOutputHandler& operator=(ConsoleOutputHandler&& source);
+
     /** Resizes the dimensions of the COH, measured in pixels.
      * 
      * @param start_x Start x position.

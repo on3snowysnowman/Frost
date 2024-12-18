@@ -2,11 +2,13 @@
 This file tracks overall changes and fixes to the Engine.
 
 
-# Version 0.2
+# Version 1.0
 
     CHANGES
 
     - Added an EventSystem
+
+    - Reconfigured TextRenderingHandler to use SDL_ttf.
 
     FIXES
 

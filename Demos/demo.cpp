@@ -1,3 +1,4 @@
+#define SDL_MAIN_HANDLED
 
 #include <iostream>
 
@@ -39,7 +40,7 @@ private:
     ConsoleOutputHandler* m_coh;
 };
     
-
+#include <iostream>
 
 class DemoEngine : public FrostEngine
 {

@@ -9,7 +9,7 @@
  * 
  * The Menu class is the main building block of Frost's simulation. User created classes 
  * that inherit from this class, can override the start() and update() method to provide
- * functionality that is automatically processed each frame Frost simulated. Frost contains 
+ * functionality that is automatically processed each frame. Frost contains 
  * a MenuManager that internally tracks and handles all Menus that are created, along with which 
  * Menu is active or not active.
  * 

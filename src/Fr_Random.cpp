@@ -1,7 +1,7 @@
 /**
  * @file Fr_Random.cpp
  * @author Joel Height (On3SnowySnowman@gmail.com)
- * @brief Implemenation for FrostRandom.
+ * @brief Single class implementation.
  * @version 0.1
  * @date 2024-08-19
  * 

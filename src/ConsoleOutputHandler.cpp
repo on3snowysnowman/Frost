@@ -9,11 +9,14 @@
 
 // Constructors / Deconstructor
 
-ConsoleOutputHandler::ConsoleOutputHandler() {}
+ConsoleOutputHandler::ConsoleOutputHandler() 
+{
+    // Default constructor should only be called for a placeholder object.
+}
 
 ConsoleOutputHandler::ConsoleOutputHandler(TextureHandler* texture_handler) 
 { 
-    m_text_ren_handler = TextRenderingHandler(texture_handler);
+    m_text_ren_handler = std::move(TextRenderingHandler(texture_handler));
 
     m_font_width = m_text_ren_handler.get_font_width();
     m_font_height = m_text_ren_handler.get_font_height(); 
@@ -28,6 +31,86 @@ ConsoleOutputHandler::ConsoleOutputHandler(TextureHandler* texture_handler, uint
     m_font_width = m_text_ren_handler.get_font_width();
     m_font_height = m_text_ren_handler.get_font_height(); 
     resize_dimensions(start_x, start_y, end_x, end_y);
+}
+
+ConsoleOutputHandler::ConsoleOutputHandler(const ConsoleOutputHandler& source)
+{
+    m_start_x = source.m_start_x;
+    m_start_y = source.m_start_y;
+    m_end_x = source.m_end_x;
+    m_end_y = source.m_end_y;
+
+    m_screen_character_width = source.m_screen_character_width;
+    m_screen_character_height = source.m_screen_character_height;
+
+    m_text_ren_handler = source.m_text_ren_handler;
+
+    m_font_width = source.m_font_width;
+    m_font_height = source.m_font_height;
+
+    m_anchor = source.m_anchor;
+    m_focus = source.m_focus;
+}
+
+ConsoleOutputHandler::ConsoleOutputHandler(ConsoleOutputHandler&& source) 
+{
+    m_start_x = source.m_start_x;
+    m_start_y = source.m_start_y;
+    m_end_x = source.m_end_x;
+    m_end_y = source.m_end_y;
+
+    m_screen_character_width = source.m_screen_character_width;
+    m_screen_character_height = source.m_screen_character_height;
+
+    m_text_ren_handler = std::move(source.m_text_ren_handler);
+
+    m_font_width = source.m_font_width;
+    m_font_height = source.m_font_height;
+
+    m_anchor = source.m_anchor;
+    m_focus = source.m_focus;
+}
+
+ConsoleOutputHandler& ConsoleOutputHandler::operator=(const ConsoleOutputHandler& source) 
+{
+    m_start_x = source.m_start_x;
+    m_start_y = source.m_start_y;
+    m_end_x = source.m_end_x;
+    m_end_y = source.m_end_y;
+
+    m_screen_character_width = source.m_screen_character_width;
+    m_screen_character_height = source.m_screen_character_height;
+
+    m_text_ren_handler = source.m_text_ren_handler;
+
+    m_font_width = source.m_font_width;
+    m_font_height = source.m_font_height;
+
+    m_anchor = source.m_anchor;
+    m_focus = source.m_focus;
+
+    return *this;
+}
+
+ConsoleOutputHandler& ConsoleOutputHandler::operator=(ConsoleOutputHandler&& source) 
+{
+    m_start_x = source.m_start_x;
+    m_start_y = source.m_start_y;
+    m_end_x = source.m_end_x;
+    m_end_y = source.m_end_y;
+
+    m_screen_character_width = source.m_screen_character_width;
+    m_screen_character_height = source.m_screen_character_height;
+
+    m_text_ren_handler = std::move(source.m_text_ren_handler);
+
+    m_font_width = source.m_font_width;
+    m_font_height = source.m_font_height;
+
+    m_anchor = source.m_anchor;
+    m_focus = source.m_focus;
+
+    return *this;
 }
 
 
@@ -177,8 +260,6 @@ void ConsoleOutputHandler::set_focus(uint16_t new_focus)
     // _calculate_view_around_focus();
 }
 
-#include <iostream>
-
 void ConsoleOutputHandler::render() 
 {  
     _calculate_view_around_focus();
@@ -186,10 +267,6 @@ void ConsoleOutputHandler::render()
     while(!m_queued_characters.empty())
     {
         const QueuedCharacter& character = m_queued_characters.front();
-
-        // std::cout << character.symbol << "  ";
-        // std::cout << character.x_character_pos << "  ";
-        // std::cout << character.y_character_pos << "\n\n";
 
         // This character is outside the current viewing bounds.
         if(character.y_character_pos < m_start_character_render_y || 
@@ -208,7 +285,7 @@ void ConsoleOutputHandler::render()
 
         m_queued_characters.pop();
     }
-    // exit(0);
+
     reset_cursor_position();    
     m_greatest_y_position_buffered = 0;
 }

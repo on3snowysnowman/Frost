@@ -17,7 +17,7 @@
 
 typedef std::chrono::time_point<std::chrono::system_clock> c_time_point;
 
-/** Static class that contains useful methods for fetching the current time and date, as well
+/** Static class that contains methods for fetching the current time and date, as well
  * as returning a high resolution time_point from chrono and returning the interval of two time 
  * points, allowing for high precision time measuring. */
 class TimeObserver
@@ -52,6 +52,6 @@ private:
 
     // Methods
 
-    /** Resets the s_out_str_stream. */
-    static void reset_out_stream();
+    /** @brief Resets the s_out_str_stream. */
+    static void _reset_out_stream();
 };

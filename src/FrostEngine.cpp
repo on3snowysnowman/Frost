@@ -1,3 +1,14 @@
+/**
+ * @file FrostEngine.cpp
+ * @author Joel Height (On3SnowySnowman@gmail.com)
+ * @brief Single class implementation.
+ * @version 0.1
+ * @date ?
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
+
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_ttf.h>
@@ -39,9 +50,10 @@ FrostEngine::FrostEngine()
     // Initialize SDL and the Engine. 
     _init_SDL_and_engine();
 
-    m_text_ren_handler = TextRenderingHandler(&m_texture_handler);
+    m_text_ren_handler = std::move(TextRenderingHandler(&m_texture_handler));
 
     m_coh = ConsoleOutputHandler(&m_texture_handler, 0, 0, s_screen_width, s_screen_height);
+
     m_sprite_handler = SpriteHandler(&m_texture_handler);
 
     EventSystem::subscribe<FrostEngine>("QUIT_SIMULATION", this, &FrostEngine::_quit);

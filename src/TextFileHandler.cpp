@@ -1,3 +1,14 @@
+/**
+ * @file TextFileHandler.cp
+ * @author Joel Height (On3SnowySnowman@gmail.com)
+ * @brief Single class implementation.
+ * @version 0.1
+ * @date ?
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
+
 #include <sstream>
 
 #include "TextFileHandler.hpp"
@@ -20,8 +31,6 @@ std::ifstream TextFileHandler::s_input_stream;
 std::ofstream TextFileHandler::s_output_stream;
 
 std::ostringstream TextFileHandler::s_string_stream;
-
-// std::fstream TextFileHandler::file_stream;
 
 
 // Public
