@@ -11,7 +11,7 @@
 #include "TextRenderingHandler.hpp"
 
 
-/** Frost Engine by Joel Height. Version 1.0. */
+/** Frost Engine by Joel Height. Version 0.2. */
 class FrostEngine
 {
 

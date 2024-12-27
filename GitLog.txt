@@ -5,8 +5,6 @@ This file tracks specific details on what was changed each git push.
 
    - Added some file identifiers to those that didn't have them.
 
-   - Fixed the paths file to be correctly pointing to the Demo folder.
-
    - Added proper move and copy constructors along with operator= functions to TextRenderingHandler
      and ConsoleOutputHandler.
 
