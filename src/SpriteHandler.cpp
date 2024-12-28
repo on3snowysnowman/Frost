@@ -166,7 +166,7 @@ sprite_id SpriteHandler::create_sprite(uint16_t splice_x, uint16_t splice_y, uin
 { 
     sprite_id new_sprite_id = _get_next_id();
 
-    // Get a reference to the Sprite that is going to be "created". The Sprite object is garunteed
+    // Get a reference to the Sprite that is going to be "created". The Sprite object is guaranteed
     // to already exist in the vector since this is either a recycled id and the Sprite already 
     // exists, or it was just created on the last line since this is a new ID. Simply update the
     // values of the Sprite and allow it to be referenced that already exists to "create" a new 
@@ -290,7 +290,7 @@ sprite_id SpriteHandler::_get_next_id()
     available_id = s_all_sprites.size();
 
     // Add a new Sprite to the Sprites vector. The new size
-    s_all_sprites.push_back(Sprite {available_id});
+    s_all_sprites.push_back(Sprite{});
 
     return available_id;
 }

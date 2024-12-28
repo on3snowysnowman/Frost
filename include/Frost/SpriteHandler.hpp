@@ -92,7 +92,7 @@ private:
      * ID. */
     static std::vector<Sprite> s_all_sprites;
 
-    // IDs of Sprites that have been deconscructed and are available to recycle and reuse.
+    // IDs of Sprites that have been deconstructed and are available to recycle and reuse.
     static std::unordered_set<sprite_id> s_available_ids;
 
     // Tracks the number of Sprites that require each Texture.

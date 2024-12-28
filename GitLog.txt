@@ -1,6 +1,10 @@
 
 This file tracks specific details on what was changed each git push.
 
+17:
+
+   - Continued work on redesigning SpriteHandler.
+
 16:
 
    - Began redesigning SpriteHandler.

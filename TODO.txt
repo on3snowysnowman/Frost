@@ -13,3 +13,5 @@ Fix the clear file command giving an error at the beginning of the program if th
 
 Add auto generation of binary files by the Engine if no data file or asset file exists.
 
+Add a different dumping file for program output for crash logs, that is independent of FROST_DEBUG
+
