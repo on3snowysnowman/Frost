@@ -37,39 +37,6 @@ handling events such as keyboard presses.
     purposes. In other words, Frost provides the framework for doing so, but much of the work will 
     need to be written by the user.  
 
-    SETUP:
-
-        Frost requires two dependencies to be installed on your pc, and available to the compiler. 
-    These two dependencies are SDL2 (Simple Direct Media Library) and nlohmann::json.
-
-        The first step to setting up Frost is to install it to your system. Frost installs as a
-    statically linked library that your program will link to on compile. To specify where Frost 
-    should install on your computer, navigate to the "Paths" directory. In here, you will find two
-    files: 
-    
-        "Frost_Path.txt" is used to specify the path on your system where the Frost Library will be 
-    placed. I typically put it under my users directory (C:/Users/Username).
-
-        "Project_Path.txt" is used to specify the path to your project's executable directory that
-    is going to be linking to this engine. This directory is important, because the required assets
-    used by Frost will be copied into the same directory as the executable so that they are 
-    available to it during runtime. 
-
-        Once you've written both directories to their respective file, the next step is to run the 
-    "install.bat" file. This file will use cmake to automatically build and install the project 
-    into the specified directory and copy the assets into the directory of your project's 
-    executable. After this step, the installation process of Frost is complete, and next is linking
-    your project to Frost.
-
-    LINKING:
-
-        To link to Frost, use cmake. Inside the Demo directory, there are a collection of .cpp 
-    files that demonstrate the basics of using Frost. Also contained, is the CMakeLists.txt file 
-    that Cmake uses to build the project. If you examine that, you will find everything you need to
-    build and link your project.
-
-        
-
 
 # 2: Engine Functionality & Capabilites #
 

@@ -1,6 +1,15 @@
 
 This file tracks specific details on what was changed each git push.
 
+16:
+
+   - Began redesigning SpriteHandler.
+
+15:
+
+   - Removed old content from README.
+
+
 14:
 
    - Added some file identifiers to those that didn't have them.
