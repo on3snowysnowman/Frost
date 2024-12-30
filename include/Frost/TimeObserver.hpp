@@ -25,14 +25,14 @@ class TimeObserver
 
 public:
 
-    /** Gets the local date (YY-MM-DD). */
+    /** Gets the local date (MM-DD-YY). */
     static std::string get_local_date();
     
     /** Gets the local time (Hours:Minutes). */
     static std::string get_local_time();
 
     /** Returns a std::chrono::time_point of the current time. */
-    static  c_time_point get_time_point();
+    static c_time_point get_time_point();
 
     /** Returns a high precision value of the time interval in miliseconds between two c_time_points, 
      * from $start to $end.

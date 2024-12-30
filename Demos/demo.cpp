@@ -16,31 +16,30 @@ public:
 
     DemoMenu() : Menu("DemoMenu") {}
 
-    DemoMenu(ConsoleOutputHandler* coh, TextRenderingHandler* text_ren_handler) 
-        : Menu("DemoMenu") 
+    DemoMenu(ConsoleOutputHandler* coh, TextRenderingHandler* text_ren_handler, 
+        SpriteHandler* sprite_handler, const double& frame_time) 
+        : Menu("DemoMenu")
     {
         m_text_ren_handler = text_ren_handler;
         m_coh = coh;
+        m_sprite_handler = sprite_handler;
     }
 
     void start() final {}
 
     void update() final 
     {
-        Frost::handle_input_for_string_manipulation(text);
-
-        m_coh->add_str(text);
+        m_coh->add_str("Text");
+        m_coh->move_cursor(1, 0);
+        m_coh->add_ch('|');
     }
 
 private:
 
-    std::string text;
-
     TextRenderingHandler* m_text_ren_handler;
     ConsoleOutputHandler* m_coh;
+    SpriteHandler* m_sprite_handler;
 };
-    
-#include <iostream>
 
 class DemoEngine : public FrostEngine
 {
@@ -49,7 +48,10 @@ public:
 
     DemoEngine() : FrostEngine() 
     {
-        m_demo_menu = new DemoMenu(&m_coh, &m_text_ren_handler);
+        m_sprite_handler.set_sprite_scale_factor(3.0f);
+
+        m_demo_menu = new DemoMenu(&m_coh, &m_text_ren_handler, &m_sprite_handler,
+            get_frame_time_reference());
 
         MenuManager::activate_menu(m_demo_menu);
     }

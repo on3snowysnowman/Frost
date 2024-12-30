@@ -14,8 +14,12 @@
 
 #include "InputHandler.hpp"
 #include "Fr_IntLimits.hpp"
-
+#include <iostream>
 // Static Members
+
+bool InputHandler::s_is_available_keys_generated = false;
+
+std::vector<Key> InputHandler::s_pressed_available_keys;
 
 std::vector<Key> InputHandler::s_raw_pressed_keys;
 
@@ -58,7 +62,7 @@ void InputHandler::flag_key_released(Key key)
     s_delayed_keys.erase(key);
 }
 
-void InputHandler::clear_raw_keys() { s_raw_pressed_keys.clear(); }
+void InputHandler::_reset_tracked_keys() { s_raw_pressed_keys.clear(); }
 
 bool InputHandler::is_key_pressed(Key key) 
 { return s_pressed_keys.find(key) != s_pressed_keys.end(); }
@@ -68,16 +72,23 @@ bool InputHandler::is_key_pressed_and_available(Key key)
     return is_key_pressed(key) && _is_pressed_key_available(key);
 }
 
-std::vector<Key> InputHandler::get_pressed_and_available_keys()
+const std::vector<Key>& InputHandler::get_pressed_and_available_keys()
 {
-    std::vector<Key> pressed_available_keys;
+    // Available keys have already been generated this frame.
+    if(s_is_available_keys_generated) return s_pressed_available_keys;
+
+    std::cout << "Generating available keys\n";
+
+    s_pressed_available_keys.clear();
+
+    s_is_available_keys_generated = true;
 
     for(const Key& key : s_pressed_keys)
     {
-        if(_is_pressed_key_available(key)) pressed_available_keys.push_back(key);
+        if(_is_pressed_key_available(key)) s_pressed_available_keys.push_back(key);
     }
 
-    return pressed_available_keys;
+    return s_pressed_available_keys;
 }
 
 const std::vector<Key>& InputHandler::get_raw_pressed_keys() 

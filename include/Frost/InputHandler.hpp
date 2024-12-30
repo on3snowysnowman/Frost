@@ -41,9 +41,9 @@ public:
      */
     static void flag_key_released(Key key);
 
-    /** Called once per frame. Clears the raw key data, so that the new raw keys can be registered
-     * this frame. */
-    static void clear_raw_keys();
+    /** Called once per frame. Clears the raw key press vector and flags the pressed available 
+     * keys vector to be re generated. */
+    static void _reset_tracked_keys();
 
     /** Returns true if the passed key is pressed down, regardless if it is delayed or not.
      * 
@@ -58,7 +58,7 @@ public:
     static bool is_key_pressed_and_available(Key key);
 
     /** Returns a vector of the pressed keys that are available and not delayed. */
-    static std::vector<Key> get_pressed_and_available_keys();
+    static const std::vector<Key>& get_pressed_and_available_keys();
 
     /** Returns a const reference to the internal raw pressed keys. */
     static const std::vector<Key>& get_raw_pressed_keys();
@@ -67,6 +67,14 @@ public:
     static const std::unordered_set<Key> get_pressed_keys();
 
 private:
+
+    // Members
+
+    // If the pressed available keys vector has already been generated this frame.
+    static bool s_is_available_keys_generated;
+
+
+    // Methods
 
     /** Returns true if the passed key that is pressed is available. 
      * 
@@ -80,6 +88,11 @@ private:
      * timestamp, meaning the key is available to use.
      */
     static bool _check_and_handle_key_delay(Key key);
+
+    /** Keys that are pressed and are not currently delayed. This vecotr is filled when the 
+     * get_pressed_and_available_keys() method is called, and its contents will persist until the
+     * next frame when the clear_key_vectors() method is called. */
+    static std::vector<Key> s_pressed_available_keys;
 
     // Raw pressed key from a keyboard, as if you were typing in a text document
     static std::vector<Key> s_raw_pressed_keys; 

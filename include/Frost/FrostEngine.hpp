@@ -9,6 +9,7 @@
 #include "ConsoleOutputHandler.hpp"
 #include "SpriteHandler.hpp"
 #include "TextRenderingHandler.hpp"
+#include "TimeObserver.hpp"
 
 
 /** Frost Engine by Joel Height. Version 0.2. */
@@ -30,6 +31,7 @@ public:
     static int get_screen_height();
 
 
+
 protected:
 
     /** Terminates Engine simulation. This function simply flags the Engine to stop on the next 
@@ -44,6 +46,9 @@ protected:
      */
     bool _set_application_icon(std::string path_to_png);
     
+    /** Returns a const reference to the internal variable measuring the time each frame takes. */
+    const double& get_frame_time_reference();
+
     TextureHandler m_texture_handler;
     TextRenderingHandler m_text_ren_handler;
     ConsoleOutputHandler m_coh;
@@ -61,15 +66,15 @@ private:
     // Whether to use SDL's vsync functionality.
     bool m_use_vsync = false;
 
-    uint8_t m_elapsed_miliseconds_this_frame; // Number of miliseconds this frame took.
+    double m_elapsed_milliseconds_this_frame; // Number of miliseconds this frame took.
 
     uint8_t m_target_fps {}; // Target frames per second that the Engine will simulate at.
 
     // Target miliseconds per frame to achieve target fps.
-    uint8_t m_target_miliseconds_per_frame {};  
+    uint8_t m_target_milliseconds_per_frame {};  
 
     // Timestamp of the beginning of the frame. Used to calculate the miliseconds each frame takes.
-    uint64_t m_frame_start_timestamp; 
+    c_time_point m_frame_start_timestamp; 
 
     static int s_screen_width; // Screen width in pixels.
     static int s_screen_height; // Screen height in pixels.
@@ -89,6 +94,7 @@ private:
 
     SDL_Window* m_window;
     SDL_Renderer* m_renderer;
+
 
     // Methods
 

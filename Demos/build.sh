@@ -12,6 +12,8 @@ if [ ! -d $BUILD_DIRECTORY ]; then
 
     echo "$BUILD_DIRECTORY does not exist."
     mkdir "$BUILD_DIRECTORY"
+    chmod 777 $BUILD_DIRECTORY
+
     echo "Created directory"
 fi
 
@@ -19,13 +21,13 @@ fi
 echo "Configuring Engine build."
 
 # Configure cmake for the Engine build.
-cmake -B $BUILD_DIRECTORY -S . -G "Ninja"
+cmake -DCMAKE_BUILD_TYPE=Release  -B $BUILD_DIRECTORY -S . -G "Ninja"
 
 echo "Building Engine."
 
 # Build Engine
-cmake --build $BUILD_DIRECTORY --target install
 
+cmake --build $BUILD_DIRECTORY --target install
 
 # Navigate to the Demo's directory.
 cd Demos
@@ -35,15 +37,20 @@ if [ ! -d $BUILD_DIRECTORY ]; then
 
     echo "$BUILD_DIRECTORY does not exist."
     mkdir "$BUILD_DIRECTORY"
+    chmod 777 $BUILD_DIRECTORY
     echo "Created directory"
 fi
 
 echo "Configuring Demo build."
 
 # Configure cmake for the Engine build.
-cmake -B $BUILD_DIRECTORY -S . -G "Ninja"
+cmake -DCMAKE_BUILD_TYPE=Release  -B $BUILD_DIRECTORY -S . -G "Ninja"
 
 echo "Building Demo."
 
 # Build Engine
 cmake --build $BUILD_DIRECTORY 
+
+chmod 777 build
+chmod 777 -R assets 
+chmod 777 -R data

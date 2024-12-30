@@ -28,6 +28,8 @@ find_package(SDL2_ttf REQUIRED)
 
 add_executable(Demo demo.cpp)
 
+# target_compile_options(Demo PRIVATE -march=native -mtune=native)
+
 set_target_properties(Demo PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR})
 
 target_include_directories(Demo

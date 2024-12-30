@@ -20,11 +20,8 @@
 #include "MenuManager.hpp"
 #include "EventSystem.hpp"
 
-#ifdef FROST_DEBUG
-#include "ProgramOutputHandler.hpp"
+#include "TextFileHandler.hpp"
 #include "TimeObserver.hpp"
-
-#endif
 
 
 // Static Members
@@ -125,6 +122,9 @@ bool FrostEngine::_set_application_icon(std::string path_to_png)
     return true;
 }
 
+const double& FrostEngine::get_frame_time_reference()
+ { return m_elapsed_milliseconds_this_frame; }
+
 
 // Private
 
@@ -213,23 +213,16 @@ void FrostEngine::_init_SDL_and_engine()
     // If SDL subsystems failed to initialize.
     if(SDL_Init(SDL_INIT_VIDEO))
     {
-        #ifdef FROST_DEBUG
-
-        ProgramOutputHandler::log("FrostEngine::_init_SDL() -> SDL failed to initialize.", 
-            Frost::ERR);
-        #endif
-
+        TextFileHandler::add_to_buffer("[ERR] FrostEngine::_init_SDL_and_engine() -> SDL failed to initialize.");
+        TextFileHandler::write("CrashLog.txt", Frost::APPEND);
         exit(1);
     }
 
     // IF SDL_ttf failed to initialize.
     if(TTF_Init())
     {
-        #ifdef FROST_DEBUG
-        ProgramOutputHandler::log("FrostEngine::_init_SDL() -> SDL_TTF failed to initialize.",
-            Frost::ERR);
-        #endif
-
+        TextFileHandler::add_to_buffer("[ERR] FrostEngine::_init_SDL_and_engine() -> SDL_TTF failed to initialize.");
+        TextFileHandler::write("CrashLog.txt", Frost::APPEND);
         exit(1);
     }
     
@@ -239,12 +232,8 @@ void FrostEngine::_init_SDL_and_engine()
     // If the init folder does not exist in the working directory.
     if(!FileSystemHandler::does_directory_exist("data"))
     {
-        #ifdef FROST_DEBUG
-
-        ProgramOutputHandler::log("FrostEngine::_init_SDL_and_engine() -> \"data\" folder "
-            "not found", Frost::ERR);
-        #endif
-
+        TextFileHandler::add_to_buffer("[ERR] FrostEngine::_init_SDL_and_engine() -> \"data\" folder ");
+        TextFileHandler::write("CrashLog.txt", Frost::APPEND);
         exit(1);
     }
 
@@ -273,7 +262,7 @@ void FrostEngine::_init_SDL_and_engine()
         ProgramOutputHandler::log("Vsync: false\n");
         #endif
 
-        m_target_miliseconds_per_frame = 1000 / uint8_t(init_data.at("frame_limit"));
+        m_target_milliseconds_per_frame = 1000 / uint8_t(init_data.at("frame_limit"));
     }
 
     if(init_data.at("fullscreen"))
@@ -327,32 +316,37 @@ void FrostEngine::_init_SDL_and_engine()
 
 void FrostEngine::_update()
 {
+    // Esablish timestamp of the start of the frame.
+    m_frame_start_timestamp = TimeObserver::get_time_point();
+
     _clear_SDL_renderer();
 
-    InputHandler::clear_raw_keys();
+    InputHandler::_reset_tracked_keys();
 
     _handle_SDL_events();
 
     if(InputHandler::is_key_pressed(SDLK_ESCAPE)) EventSystem::invoke_event("QUIT_SIMULATION");
 
-    MenuManager::update_active_menus();
+    MenuManager::_update_active_menus();
 
-    m_coh.render();
+    m_coh._render();
 
-    // m_text_ren_handler.render();
-
-    // m_sprite_handler.render();
+    m_sprite_handler._render();
 
     _present_SDL_renderer();
+
+    // Calculate the miliseconds this frame took.
+    m_elapsed_milliseconds_this_frame = TimeObserver::calculate_interval_from_timepoints(
+        m_frame_start_timestamp, TimeObserver::get_time_point());
 }
 
 void FrostEngine::_simulation_loop_vsync()
 {
     while(m_is_active)
     {
-        // Since SDL vsync is enabled, no manual frame delay is needed.
-
         _update();
+
+        // Since SDL vsync is enabled, no manual frame delay is needed.
     }
 }
 
@@ -360,19 +354,15 @@ void FrostEngine:: _simulation_loop_no_vsync()
 {
     while(m_is_active)
     {
-        // Esablish timestamp of the start of the frame.
-        m_frame_start_timestamp = SDL_GetTicks64();
-
         _update();
 
-        // Calculate the miliseconds this frame took.
-        m_elapsed_miliseconds_this_frame = SDL_GetTicks64() - m_frame_start_timestamp;
-
         // If the measured frame time is less than the target frame time.
-        if(m_elapsed_miliseconds_this_frame < m_target_miliseconds_per_frame)
+        if(m_elapsed_milliseconds_this_frame < m_target_milliseconds_per_frame)
         {
             // Delay for the difference between the measured miliseconds and target miliseconds.
-            SDL_Delay(m_target_miliseconds_per_frame - m_elapsed_miliseconds_this_frame);
+            SDL_Delay(m_target_milliseconds_per_frame - m_elapsed_milliseconds_this_frame);
+
+            m_elapsed_milliseconds_this_frame = m_target_milliseconds_per_frame;
         }
     }
 }

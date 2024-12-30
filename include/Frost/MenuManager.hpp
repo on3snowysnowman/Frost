@@ -20,7 +20,7 @@ class MenuManager
 
 public:
 
-    static void update_active_menus();
+    static void _update_active_menus();
 
     /** Registers a Menu with the MenuManager using its unique ID. This method is handled 
      * internally by each Menu instance when it's created, so users should not need to call this 
@@ -58,8 +58,8 @@ public:
 private:
 
     // Menus that will be updated each frame.
-    static std::list<Menu*> active_menus;
+    static std::list<Menu*> s_active_menus;
 
     // All Menus that are tracked by the MenuManager. Menu's IDs are used as the key.
-    static std::unordered_map<std::string, Menu*> all_menus;
+    static std::unordered_map<std::string, Menu*> s_all_menus;
 };

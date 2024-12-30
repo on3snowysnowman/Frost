@@ -1,16 +1,29 @@
+/**
+ * @file SpriteHandler.hpp
+ * @author Joel Height (On3SnowySnowman@gmail.com)
+ * @brief Single class declaration.
+ * @version 0.2
+ * @date 12-28-24
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
+
 #pragma once
 
 #include <string>
 #include <vector>
-#include <unordered_set>
 #include <unordered_map>
 
-#include <SDL2/SDL_image.h>
+#include <SDL_image.h>
 
-#include "TextureHandler.hpp"
 #include "Sprite.hpp"
+#include "TextureHandler.hpp"
 
 
+/** 
+ * @brief Handles tracking created Sprites and rendering them to the screen.
+ */
 class SpriteHandler
 {
 
@@ -19,24 +32,36 @@ public:
     SpriteHandler();
 
     SpriteHandler(TextureHandler* texture_handler);
-
-    /** Renders Sprites flagged to render to the screen. */
-    void render();
-
+    
+    /** Renders all Sprites that have been flagged to render. */
+    void _render();
+    
     /** Sets the position of a Sprite on the screen to a new position.
      * 
-     * @param id ID of the Sprite to change.
+     * @param id ID of the Sprite to modify.
      * @param x X position in pixels.
      * @param y Y position in pixels.
      */
     void set_sprite_position(sprite_id id, uint16_t x, uint16_t y);
+    
+    /** Modifys a Sprite's position data by the passed amounts.
+     * 
+     * @param id ID of the Sprite to modify.
+     * @param delta_x X translation in pixels.
+     * @param delta_y Y translation in pixels.
+    */
+    void modify_sprite_position(sprite_id, int16_t delta_x, int16_t delta_y);
 
-    /** Flags a Sprite to render each frame. Only call this method once to begin rendering the
-     * Sprite. To cease rendering, call the deflag_render method. 
+    /** 
+     * @brief Flags a Sprite to render each frame on a specified Z layer.
+     * 
+     * Only call this method once to begin rendering the Sprite. To cease rendering, call the 
+     * deflag_render method. 
      * 
      * @param id ID of the Sprite to render.
+     * @param layer Z layer to render it on.
      */
-    void flag_render(sprite_id id);
+    void flag_render(sprite_id id, uint16_t layer = 0);
 
     /** Flags a Sprite to stop rendering. 
      * 
@@ -44,7 +69,7 @@ public:
      */
     void deflag_render(sprite_id id);
 
-    /** Deletes the Sprite assigned to the passed ID, and frees the ID so that it is able to be
+    /** Decommissions the Sprite assigned to the passed ID, and frees the ID so that it is able to be
      * reused. 
      * 
      * @param id ID of the Sprite to delete.
@@ -75,18 +100,23 @@ public:
      */
     static const Sprite& get_sprite(sprite_id id);
 
-    uint64_t get_size();
-
+    std::size_t get_size();
 
 private:
 
     // Members
-
+    
     // Factor that each Sprite will be upscaled by when rendered. 
     float m_sprite_scale_factor = 1.0f;
 
-    // Vector of Sprites (Resembled as their ID's) to render each frame. Sorted low to high.
-    std::vector<sprite_id> m_sprites_to_render;
+    // Active Z layers that currently being rendered on.
+    std::vector<uint16_t> m_active_layers;
+
+    // Z layers to their Sprites that are active on them. 
+    std::unordered_map<uint16_t, std::vector<sprite_id>> m_layers_to_sprites;
+
+    // Active Sprite ID to its respective layer it is being rendered on.
+    std::unordered_map<sprite_id, uint16_t> m_sprites_to_layers;
 
     /** All Sprites that have been created. The index of the vector corresponds with the Sprite's 
      * ID. */
@@ -98,39 +128,28 @@ private:
     // Tracks the number of Sprites that require each Texture.
     static std::unordered_map<SDL_Texture*, uint64_t> s_texture_dependencies;
 
-
     TextureHandler* m_texture_handler;
 
 
     // Methods
+    
+    /** Inserts the sprite_id in its correct sorted position inside the vector of sprite_ids of the
+     * respective layer. */
+    void _insert_id_in_layer_vector(sprite_id id, uint16_t layer);
 
     /** Deducts 1 from the number of tracked Sprite dependencies from the passed Texture. If the 
      * number of dependencies reaches 0, the Texture is removed from the map and is deleted from 
      * heap memory using the TextureHandler.
      */
     void _remove_texture_dependency(SDL_Texture* texture);
-    
-    /** Adds the passed ID in the Sprite rendering vector in the correct position sorted by value.
-     * 
-     * @param id ID to place.
-     */
-    void _place_id_in_rendering_ids(sprite_id id);
 
-    /** @brief Removes the id from the m_sprites_to_render vector.
-     * 
-     * @param id ID to remove.
-     */
-    void _remove_id_from_rendering_ids(sprite_id id);
+    /** Returns true if the Sprite assigned to the passed ID is currently rendering.  */
+    bool _is_sprite_rendering(sprite_id id);
 
-    /** Returns true if the Sprite assigned to the passed ID is existant and available. 
-     * 
-     * @param id ID to check.
-    */
+    /** Returns true if the Sprite assigned to the passed ID is existant and available. */
     static bool _is_id_valid(sprite_id id);
 
     /** Gets the next available ID for a new Sprite, whether that be a recycled ID from a Sprite
-     * that has been deleted, or a new ID that doesn't exist.
-     */
+     * that has been deleted, or a new ID that doesn't exist. */
     static sprite_id _get_next_id();
 };
-

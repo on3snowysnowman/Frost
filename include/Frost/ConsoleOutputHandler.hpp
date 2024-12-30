@@ -114,7 +114,7 @@ public:
     void set_focus(uint16_t new_focus);
 
     /** Renders the content buffered this frame, and resets the cursor's position to the top left. */
-    void render();
+    void _render();
 
     /** Returns the focus. */
     uint16_t get_focus() const;

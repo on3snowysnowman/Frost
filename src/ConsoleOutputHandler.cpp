@@ -260,7 +260,7 @@ void ConsoleOutputHandler::set_focus(uint16_t new_focus)
     // _calculate_view_around_focus();
 }
 
-void ConsoleOutputHandler::render() 
+void ConsoleOutputHandler::_render() 
 {  
     _calculate_view_around_focus();
 

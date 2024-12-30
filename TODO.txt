@@ -1,17 +1,8 @@
-Reconfigure InputHandler such that it only calculates all available keys once per frame.
-
-Reconfigure ConsoleOutputHandler rendering?
+Add auto generation of binary files by the Engine if no data file or asset file exists.
 
 Add functionality for UITool Items to be able to move the cursor when editing any text.
 
 Finish README.txt and other documentation.
 
-Configure SpriteHandler to render sprites in custom orders, not just by sprite id.
-
-Fix the clear file command giving an error at the beginning of the program if the Outputlog doesn't
-   exist.
-
-Add auto generation of binary files by the Engine if no data file or asset file exists.
-
-Add a different dumping file for program output for crash logs, that is independent of FROST_DEBUG
+Add Animation support 
 

@@ -12,6 +12,7 @@
 #include "TextureHandler.hpp"
 #include "JsonHandler.hpp"
 #include "FileSystemHandler.hpp"
+#include "TextFileHandler.hpp"
 
 #ifdef FROST_DEBUG
 
@@ -65,12 +66,9 @@ void TextureHandler::draw(SDL_Texture* texture, const SDL_Rect& source, const SD
     // If this color isn't registered.
     if(m_colors.find(color) == m_colors.end())
     {
-        #ifdef FROST_DEBUG
-
-        ProgramOutputHandler::log("TextureHandler.draw() -> Color: \"" + color 
-            + "\" is not a registered color", Frost::ERR);
-        #endif
-
+        TextFileHandler::add_to_buffer("TextureHandler.draw() -> Color: \"" + color 
+            + "\" is not a registered color");
+        TextFileHandler::write("CrashLog.txt", Frost::APPEND);
         exit(1);
     }
 
@@ -198,12 +196,9 @@ SDL_Texture* TextureHandler::create_texture(std::string png_path) const
     // If the file does not exist.
     if(!FileSystemHandler::does_directory_exist(png_path))
     {
-        #ifdef FROST_DEBUG
-
-        ProgramOutputHandler::log("TextureHandler.create_texture()-> Path \""
-            + png_path + "\" does not exist.", Frost::ERR);
-        #endif
-
+        TextFileHandler::add_to_buffer("[ERR] TextureHandler.create_texture()-> Path \""
+            + png_path + "\" does not exist.");
+        TextFileHandler::write("CrashLog.txt", Frost::APPEND);
         exit(1);
     }
 
