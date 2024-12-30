@@ -10,9 +10,16 @@ This file tracks overall changes and fixes to the Engine.
 
     - Reconfigured TextRenderingHandler to use SDL_ttf.
 
+    - Upgraded SpriteHandler to now support layered rendering of Sprites.
+
     FIXES
 
     - Fixed InputHandler not properly blocking keys after about a minute of simulation.
+
+    - TextRenderingHandler and ConsoleOutputHandler now properly handle move and copy constructor
+      functions, rather than using the default ones.
+
+    - SDL_Renderer background is now properly being set by the init file. 
 
 
 # Version 0.1
