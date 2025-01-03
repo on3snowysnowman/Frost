@@ -3,33 +3,23 @@
 # Specify the build directory.
 BUILD_DIRECTORY="build"
 
-# Navigate to source directory. 
-cd .. 
-
-# Run Engine's build script.
-./build.sh
-
-# Navigate to the Demo's directory.
-cd Demos
-
 # If the build directory does not exist.
 if [ ! -d $BUILD_DIRECTORY ]; then
 
-    echo "Directory \"$BUILD_DIRECTORY\" does not exist."
+    echo "$BUILD_DIRECTORY does not exist."
     mkdir "$BUILD_DIRECTORY"
     chmod 777 $BUILD_DIRECTORY
+
     echo "Created directory"
 fi
 
-echo "Configuring Demo build."
+echo "Configuring Engine build."
 
 # Configure cmake for the Engine build.
 cmake -DCMAKE_BUILD_TYPE=Release  -B $BUILD_DIRECTORY -S . -G "Ninja"
 
-echo "Building Demo."
+echo "Building Engine."
 
 # Build Engine
-cmake --build $BUILD_DIRECTORY 
 
-chmod 777 -R assets 
-chmod 777 -R data
+sudo cmake --build $BUILD_DIRECTORY --target install

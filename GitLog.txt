@@ -1,6 +1,19 @@
 
 This file tracks specific details on what was changed each git push.
 
+20:
+
+   - Reconfigured build files such that the engine has its own build script and can be ran 
+     independantly of the Demo build scripts.
+
+19:
+   
+   - Configured the main engine to have its own build file for only building the engine and 
+     installing it to disk.
+
+   
+
+
 18:
 
    - Finished reconfiguring SpriteHandler.

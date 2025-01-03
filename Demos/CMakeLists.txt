@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.24)
 
 project(Frost_Demos)
 
-# Fetch content of path file.
+# Fetch content of paths file.
 file(READ "../TargetPaths.txt" PATH_FILE_CONTENTS)
 
 # Split the content by lines.

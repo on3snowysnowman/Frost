@@ -2,15 +2,15 @@ cmake_minimum_required(VERSION 3.24)
 
 project(Frost VERSION "0.2")
 
-include(CheckIPOSupported)
-check_ipo_supported(RESULT supported OUTPUT error)
+# include(CheckIPOSupported)
+# check_ipo_supported(RESULT supported OUTPUT error)
 
-if( supported )
-    message(STATUS "IPO / LTO enabled")
-    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
-else()
-    message(STATUS "IPO / LTO not supported: <${error}>")
-endif()
+# if( supported )
+#     message(STATUS "IPO / LTO enabled")
+#     set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
+# else()
+#     message(STATUS "IPO / LTO not supported: <${error}>")
+# endif()
 
 # Enable Degug Mode.
 add_compile_definitions(FROST_DEBUG)
