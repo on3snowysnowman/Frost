@@ -1,6 +1,10 @@
 
 This file tracks specific details on what was changed each git push.
 
+21:
+
+   - Added a weighted distribution test file for testing weighted distribution.
+
 20:
 
    - Reconfigured build files such that the engine has its own build script and can be ran 
