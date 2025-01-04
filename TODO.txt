@@ -1,3 +1,5 @@
+FIX FULL STATIC CLASSES WITH STATIC FIASCO
+
 Add auto generation of binary files by the Engine if no data file or asset file exists.
 
 Add functionality for UITool Items to be able to move the cursor when editing any text.

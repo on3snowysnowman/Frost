@@ -12,6 +12,8 @@ This file tracks overall changes and fixes to the Engine.
 
     - Upgraded SpriteHandler to now support layered rendering of Sprites.
 
+    - Added a WeightDistribution class for generating random numbers with set probabilities.
+
     FIXES
 
     - Fixed InputHandler not properly blocking keys after about a minute of simulation.
@@ -45,5 +47,5 @@ This file tracks overall changes and fixes to the Engine.
     - Added the main FrostEngine.
     - Added ProgramOutputHandler.
     - Added Fr_StringManip.
-    - Added FileSystemhandler.
+    - Added FileSystemHandler.
     - Added JsonHandler.

@@ -213,7 +213,7 @@ void FrostEngine::_init_SDL_and_engine()
     // If SDL subsystems failed to initialize.
     if(SDL_Init(SDL_INIT_VIDEO))
     {
-        TextFileHandler::add_to_buffer("[ERR] FrostEngine::_init_SDL_and_engine() -> SDL failed to initialize.");
+        TextFileHandler::add_to_buffer("[ERR] FrostEngine::_init_SDL_and_engine() -> SDL failed to initialize.\n");
         TextFileHandler::write("CrashLog.txt", Frost::APPEND);
         exit(1);
     }
@@ -221,7 +221,7 @@ void FrostEngine::_init_SDL_and_engine()
     // IF SDL_ttf failed to initialize.
     if(TTF_Init())
     {
-        TextFileHandler::add_to_buffer("[ERR] FrostEngine::_init_SDL_and_engine() -> SDL_TTF failed to initialize.");
+        TextFileHandler::add_to_buffer("[ERR] FrostEngine::_init_SDL_and_engine() -> SDL_TTF failed to initialize.\n");
         TextFileHandler::write("CrashLog.txt", Frost::APPEND);
         exit(1);
     }
@@ -232,7 +232,8 @@ void FrostEngine::_init_SDL_and_engine()
     // If the init folder does not exist in the working directory.
     if(!FileSystemHandler::does_directory_exist("data"))
     {
-        TextFileHandler::add_to_buffer("[ERR] FrostEngine::_init_SDL_and_engine() -> \"data\" folder ");
+        TextFileHandler::add_to_buffer("[ERR] FrostEngine::_init_SDL_and_engine() -> \"data\" "
+        "folder does not exist\n");
         TextFileHandler::write("CrashLog.txt", Frost::APPEND);
         exit(1);
     }

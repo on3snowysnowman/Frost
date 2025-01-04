@@ -16,10 +16,13 @@ fi
 echo "Configuring Engine build."
 
 # Configure cmake for the Engine build.
+
 cmake -DCMAKE_BUILD_TYPE=Release  -B $BUILD_DIRECTORY -S . -G "Ninja"
+
 
 echo "Building Engine."
 
 # Build Engine
 
 sudo cmake --build $BUILD_DIRECTORY --target install
+

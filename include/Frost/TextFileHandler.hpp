@@ -70,18 +70,19 @@ public:
 
 private:
 
-    // Members
-    
-    // Buffered content that will be written to a file on write() call.
-    static std::string s_buffer;
+    // Methods
 
-    // Used for storing the converted string value of the s_string_stream.
-    static std::string s_fetched_content;
+    /** Construct on First Use function for the input stream. Prevents static fiasco. */
+    static std::ifstream& _get_input_stream();
 
-    static std::ifstream s_input_stream;
+    /** Construct on First Use function for the output stream. Prevents static fiasco. */
+    static std::ofstream& _get_output_stream();
 
-    static std::ofstream s_output_stream;
+    /** Construct on First Use function for the buffer. Prevents static fiasco. The buffer contains
+     * buffered content that will be written to a file on the next "write()" call. */
+    static std::string& _get_buffer();
 
-    static std::ostringstream s_string_stream;
-
+    /** Construct on First Use function for the string stream. Prevents static fiasco. The string
+     * stream is used for pulling in data from the input stream buffer. */
+    static std::stringstream& _get_string_stream();
 };

@@ -1,6 +1,14 @@
 
 This file tracks specific details on what was changed each git push.
 
+23:
+
+   - Fixed static fiasco with TextFileHandler by adding Construct on First Use methods.
+
+22:
+
+   - Added a WeightDistribution class for generating random numbers with set probabilities.
+
 21:
 
    - Added a weighted distribution test file for testing weighted distribution.
@@ -8,7 +16,7 @@ This file tracks specific details on what was changed each git push.
 20:
 
    - Reconfigured build files such that the engine has its own build script and can be ran 
-     independantly of the Demo build scripts.
+     independently of the Demo build scripts.
 
 19:
    

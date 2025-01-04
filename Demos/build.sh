@@ -31,5 +31,5 @@ echo "Building Demo."
 # Build Engine
 cmake --build $BUILD_DIRECTORY 
 
-chmod 777 -R assets 
-chmod 777 -R data
+sudo chmod 777 -R assets 
+sudo chmod 777 -R data

@@ -67,7 +67,7 @@ void TextureHandler::draw(SDL_Texture* texture, const SDL_Rect& source, const SD
     if(m_colors.find(color) == m_colors.end())
     {
         TextFileHandler::add_to_buffer("TextureHandler.draw() -> Color: \"" + color 
-            + "\" is not a registered color");
+            + "\" is not a registered color.\n");
         TextFileHandler::write("CrashLog.txt", Frost::APPEND);
         exit(1);
     }
@@ -197,7 +197,7 @@ SDL_Texture* TextureHandler::create_texture(std::string png_path) const
     if(!FileSystemHandler::does_directory_exist(png_path))
     {
         TextFileHandler::add_to_buffer("[ERR] TextureHandler.create_texture()-> Path \""
-            + png_path + "\" does not exist.");
+            + png_path + "\" does not exist.\n");
         TextFileHandler::write("CrashLog.txt", Frost::APPEND);
         exit(1);
     }

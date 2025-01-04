@@ -67,7 +67,7 @@ void SpriteHandler::set_sprite_position(sprite_id id, uint16_t x, uint16_t y)
         // Crash the program, since no valid Sprite object exists for this ID.
 
         TextFileHandler::add_to_buffer("[ERR] SpriteHandler.set_sprite_position() -> Sprite ID : \"" +
-                std::to_string(id) + "\" does not exist.");
+                std::to_string(id) + "\" does not exist.\n");
         TextFileHandler::write("CrashLog.txt", Frost::APPEND);
         exit(1);
     }
@@ -157,7 +157,7 @@ void SpriteHandler::delete_sprite(sprite_id id)
         // Crash the program, since no valid Sprite object exists for this ID.
 
         TextFileHandler::add_to_buffer("[ERR] SpriteHandler.delete_sprite() -> Sprite ID : \"" +
-            std::to_string(id) + "\" does not exist.");
+            std::to_string(id) + "\" does not exist.\n");
         TextFileHandler::write("CrashLog.txt", Frost::APPEND);
         exit(1);
     }

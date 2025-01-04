@@ -20,27 +20,16 @@
 #endif
 
 
-// Static Members
-
-std::string TextFileHandler::s_buffer;
-
-std::string TextFileHandler::s_fetched_content;
-
-std::ifstream TextFileHandler::s_input_stream;
-
-std::ofstream TextFileHandler::s_output_stream;
-
-std::ostringstream TextFileHandler::s_string_stream;
-
-
 // Public
 
-void TextFileHandler::add_to_buffer(std::string str) { s_buffer.append(str); }
+void TextFileHandler::add_to_buffer(std::string str) { _get_buffer().append(str); }
 
-void TextFileHandler::clear_buffer() { s_buffer.clear(); }
+void TextFileHandler::clear_buffer() { _get_buffer().clear(); }
 
 bool TextFileHandler::clear_file(std::string file_path)
 {
+    std::ofstream& s_output_stream = _get_output_stream();
+
     // If the path does not exist.
     if(!FileSystemHandler::does_directory_exist(file_path))
     {
@@ -76,6 +65,9 @@ bool TextFileHandler::clear_file(std::string file_path)
 
 bool TextFileHandler::write(std::string file_path, Frost::WriteType write_type, bool clear_buffer)
 {
+    std::ofstream& s_output_stream = _get_output_stream();
+    std::string& s_buffer = _get_buffer();
+
     // Handle write behavior.
     switch(write_type)
     {
@@ -114,6 +106,11 @@ bool TextFileHandler::write(std::string file_path, Frost::WriteType write_type, 
 
 std::string TextFileHandler::fetch(std::string file_path)
 {
+    std::string fetched_content;
+
+    std::ifstream& s_input_stream = _get_input_stream();
+    std::stringstream& s_string_stream = _get_string_stream();
+
     // If the path does not exist.
     if(!FileSystemHandler::does_directory_exist(file_path))
     {
@@ -144,11 +141,34 @@ std::string TextFileHandler::fetch(std::string file_path)
     s_string_stream << s_input_stream.rdbuf();
 
     // Get the string value of the string stream.
-    s_fetched_content = s_string_stream.str();
+    fetched_content = s_string_stream.str();
 
     s_string_stream.clear();
 
     s_input_stream.close();
 
-    return s_fetched_content;
+    return fetched_content;
+}
+
+
+// Private
+
+std::ofstream& TextFileHandler::_get_output_stream() {
+    static std::ofstream output_stream;
+    return output_stream;
+}
+
+std::ifstream& TextFileHandler::_get_input_stream() {
+    static std::ifstream input_stream;
+    return input_stream;
+}
+
+std::string& TextFileHandler::_get_buffer() {
+    static std::string buffer;
+    return buffer;
+}
+
+std::stringstream& TextFileHandler::_get_string_stream() {
+    static std::stringstream string_stream;
+    return string_stream;
 }
