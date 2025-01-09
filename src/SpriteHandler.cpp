@@ -215,11 +215,6 @@ const Sprite &SpriteHandler::get_sprite(sprite_id id)
     return s_all_sprites.at(id);
 }
 
-std::size_t SpriteHandler::get_size()
-{
-    return s_all_sprites.capacity() * sizeof(Sprite);
-}
-
 
 // Private
 

@@ -1,8 +1,8 @@
 #pragma once
 
-#include <vector>
 #include <fstream>
-#include <cstdio>
+#include <cstdint>
+#include <vector>
 
 /** A static class that contains useful methods for file system management. This includes the 
  * ability to create a directory, see what files are at a directory, and make and delete files. */
@@ -43,6 +43,10 @@ public:
      * @param directory_path Directory to check.
     */
     static bool does_directory_exist(std::string directory_path);
+
+    /** Returns the size in bytes of the file at the passed path. Returns 0 if the failed tobe
+     * parsed. */
+    static uintmax_t get_file_size(std::string file_path);
 
     /** Returns the path of the current working directory. */
     static std::string get_current_path();

@@ -1,6 +1,16 @@
 
 This file tracks specific details on what was changed each git push.
 
+24:
+
+   - Fixed typos along with redundant Demo method in SpriteHandler class.
+   - Added a new method to the FileSystemHandler for getting file sizes.   
+   - Added seperate shell file to install asset and data directories. This way, cmake no longer 
+     installs them as root and unaccessable. 
+   - Added another sample method to the WeightedDistribution class for sampling from a specified
+     index range.
+
+
 23:
 
    - Fixed static fiasco with TextFileHandler by adding Construct on First Use methods.

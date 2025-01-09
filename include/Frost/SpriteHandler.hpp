@@ -100,8 +100,6 @@ public:
      */
     static const Sprite& get_sprite(sprite_id id);
 
-    std::size_t get_size();
-
 private:
 
     // Members

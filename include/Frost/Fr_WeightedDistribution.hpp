@@ -104,18 +104,21 @@ public:
     uint32_t size() const { return N; }
 
     /**
-     * Selects and returns a value based on the weighted probability distribution.
+     * Selects and returns a value from the specified values based on the weighted probability distribution.
      */
     const T& sample() const
     {
-        const uint32_t RANDOM_VALUE = FrostRandom::get_random_int(1, m_cumulative_weights.back());
+        // Invoke the underlying sample method with the full range of values.
+        return _sample(0, N - 1);
+    }
 
-        // Find the the index in the cumulative weights array where its value is greater than or 
-        // equal to the random generated number. 
-        const uint32_t* it = 
-            std::lower_bound(m_cumulative_weights.begin(), m_cumulative_weights.end(), RANDOM_VALUE);
-
-        return m_values.at(it - m_cumulative_weights.begin());
+    /** Selects and returns a random weighted value from the specified values. The parameters 
+     * 'start_index' and 'end_index' represent the inclusive index range where values will be selected from.
+    */
+    const T& sample(uint32_t start_index, uint32_t end_index) const
+    {
+        // Invoke the underlying sample method with the specified index range.
+        return _sample(start_index, end_index);
     }
 
 private:
@@ -166,5 +169,29 @@ private:
             // index and adding the raw weight of this index to it.
             m_cumulative_weights.at(i) = m_cumulative_weights.at(i - 1) + m_weights.at(i);
         }
+    }
+
+    /** Underlying sample method that returns a random weighted value from the 'm_values' array 
+     * within the inclusive range of the specified indexes. */
+    const T& _sample(uint32_t start_index, uint32_t end_index) const
+    {
+        if(end_index >= m_values.size() || start_index > end_index)
+        {
+            TextFileHandler::add_to_buffer("[ERR] Fr_WeightedDistribution::_sample("
+                "uint32_t start_index, uint32_t end_index) -> Attempted to sample from invalid "
+                "range\n");
+            TextFileHandler::write("CrashLog.txt", Frost::APPEND);
+            exit(1);
+        };
+
+        const uint32_t RANDOM_VALUE = FrostRandom::get_random_int(m_cumulative_weights.at(start_index), 
+            m_cumulative_weights.at(end_index));
+
+        // Find the the index in the cumulative weights array where its value is greater than or 
+        // equal to the random generated number. 
+        const uint32_t* it = 
+            std::lower_bound(m_cumulative_weights.begin() + start_index, m_cumulative_weights.end() - ((N - 1) - end_index), RANDOM_VALUE);
+
+        return m_values.at(it - m_cumulative_weights.begin());
     }
 };

@@ -42,7 +42,7 @@ public:
     /** Clears the buffer of all added text. */
     static void clear_buffer();
 
-    /** Clears the contents of a file. If the file doesn't exist, an empty on is created. 
+    /** Clears the contents of a file. If the file doesn't exist, an empty one is created. 
      * Returns true if the clear (or creation) was successful.
      * 
      * @param file_path Path to the file.

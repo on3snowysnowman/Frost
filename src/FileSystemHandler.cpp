@@ -66,6 +66,14 @@ bool FileSystemHandler::does_directory_exist(std::string directory_path)
     return std::filesystem::exists(directory_path);
 }
 
+uintmax_t FileSystemHandler::get_file_size(std::string file_path)
+{
+    // If the file doesn't exist.
+    if(!does_directory_exist(file_path)) return 0;
+
+    return std::filesystem::file_size(file_path);
+}
+
 std::string FileSystemHandler::get_current_path()
 {
     return std::filesystem::current_path().string();
