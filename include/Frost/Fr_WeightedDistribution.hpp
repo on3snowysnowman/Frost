@@ -40,31 +40,32 @@ public:
  
     WeightedDistribution() {}
 
-    WeightedDistribution(std::initializer_list<T> values, std::initializer_list<int> weights)
+    WeightedDistribution(std::initializer_list<T> values, std::initializer_list<uint32_t> weights)
     {
-        // Initializer list sizes do not match the template size of this class.
-        if(values.size() != N || weights.size() != N)
+        set_values(values);
+        set_weights(weights);
+    }
+
+    WeightedDistribution(const std::vector<T>& values, const std::vector<T>& weights)
+    {
+        set_values(values);
+        set_weights(weights);
+    }
+
+    /** Sets the weights for the values. */
+    void set_weights(std::initializer_list<uint32_t> weights)
+    {   
+        // Initializer list size does not match the template size of this class.
+        if(weights.size() != N)
         {
-            TextFileHandler::add_to_buffer("[ERR] WeightedDistribution::WeightedDistribution(std::"
-                "initializer_list<T> values, std::initializer_list<int> weights) -> "
-                "Size of initializer list(s) do not match specified template size.\n");
+            TextFileHandler::add_to_buffer("[ERR] WeightedDistribution::set_weights(std::initiali"
+                "zer_list<int> weights) -> Size of initializer list does not match specified tem"
+                "plate size.\n");
             TextFileHandler::write("CrashLog.txt", Frost::APPEND);
             exit(1);
         }
 
-        // No values to parse.
-        if(m_values.size() == 0) return;
-
-        // Temp index iterator.
         int i = 0;
-
-        for(const T& _value : values)
-        {
-            m_values.at(i) = _value;
-            ++i;
-        }
-
-        i = 0;
 
         for(const int num : weights)
         {
@@ -75,30 +76,85 @@ public:
         _sum_weights();
     }
 
-
-    WeightedDistribution(const std::vector<T>& values, const std::vector<T>& weights)
-    {
-        // Initializer list sizes do not match the template size of this class.
-        if(values.size() != N || weights.size() != N)
+    /** Sets the weights for the values. */
+    void set_weights(const std::vector<uint32_t>& weights)
+    {   
+        // Vector size does not match the template size of this class.
+        if(weights.size() != N)
         {
-            TextFileHandler::add_to_buffer("[ERR] WeightedDistribution::WeightedDistribution(std::"
-                "const std::vector<T>& values, const std::vector<T>& weights) -> "
-                "Size of vector(s) do not match specified template size.\n");
+            TextFileHandler::add_to_buffer("[ERR] WeightedDistribution::set_weights(std::"
+                "const std::vector<T>& weights) -> "
+                "Size of vector does not match specified template size.\n");
             TextFileHandler::write("CrashLog.txt", Frost::APPEND);
             exit(1);
         }
-
-        // No values to parse.
-        if(m_values.size() == 0) return;
         
         for(int i = 0; i < N; ++i)
         {
-            m_values.at(i) = values.at(i);
             m_weights.at(i) = weights.at(i);
         }
 
         _sum_weights();
     }
+
+    /** Sets the values that are sampled from. */
+    void set_values(std::initializer_list<T> values)
+    {   
+        // Initializer list size does not match the template size of this class.
+        if(values.size() != N)
+        {
+            TextFileHandler::add_to_buffer("[ERR] WeightedDistribution::set_values(std::initiali"
+                "zer_list<int> values) -> Size of initializer list does not match specified tem"
+                "plate size.\n");
+            TextFileHandler::write("CrashLog.txt", Frost::APPEND);
+            exit(1);
+        }
+
+        int i = 0;
+
+        for(const T& value : values)
+        {
+            m_values.at(i) = value;
+            ++i;
+        }
+    }
+
+    /** Sets the values that are sampled from. */
+    void set_values(const std::vector<T>& values)
+    {   
+        // Vector size does not match the template size of this class.
+        if(values.size() != N)
+        {
+            TextFileHandler::add_to_buffer("[ERR] WeightedDistribution::set_values(std::vector"
+                "<int> values) -> Vector size does not match specified template size.\n");
+            TextFileHandler::write("CrashLog.txt", Frost::APPEND);
+            exit(1);
+        }
+
+        for(int i = 0; i < N; ++i)
+        {
+            m_values.at(i) = values.at(i);
+        }
+    }
+
+    /** Modifies the weight at the index of 'weight_index' inside the weights array by
+     * adding the 'delta_weight' value to it. */
+    void modify_weight(std::size_t weight_index, uint32_t delta_weight) 
+    {
+
+    }
+
+    /** Sets the weight at the index of 'weight_index' inside the weights array to
+     * 'new_weight'. */
+    void set_weight(std::size_t weight_index, uint32_t new_weight) {}
+
+    /** Modifies the value at the index of 'value_index' inside the weights array by
+     * adding the 'delta_value' value to it. */
+    void modify_value(std::size_t value_index, uint32_t delta_value) {}
+
+    /** Sets the value at the index of 'value_index' inside the weights array to
+     * 'new_value'. */
+    void set_value(std::size_t value_index, uint32_t new_value) {}
 
     /** Returns the number of values that can be generated. */
     uint32_t size() const { return N; }
@@ -179,18 +235,26 @@ private:
         {
             TextFileHandler::add_to_buffer("[ERR] Fr_WeightedDistribution::_sample("
                 "uint32_t start_index, uint32_t end_index) -> Attempted to sample from invalid "
-                "range\n");
+                "range.\n");
             TextFileHandler::write("CrashLog.txt", Frost::APPEND);
             exit(1);
         };
 
-        const uint32_t RANDOM_VALUE = FrostRandom::get_random_int(m_cumulative_weights.at(start_index), 
+        int lower_bound = 0;
+
+        if(start_index != 0)
+        {
+            lower_bound = m_cumulative_weights.at(start_index);
+        }
+
+        const uint32_t RANDOM_VALUE = FrostRandom::get_random_int(
+            m_cumulative_weights.at(start_index) * (start_index != 0), 
             m_cumulative_weights.at(end_index));
 
         // Find the the index in the cumulative weights array where its value is greater than or 
         // equal to the random generated number. 
-        const uint32_t* it = 
-            std::lower_bound(m_cumulative_weights.begin() + start_index, m_cumulative_weights.end() - ((N - 1) - end_index), RANDOM_VALUE);
+        const uint32_t* it = std::lower_bound(m_cumulative_weights.begin() + start_index, 
+            m_cumulative_weights.end() - ((N - 1) - end_index), RANDOM_VALUE);;
 
         return m_values.at(it - m_cumulative_weights.begin());
     }

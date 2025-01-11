@@ -1,12 +1,17 @@
 
 This file tracks specific details on what was changed each git push.
 
+25:
+
+   - Began adding a set of methods in the WeightedDistribution class for setting and modifying 
+     weights and values.
+
 24:
 
    - Fixed typos along with redundant Demo method in SpriteHandler class.
    - Added a new method to the FileSystemHandler for getting file sizes.   
-   - Added seperate shell file to install asset and data directories. This way, cmake no longer 
-     installs them as root and unaccessable. 
+   - Added separate shell file to install asset and data directories. This way, cmake no longer 
+     installs them as root and unaccessible. 
    - Added another sample method to the WeightedDistribution class for sampling from a specified
      index range.
 

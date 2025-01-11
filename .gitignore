@@ -5,6 +5,7 @@ Demos/OutputLog.txt
 Demos/Demo
 AutoFileGen
 TargetPaths.txt
+CrashLog.txt
 .vscode
 Paths
 *.exe
