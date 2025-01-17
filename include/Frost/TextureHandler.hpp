@@ -69,7 +69,7 @@ public:
     SDL_Texture* create_texture(std::string png_path) const;
 
     /** Given an open font, create an atlas texture containing all renderable characters. */
-    SDL_Texture* create_font_atlas_texture(TTF_Font* font, int font_width, int font_height) const;
+    SDL_Texture* create_font_atlas_texture(TTF_Font* font, int font_width, int font_height) ;
 
 private:
 

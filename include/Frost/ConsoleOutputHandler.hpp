@@ -15,6 +15,14 @@
 class ConsoleOutputHandler
 {
 
+/** I have thought about making ConsoleOutputHandler a child class of TextRenderingHandler to 
+ * prevent the COH from needing to maintain many of the get and set methods that the TRH has. 
+ * However, this ultimately proved to be not a great idea, as the public methods of the TRH like
+ * the font setting and changing of the sizes and what not, would not update the COH's tracking,
+ * such as the number of characters that can fit on the screen. I could make these sorts of methods
+ * virtual, then have COH overload the TRH ones that would cause conflicting issue but ultimately
+ * for efficiency and readability's sake, I've kept the classes independent. */
+
 public:
 
     ConsoleOutputHandler();
@@ -41,8 +49,6 @@ public:
      */
     void resize_dimensions(uint16_t start_x, uint16_t start_y, uint16_t end_x, uint16_t end_y);
 
-    /** Sets the font point size to a new value. 5 is the minimum. */
-    void set_font_size(uint8_t new_font_point_size);
 
     /** Moves the cursor to a new position on the screen, measured in characters. Contains bounds 
      * checking for the position. 
@@ -119,14 +125,32 @@ public:
     /** Renders the content buffered this frame, and resets the cursor's position to the top left. */
     void _render();
 
+    /** Sets the font point size to a new value. 5 is the minimum. */
+    void set_font_size(uint8_t new_font_point_size);
+
+    /** Sets the font path to a new path, changing the font. */
+    void set_font_path(std::string new_font_path);
+
+    /** Returns the font point size. */
+    uint8_t get_font_point_size() const;
+
+    /** Returns the font's width.*/
+    uint8_t get_font_width() const;
+
+    /** Returns the font's height.*/
+    uint8_t get_font_height() const;
+
     /** Returns the focus. */
     uint16_t get_focus() const;
 
-    /** Returns the anchor. */
+    // Returns the anchor.
     uint16_t get_anchor() const;
 
-    // Returns a const reference to the cursor's position.
+    // Returns the cursor's position.
     const std::pair<uint16_t, uint16_t>& get_cursor_position() const;
+
+    // Returns the available font paths.
+    const std::vector<std::string>& get_available_font_paths() const;
 
 private:
 
@@ -207,6 +231,8 @@ private:
 
     // Methods
 
+    /** Calculates the number of characters that can fit on the screen. */
+    void _calculate_character_dimensions();
 
     void _calculate_view_around_focus();
 

@@ -2,7 +2,7 @@
  * @file TextRenderingHandler.cpp
  * @author Joel Height (On3SnowySnowman@gmail.com)
  * @brief Single class implementation.
- * @version 0.1
+ * @version 0.2
  * @date 24-12-15
  *
  * @copyright Copyright (c) 2024
@@ -10,6 +10,8 @@
  */
 
 #include "TextRenderingHandler.hpp"
+#include "TextFileHandler.hpp"
+#include "FileSystemHandler.hpp"
 
 
 // Constructors / Deconstructor
@@ -23,11 +25,15 @@ TextRenderingHandler::TextRenderingHandler()
     m_font_height = 0;
     m_tex_handler = nullptr;
     m_atlas_texture = nullptr;
+
+    _fetch_available_fonts();
 }
 
 TextRenderingHandler::TextRenderingHandler(TextureHandler* texture_handler, uint8_t font_point_size)
 {
     m_tex_handler = texture_handler;
+
+    _fetch_available_fonts();
 
     // This will automatically call the atlas creation method. 
     set_font_size(font_point_size);
@@ -135,28 +141,64 @@ uint8_t TextRenderingHandler::get_font_width() const { return m_font_width; }
 
 uint8_t TextRenderingHandler::get_font_height() const { return m_font_height; }
 
+const std::vector<std::string>& TextRenderingHandler::get_available_font_paths() const
+    { return m_available_font_paths; }
 
 
 // Private
 
+void TextRenderingHandler::_fetch_available_fonts()
+{
+    // Fetch the fonts at the fonts directory.
+    m_available_font_paths = FileSystemHandler::get_files_at_directory(m_fonts_directory);
+
+    // If no fonts were found.
+    if(m_available_font_paths.size() == 0)
+    {
+        TextFileHandler::add_to_buffer("[ERR] No fonts were found at the fonts directory: '" +
+            m_fonts_directory + "'.\n");
+        TextFileHandler::write("CrashLog.txt", Frost::APPEND);
+        exit(1);
+    }
+
+    // Set the current font path to the first element of the found available fonts.
+    m_font_path = m_available_font_paths.front();
+}
+
 void TextRenderingHandler::_init_font_dimensions_and_atlas()
 {
+    if(!FileSystemHandler::does_directory_exist(m_font_path))
+    {
+        TextFileHandler::add_to_buffer("[ERR] TextRenderingHandler::_init_font_dimensions_and_"
+        "atlas() where m_font_path = '" + m_font_path + "' -> Font path is not valid.\n");
+        TextFileHandler::write("CrashLog.txt", Frost::APPEND);
+        exit(1);
+    }
+
     // Create font object from the font file.
     TTF_Font* font = TTF_OpenFont(m_font_path.c_str(), m_font_point_size);
 
-    TTF_SetFontHinting(font, TTF_HINTING_MONO); // Force better clarity for monospace fonts
+    if(!font)
+    {
+        TextFileHandler::add_to_buffer("[ERR] TextRenderingHandler::_init_font_dimensions_and_"
+        "atlas() -> SDL_TTF failed to create font object.\n");
+        TextFileHandler::write("CrashLog.txt", Frost::APPEND);
+        exit(1);
+    }
+
+    // TTF_SetFontHinting(font, TTF_HINTING_MONO); // Force better clarity for monospace fonts
 
     // Temp variables to grab the font dimensions from SDL. Using temp integers to later store in
-    // uint8_ts for efficiency. Sure, it's negligable but it makes me feel good about memory 
+    // uint8_ts for efficiency. Sure, it's negligible but it makes me feel good about memory 
     // efficiency.
-    int font_width, font_height;
+    int text_width, text_height;
 
-    // Get the size in pixels of a single character. Since the engine only supports Monospaces 
+    // Get the size in pixels of a single character. Since the engine only supports Monospaced 
     // fonts, the size of one character represents the size of them all.
-    TTF_SizeText(font, "A", &font_width, &font_height);
+    TTF_SizeUTF8(font, "AB", &text_width, &text_height);
 
-    m_font_width = font_width;
-    m_font_height = font_height;
+    m_font_width = text_width / 2;
+    m_font_height = text_height;
 
     m_src.y = 0;
     m_src.w = m_font_width;

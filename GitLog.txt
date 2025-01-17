@@ -2,6 +2,21 @@
 This file tracks specific details on what was changed each git push.
 
 
+27:
+
+   - Reconfigured TextRenderingHandler to now properly create the texture atlas at different
+     sizes. 
+
+   - Removed non monospaced fonts from the fonts file.
+
+   - ConsoleOutputHandler now supports changing fonts. 
+
+   - Added new fonts.
+
+   - Added an ability to ConsoleOutputHandler and TextRenderingHandler to retrieve the fonts
+     from their internal fonts path.
+
+
 26:
 
    - Added a method to ConsoleOutputHandler to change the font size.
@@ -12,12 +27,12 @@ This file tracks specific details on what was changed each git push.
    - Rewrote WeightedDistribution, along with making it, Fr_Random and Fr_Math to templated
      methods when possible.
 
-   - Finished setting and modyfing methods inside WeightedDistribution.
+   - Finished setting and modifying methods inside WeightedDistribution.
 
    - Fixed FrostRandom::generate_random_int seg faulting when the higher bound was less
       than the lower bound.
 
-   - WeightedDistribution now resums the weights correctly when they are modified.
+   - WeightedDistribution now re-sums the weights correctly when they are modified.
 
 25:
 

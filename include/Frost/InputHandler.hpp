@@ -26,7 +26,7 @@ public:
      */
     static void delay_key(Key key, uint16_t miliseconds = 160);
 
-    /** Blocks a key from being available until it is released and pressed again. */
+    /** Blocks a key from being available until the physical keyboard key is released. */
     static void block_key_until_released(Key key);
 
     /** Flags the InputHandler that the passed key is pressed.

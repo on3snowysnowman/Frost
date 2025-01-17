@@ -1,10 +1,11 @@
 Fix full static class static fiasco
 
-Configure event system to handle multiple function subscriptions to a single event.
-
 Add auto generation of binary files by the Engine if no data file or asset file exists.
 
 Add functionality for UITool Items to be able to move the cursor when editing any text.
+
+Iterate through function docstrings to ensure consistency, as style has changed slightly over 
+   time.
 
 Finish README.txt and other documentation.
 

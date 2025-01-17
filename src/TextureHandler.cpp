@@ -214,51 +214,23 @@ SDL_Texture* TextureHandler::create_texture(std::string png_path) const
     return texture;
 }
 
-SDL_Texture* TextureHandler::create_font_atlas_texture(TTF_Font* font, int font_width, int font_height) const
+SDL_Texture* TextureHandler::create_font_atlas_texture(TTF_Font* font, int font_width, int font_height) 
 {
     // Supported renderable characters of the engine.
-    const std::string RENDERABLE_CHARACTERS = 
+    // const static std::string RENDERABLE_CHARACTERS = 
+    //     "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+
+    static const char* RENDERABLE_CHARACTERS = 
         "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
 
-    SDL_Texture* atlas_texture = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_RGBA8888, 
-        SDL_TEXTUREACCESS_TARGET, font_width * RENDERABLE_CHARACTERS.size(), font_height);
+    SDL_Color white {255, 255, 255, 255};
 
-    // Save Render draw color.
-    uint8_t r, g, b, a;
-    SDL_GetRenderDrawColor(m_renderer, &r, &g, &b, &a);  
+    // SDL_Surface* font_surface = TTF_RenderUTF8_Shaded(font, RENDERABLE_CHARACTERS.c_str(), white, gray);
+    SDL_Surface* font_surface = TTF_RenderUTF8_Blended(font, RENDERABLE_CHARACTERS, white);
 
-    // Enable blending mode on the atlas texture
-    SDL_SetTextureBlendMode(atlas_texture, SDL_BLENDMODE_BLEND);
+    SDL_Texture* atlas_texture = SDL_CreateTextureFromSurface(m_renderer, font_surface);
 
-    // Set the atlas texture as the render target
-    SDL_SetRenderTarget(m_renderer, atlas_texture);
-
-    // Set render draw color to fully transparent
-    SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 0); // Transparent background
-    SDL_RenderClear(m_renderer);
-
-    // Iterate through each renderable character, creating a glyph of each one and patching into 
-    // the full atlas.
-    for(int i = 0; i < RENDERABLE_CHARACTERS.size(); ++i)
-    {
-        // Render the glyph surface
-        SDL_Surface* glyphSurface = TTF_RenderGlyph_Blended(font, RENDERABLE_CHARACTERS[i], 
-            {255, 255, 255, 255});
-
-        // Create a texture from the surface.
-        SDL_Texture* glyphTexture = SDL_CreateTextureFromSurface(m_renderer, glyphSurface);
-        SDL_FreeSurface(glyphSurface); // Free the surface after creating the texture
-
-        // Copy the glyph texture to its position in the atlas.
-        SDL_Rect destRect = {i * font_width, 0, font_width, font_height};
-        SDL_RenderCopy(m_renderer, glyphTexture, nullptr, &destRect);
-
-        SDL_DestroyTexture(glyphTexture); // Clean up the glyph texture.
-    }
-
-    // Reset Renderer.
-    SDL_SetRenderTarget(m_renderer, nullptr);
-    SDL_SetRenderDrawColor(m_renderer, r, g, b, a);
+    SDL_FreeSurface(font_surface);
 
     return atlas_texture;
 }

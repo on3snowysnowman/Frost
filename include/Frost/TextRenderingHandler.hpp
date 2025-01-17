@@ -2,7 +2,7 @@
  * @file TextRenderingHandler.hpp
  * @author Joel Height (On3SnowySnowman@gmail.com)
  * @brief Single class definition.
- * @version 0.1
+ * @version 0.2
  * @date 24-12-15
  *
  * @copyright Copyright (c) 2024
@@ -27,7 +27,7 @@ public:
 
     TextRenderingHandler();
 
-    TextRenderingHandler(TextureHandler* texture_handler, uint8_t font_point_size = 23);
+    TextRenderingHandler(TextureHandler* texture_handler, uint8_t font_point_size = 24);
 
     TextRenderingHandler(const TextRenderingHandler& source);
 
@@ -54,8 +54,11 @@ public:
     /** Returns the font's width.*/
     uint8_t get_font_width() const;
 
-    /** @brief Returns the font's height.*/
+    /** Returns the font's height.*/
     uint8_t get_font_height() const;
+
+    /** Returns the available font paths. */
+    const std::vector<std::string>& get_available_font_paths() const;
 
 private:
 
@@ -70,13 +73,22 @@ private:
     SDL_Rect m_src; // Dimensions to splice from the font atlas when rendering a character.
     SDL_Rect m_dest; // Dimensions to place character on screen when rendering a character.
 
-    std::string m_font_path = "data/fonts/Exo2-VariableFont_wght.ttf"; // Path to the active font.
+    std::string m_fonts_directory = "data/fonts";
+
+    std::string m_font_path; // Path to the active font.
+
+    // List of available fonts found at the data/fonts path. All files are assumed to be valid,
+    // monospaced fonts.
+    std::vector<std::string> m_available_font_paths;
 
     TextureHandler* m_tex_handler; 
 
     SDL_Texture* m_atlas_texture = nullptr; // Full texture containing all renderable characters.
 
     // Methods
+
+    /** Iterates through the fonts directory to fetch and track each available font file. */
+    void _fetch_available_fonts();
 
     /** 
      * Loads font from disk, establishing dimensions and creating an atlas texture to splice from

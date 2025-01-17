@@ -252,26 +252,6 @@ void FrostEngine::_init_SDL_and_engine()
 
     if(application_window_name.size() == 0) application_window_name = "Frost";
 
-    if(init_data.at("vsync"))
-    {
-        #ifdef FROST_DEBUG
-
-        ProgramOutputHandler::log("Vsync: true\n");
-        #endif
-
-        m_use_vsync = true;
-    }
-
-    else
-    {
-        #ifdef FROST_DEBUG
-
-        ProgramOutputHandler::log("Vsync: false\n");
-        #endif
-
-        m_target_milliseconds_per_frame = 1000 / uint8_t(init_data.at("frame_limit"));
-    }
-
     if(init_data.at("fullscreen"))
     {
         #ifdef FROST_DEBUG
@@ -305,8 +285,27 @@ void FrostEngine::_init_SDL_and_engine()
     // Create the Renderer.
     m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED);
 
-    // Enable Vsync
-    SDL_RenderSetVSync(m_renderer, 1);
+    if(init_data.at("vsync"))
+    {
+        #ifdef FROST_DEBUG
+
+        ProgramOutputHandler::log("Vsync: true\n");
+        #endif
+
+        m_use_vsync = true;
+        // Enable Vsync
+        SDL_RenderSetVSync(m_renderer, 1);
+    }
+
+    else
+    {
+        #ifdef FROST_DEBUG
+
+        ProgramOutputHandler::log("Vsync: false\n");
+        #endif
+
+        m_target_milliseconds_per_frame = 1000 / uint8_t(init_data.at("frame_limit"));
+    }
 
     _set_application_icon("assets/Frost_Icon.png");
 
@@ -323,7 +322,7 @@ void FrostEngine::_init_SDL_and_engine()
 
 void FrostEngine::_update()
 {
-    // Esablish timestamp of the start of the frame.
+    // Establish timestamp of the start of the frame.
     m_frame_start_timestamp = TimeObserver::get_time_point();
 
     _clear_SDL_renderer();
@@ -370,6 +369,8 @@ void FrostEngine:: _simulation_loop_no_vsync()
             // Delay for the difference between the measured miliseconds and target miliseconds.
             SDL_Delay(m_target_milliseconds_per_frame - m_elapsed_milliseconds_this_frame);
 
+            // Override the milliseconds that were measure this frame, since an artificial delay 
+            // has just been invoked to maintain target framerate.
             m_elapsed_milliseconds_this_frame = m_target_milliseconds_per_frame;
         }
     }

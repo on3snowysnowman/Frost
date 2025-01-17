@@ -141,17 +141,8 @@ void ConsoleOutputHandler::resize_dimensions(uint16_t start_x, uint16_t start_y,
     m_end_x = end_x;
     m_end_y = end_y;
 
-    // Calculate screen width in characters. 
-    m_screen_character_width = (end_x - start_x) / m_font_width;
-
-    m_screen_character_height = (end_y - start_y) / (m_font_height * 
-        s_VERTICAL_SPACE_MODIFIER);
-
-    m_end_character_render_y = m_screen_character_height;
+   _calculate_character_dimensions();
 }   
-
-void ConsoleOutputHandler::set_font_size(uint8_t new_font_point_size) 
-    { m_text_ren_handler.set_font_size(new_font_point_size); }
 
 void ConsoleOutputHandler::move_cursor(uint16_t x, uint16_t y)
 {
@@ -293,6 +284,35 @@ void ConsoleOutputHandler::_render()
     m_greatest_y_position_buffered = 0;
 }
 
+void ConsoleOutputHandler::set_font_size(uint8_t new_font_point_size)
+{
+    m_text_ren_handler.set_font_size(new_font_point_size);
+
+    m_font_width = m_text_ren_handler.get_font_width();
+    m_font_height = m_text_ren_handler.get_font_height();
+
+    _calculate_character_dimensions();
+}
+
+void ConsoleOutputHandler::set_font_path(std::string new_font_path)
+{ 
+    m_text_ren_handler.set_font_path(new_font_path); 
+    
+    m_font_width = m_text_ren_handler.get_font_width();
+    m_font_height = m_text_ren_handler.get_font_height();
+
+    _calculate_character_dimensions();
+}
+
+uint8_t ConsoleOutputHandler::get_font_point_size() const
+    { return m_text_ren_handler.get_font_point_size(); }
+
+uint8_t ConsoleOutputHandler::get_font_width() const
+    { return m_text_ren_handler.get_font_width(); }
+
+uint8_t ConsoleOutputHandler::get_font_height() const
+    { return m_text_ren_handler.get_font_height(); }
+
 uint16_t ConsoleOutputHandler::get_focus() const { return m_focus; }
 
 uint16_t ConsoleOutputHandler::get_anchor() const { return m_anchor; }
@@ -300,8 +320,21 @@ uint16_t ConsoleOutputHandler::get_anchor() const { return m_anchor; }
 const std::pair<uint16_t, uint16_t>& ConsoleOutputHandler::get_cursor_position() const
 { return m_cursor_position; }
 
+const std::vector<std::string>& ConsoleOutputHandler::get_available_font_paths() const
+    { return m_text_ren_handler.get_available_font_paths(); }
 
 // Private
+
+void ConsoleOutputHandler::_calculate_character_dimensions()
+{
+    // Calculate screen width in characters. 
+    m_screen_character_width = (m_end_x - m_start_x) / m_font_width;
+
+    m_screen_character_height = (m_end_y - m_start_y) / (m_font_height * 
+        s_VERTICAL_SPACE_MODIFIER);
+
+    m_end_character_render_y = m_screen_character_height;
+}
 
 void ConsoleOutputHandler::_calculate_view_around_focus()
 {
