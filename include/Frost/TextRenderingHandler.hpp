@@ -70,7 +70,7 @@ private:
     SDL_Rect m_src; // Dimensions to splice from the font atlas when rendering a character.
     SDL_Rect m_dest; // Dimensions to place character on screen when rendering a character.
 
-    std::string m_font_path = "data/fonts/Hack-Regular.ttf"; // Path to the active font.
+    std::string m_font_path = "data/fonts/Exo2-VariableFont_wght.ttf"; // Path to the active font.
 
     TextureHandler* m_tex_handler; 
 

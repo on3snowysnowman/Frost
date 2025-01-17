@@ -23,6 +23,8 @@ This file tracks overall changes and fixes to the Engine.
 
     - SDL_Renderer background is now properly being set by the init file. 
 
+    - Fixed FrostRandom::generate_random_int seg faulting when the higher bound was less
+      than the lower bound.
 
 # Version 0.1
 

@@ -22,8 +22,7 @@ class Menu
 
 public:
 
-    // Menu requires construction with a string ID.
-    Menu() = delete;
+    Menu();
 
     Menu(std::string id);
 
@@ -40,9 +39,9 @@ protected:
 
     // Members
 
-    const std::string m_ID;
+    std::string m_id;
 
-
+        
     // Methods
 
     /** Deactivates this Menu. */

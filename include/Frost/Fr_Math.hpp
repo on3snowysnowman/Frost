@@ -1,47 +1,56 @@
+/**
+ * @file Fr_Math.hpp
+ * @author Joel Height (On3SnowySnowman@gmail.com)
+ * @brief Declaration & implementation for various functions handling integer clamping,
+ * returning larger of two numbers and obtaining a ratio from a range.
+ * @version 0.2
+ * @date 2024-08-19
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
 #pragma once
 
 #include <cmath>
 #include <cstdint>
 
-
 namespace Frost
 {
     /** Returns if the passed num is even.
-     * 
+     * @tparam T Type of the num.
      * @param num Num to check.
      */
-    bool is_even(int num);
+    template<typename T>
+    bool is_even(T num) { return num & 1; }
 
-    /** Returns the passed num clamped to the maximum if it exceeds it. 
+    /**
+     * Returns the passed num clamped to the minimum if it exceeds it.
      * 
+     * @tparam T Type of the num.
+     * @param num Num to clamp.
+     * @param min Minimjm value.
+     */
+    template<typename T> 
+    T clamp_num_to_minimum(T num, T min) { return num < min ? min : num; }
+
+    /**
+     * Returns the passed num clamped to the maximum if it exceeds it.
+     * 
+     * @tparam T Type of the num.
      * @param num Num to clamp.
      * @param max Maximum value.
      */
-    uint8_t clamp_uint8_to_maximum(uint8_t num, uint8_t max);
+    template<typename T> 
+    T clamp_num_to_maximum(T num, T max) { return num > max ? max : num; }
 
-
-    /** Returns the passed num clamped to the minimum if it is below it. 
+    /**
+     * @brief Returns the larger of two nums.
      * 
-     * @param num Num to clamp.
-     * @param min Minimum value.
-    */
-    uint16_t clamp_uint16_to_minimum(uint16_t num, uint16_t min);
-
-    /** Returns the passed num clamped to the maximum if it exceeds it. 
-     * 
-     * @param num Num to clamp.
-     * @param max Maximum value.
+     * @tparam T Type of the num.
      */
-    uint16_t clamp_uint16_to_maximum(uint16_t num, uint16_t max);
-
-    int16_t clamp_int16_to_maximum(int16_t num, int16_t max);
-
-    /** Returns the larger of two uint16_ts.
-     * 
-     * @param first First number
-     * @param second Second number
-     */
-    uint16_t return_largest_of_uint16s(uint16_t first, uint16_t second);
+    template<typename T>
+    T return_largest_of_two_nums(T first, T second) { return first > second ? first : second; }
 
     /** Calculates the ratio of num to its min and max, and applies this ratio to the 
      * passed range to return the portioned value.
@@ -52,18 +61,4 @@ namespace Frost
      * @param range Value that the ratio will portion.
      */
     int get_ratio_of_range(int num, int min, int max, int range);
-
-    /** Returns the passed float clamped to the minimum if it is below it. 
-     * 
-     * @param num Num to clamp.
-     * @param min Minimum value.
-    */
-    float clamp_float_to_minimum(float num, float min);
-
-    /** Returns the num clamped to the maximum if it is above it.
-     * 
-     * @param num Num to clamp.
-     * @param max Maximum value.
-     */
-    float clamp_float_to_maximum(float num, float max);
 };

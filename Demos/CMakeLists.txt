@@ -26,24 +26,32 @@ find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
 find_package(SDL2_ttf REQUIRED)
 
-add_executable(Demo demo.cpp)
+# Collect all .cpp files in demos_src
+file(GLOB DEMO_SOURCES "${CMAKE_SOURCE_DIR}/demos_src/*.cpp")
 
-# target_compile_options(Demo PRIVATE -march=native -mtune=native)
+foreach(DEMO_FILE ${DEMO_SOURCES})
+    # Extract file name without extension to use as target name
+    get_filename_component(DEMO_NAME ${DEMO_FILE} NAME_WE)
 
-set_target_properties(Demo PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR})
+    # Define an executable for each demo file
+    add_executable(${DEMO_NAME} ${DEMO_FILE})
 
-target_include_directories(Demo
-PUBLIC
-    ${TARGET_INCLUDE_PATH}
-    ${TARGET_INCLUDE_PATH}/UITools
-)
+    # Set the output directory for each demo binary
+    set_target_properties(${DEMO_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
-target_link_libraries(Demo
-PRIVATE
-    ${FROST_LIB}
-    SDL2::SDL2
-    SDL2_image
-    SDL2_ttf
-)
+    # Add include directories
+    target_include_directories(${DEMO_NAME}
+    PUBLIC
+        ${TARGET_INCLUDE_PATH}
+        ${TARGET_INCLUDE_PATH}/UITools
+    )
 
-
+    # Link libraries
+    target_link_libraries(${DEMO_NAME}
+    PRIVATE
+        ${FROST_LIB}
+        SDL2::SDL2
+        SDL2_image
+        SDL2_ttf
+    )
+endforeach()

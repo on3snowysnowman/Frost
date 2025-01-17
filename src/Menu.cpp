@@ -15,9 +15,13 @@
 
 // Constructors / Deconstructor
 
-Menu::Menu(std::string id) : m_ID(id)
+Menu::Menu() {}
+
+Menu::Menu(std::string id)
 {
-    MenuManager::_register_menu(this, m_ID);
+    m_id = id;
+
+    MenuManager::_register_menu(this, m_id);
 }
 
 
@@ -27,7 +31,7 @@ void Menu::start() {}
 
 void Menu::update() {}
 
-const std::string& Menu::get_id() const { return m_ID; }
+const std::string& Menu::get_id() const { return m_id; }
 
 
 // Private

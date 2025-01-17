@@ -1,4 +1,6 @@
-FIX FULL STATIC CLASSES WITH STATIC FIASCO
+Fix full static class static fiasco
+
+Configure event system to handle multiple function subscriptions to a single event.
 
 Add auto generation of binary files by the Engine if no data file or asset file exists.
 

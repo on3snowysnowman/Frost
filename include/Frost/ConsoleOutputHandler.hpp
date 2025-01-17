@@ -41,6 +41,9 @@ public:
      */
     void resize_dimensions(uint16_t start_x, uint16_t start_y, uint16_t end_x, uint16_t end_y);
 
+    /** Sets the font point size to a new value. 5 is the minimum. */
+    void set_font_size(uint8_t new_font_point_size);
+
     /** Moves the cursor to a new position on the screen, measured in characters. Contains bounds 
      * checking for the position. 
      * 

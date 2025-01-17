@@ -23,8 +23,8 @@ UIChoice::UIChoice(ConsoleOutputHandler& coh, std::string& cursor_color, std::st
     m_name = name; 
     m_content = std::move(content);
 
-    Frost::clamp_uint16_to_maximum(initial_cursor_index, content.size());
-    Frost::clamp_uint16_to_maximum(initial_selected_index, content.size());
+    Frost::clamp_num_to_maximum<uint16_t>(initial_cursor_index, content.size());
+    Frost::clamp_num_to_maximum<uint16_t>(initial_selected_index, content.size());
 
     m_cursor_index = initial_cursor_index;
     m_selected_index = initial_selected_index;

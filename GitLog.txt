@@ -1,6 +1,24 @@
 
 This file tracks specific details on what was changed each git push.
 
+
+26:
+
+   - Added a method to ConsoleOutputHandler to change the font size.
+
+   - Rewrote EventHandler to handle multiple subscriptions to one invoke token. Additionally,
+     removed the dynamic cast and replaced it with a static cast for increased performance.
+
+   - Rewrote WeightedDistribution, along with making it, Fr_Random and Fr_Math to templated
+     methods when possible.
+
+   - Finished setting and modyfing methods inside WeightedDistribution.
+
+   - Fixed FrostRandom::generate_random_int seg faulting when the higher bound was less
+      than the lower bound.
+
+   - WeightedDistribution now resums the weights correctly when they are modified.
+
 25:
 
    - Began adding a set of methods in the WeightedDistribution class for setting and modifying 

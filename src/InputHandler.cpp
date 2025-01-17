@@ -14,7 +14,8 @@
 
 #include "InputHandler.hpp"
 #include "Fr_IntLimits.hpp"
-#include <iostream>
+
+
 // Static Members
 
 bool InputHandler::s_is_available_keys_generated = false;
@@ -65,7 +66,9 @@ void InputHandler::flag_key_released(Key key)
 void InputHandler::_reset_tracked_keys() { s_raw_pressed_keys.clear(); }
 
 bool InputHandler::is_key_pressed(Key key) 
-{ return s_pressed_keys.find(key) != s_pressed_keys.end(); }
+{ 
+    return s_pressed_keys.find(key) != s_pressed_keys.end(); 
+}
 
 bool InputHandler::is_key_pressed_and_available(Key key)
 {
@@ -76,8 +79,6 @@ const std::vector<Key>& InputHandler::get_pressed_and_available_keys()
 {
     // Available keys have already been generated this frame.
     if(s_is_available_keys_generated) return s_pressed_available_keys;
-
-    std::cout << "Generating available keys\n";
 
     s_pressed_available_keys.clear();
 

@@ -150,6 +150,9 @@ void ConsoleOutputHandler::resize_dimensions(uint16_t start_x, uint16_t start_y,
     m_end_character_render_y = m_screen_character_height;
 }   
 
+void ConsoleOutputHandler::set_font_size(uint8_t new_font_point_size) 
+    { m_text_ren_handler.set_font_size(new_font_point_size); }
+
 void ConsoleOutputHandler::move_cursor(uint16_t x, uint16_t y)
 {
     // Attempt to move both dimensions of the cursor. Each method contains bounds checking.
@@ -244,7 +247,7 @@ void ConsoleOutputHandler::add_new_line(uint8_t num)
 
     // Set the greatest y position to the cursor's y position if it is greater. 
     m_greatest_y_position_buffered = 
-        Frost::return_largest_of_uint16s(m_greatest_y_position_buffered, m_cursor_position.second);
+        Frost::return_largest_of_two_nums<uint16_t>(m_greatest_y_position_buffered, m_cursor_position.second);
 }
 
 void ConsoleOutputHandler::reset_cursor_position() { m_cursor_position = {0, 0}; }

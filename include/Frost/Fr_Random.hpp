@@ -2,7 +2,7 @@
  * @file Fr_Random.hpp
  * @author Joel Height (On3SnowySnowman@gmail.com)
  * @brief Declaration for FrostRandom.
- * @version 0.1
+ * @version 0.2
  * @date 2024-08-19
  * 
  * @copyright Copyright (c) 2024
@@ -25,16 +25,27 @@ public:
     /** Seeds the generator.
      *
      * @param seed Target seed. */
-    static void seed(uint64_t seed);
+    static void seed(uint64_t seed)
+    {
+        generator = std::mt19937(seed);
+    }
 
     /** Returns a psuedo random number between the ranges of lower and higher.
      * 
+     * If 'lower' is greater than 'higher', higher will be returned.
+     * 
      * @param lower Lower bound of random range.
      * @param higher Higher bound of random range. */
-    static int get_random_int(int lower, int higher);
+    template<typename T>
+    static T get_random_num(T lower, T higher)
+    {
+        if(lower >= higher) return higher;
+
+        return std::uniform_int_distribution<T>(lower, higher)(generator);
+    }
 
 private:
 
-    static std::mt19937 generator;
+    static inline std::mt19937 generator = std::mt19937(std::random_device{}());
 };
  

@@ -18,7 +18,8 @@
 #include "JsonHandler.hpp"
 #include "InputHandler.hpp"
 #include "MenuManager.hpp"
-#include "EventSystem.hpp"
+#include "EventHandler.hpp"
+#include "ProgramOutputHandler.hpp"
 
 #include "TextFileHandler.hpp"
 #include "TimeObserver.hpp"
@@ -53,7 +54,12 @@ FrostEngine::FrostEngine()
 
     m_sprite_handler = SpriteHandler(&m_texture_handler);
 
-    EventSystem::subscribe<FrostEngine>("QUIT_SIMULATION", this, &FrostEngine::_quit);
+    // EventSystem::subscribe<FrostEngine>("QUIT_SIMULATION", this, &FrostEngine::_quit);
+    EventHandler::register_event<void>(
+        "QUIT_SIMULATION", 
+        std::function<void()>(
+            [this]() { this->_quit();}
+        ));
 }
 
 FrostEngine::~FrostEngine() 
@@ -203,7 +209,7 @@ void FrostEngine::_create_default_init_files_and_engine()
     temp.push_back(json::array({"White", 235, 235, 247}));
 
     // Dump the color data to the colors file.
-    JsonHandler::dump(temp,     m_INIT_DATA_DIRECTORY + "/colors.json");
+    JsonHandler::dump(temp, m_INIT_DATA_DIRECTORY + "/colors.json");
 
     // #TODO Place the color loading for the TextureHandler here.
 }
@@ -326,7 +332,8 @@ void FrostEngine::_update()
 
     _handle_SDL_events();
 
-    if(InputHandler::is_key_pressed(SDLK_ESCAPE)) EventSystem::invoke_event("QUIT_SIMULATION");
+    if(InputHandler::is_key_pressed(SDLK_ESCAPE)) 
+        EventHandler::invoke_event<void>("QUIT_SIMULATION");
 
     MenuManager::_update_active_menus();
 

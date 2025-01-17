@@ -176,7 +176,7 @@ void SpriteHandler::delete_sprite(sprite_id id)
 void SpriteHandler::set_sprite_scale_factor(float new_scale_factor)
 {
     // Clamp the scale factor to a minimum of 1.0.
-    m_sprite_scale_factor = Frost::clamp_float_to_minimum(new_scale_factor, 1.0f);
+    m_sprite_scale_factor = Frost::clamp_num_to_minimum<float>(new_scale_factor, 1.0f);
 }
 
 sprite_id SpriteHandler::create_sprite(uint16_t splice_x, uint16_t splice_y, uint16_t splice_w,

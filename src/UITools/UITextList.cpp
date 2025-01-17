@@ -30,8 +30,8 @@ UITextList::UITextList(ConsoleOutputHandler& coh, std::string& cursor_color, std
 
     m_content.push_back(std::string{"Add Text"});
 
-    Frost::clamp_int16_to_maximum(m_cursor_index, m_content.size());
-    Frost::clamp_int16_to_maximum(m_selected_index, m_content.size());
+    Frost::clamp_num_to_maximum<int16_t>(m_cursor_index, m_content.size());
+    Frost::clamp_num_to_maximum<int16_t>(m_selected_index, m_content.size());
 
     m_cursor_index = cursor_position;
     m_selected_index = selected_position;
