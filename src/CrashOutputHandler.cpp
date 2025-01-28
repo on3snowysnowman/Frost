@@ -9,7 +9,7 @@
  *
  */
 
-#include "ExceptionOutputHandler.hpp"
+#include "CrashOutputHandler.hpp"
 #include "TextFileHandler.hpp"
 #include "TimeObserver.hpp"
 #include "Fr_StringManip.hpp"
@@ -17,17 +17,17 @@
 
 // Static Members
 
-std::string ExceptionOutputHandler::s_output_file_path = "CrashLog.txt";
+std::string CrashOutputHandler::s_output_file_path = "CrashLog.txt";
 
 
 // Public
 
-void ExceptionOutputHandler::set_output_file_path(const std::string& new_file_path)
+void CrashOutputHandler::set_output_file_path(const std::string& new_file_path)
     { s_output_file_path = new_file_path; }
 
 #if defined(__clang__) || defined(__GNUC__)
 
-void ExceptionOutputHandler::output_exception(const std::string& message, const std::string& func)
+void CrashOutputHandler::output_crash(const std::string& message, const std::string& func)
 {
     std::string full_output = TimeObserver::get_local_date() + " @ " + 
         TimeObserver::get_local_time() + " : " + func + " -> " + message + '\n';
@@ -38,7 +38,7 @@ void ExceptionOutputHandler::output_exception(const std::string& message, const 
 
 #else
 
-void ExceptionOutputHandler::output_exception(const std::string& message, 
+void CrashOutputHandler::output_crash(const std::string& message, 
     const std::string file_name, int file_line, const std::string& func)
 {
     std::string full_output = TimeObserver::get_local_date() + " @ " + 

@@ -20,7 +20,7 @@
  * By default, the output file is 'CrashLog.txt'. This can be changed through the 
  * `set_output_file_path` method.
  */
-class ExceptionOutputHandler
+class CrashOutputHandler
 {
 
 public:
@@ -33,11 +33,11 @@ public:
 
     #if defined(__clang__) || defined(__GNUC__)
 
-    static void output_exception(const std::string& message, const std::string& func);
+    static void output_crash(const std::string& message, const std::string& func);
 
     #else
 
-    static void output_exception(const std::string& message, const std::string file_name, 
+    static void output_crash(const std::string& message, const std::string file_name, 
         int file_line, const std::string& func);
 
     #endif
@@ -49,12 +49,12 @@ private:
 
 #if defined(__clang__) || defined(__GNUC__)
 
-#define OUTPUT_EXCEPTION(message)\
-    ExceptionOutputHandler::output_exception(message, __PRETTY_FUNCTION__)
+#define OUTPUT_CRASH_DETAILS(message)\
+    CrashOutputHandler::output_crash(message, __PRETTY_FUNCTION__)
 
 #else 
 
-#define OUTPUT_EXCEPTION(message)\
-    ExceptionOutputHandler::output_exception(message, __FILE__, __LINE__, __func__)
+#define OUTPUT_CRASH_DETAILS(message)\
+    CrashOutputHandler::output_crash(message, __FILE__, __LINE__, __func__)
 
 #endif

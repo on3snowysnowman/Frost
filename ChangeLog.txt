@@ -19,7 +19,7 @@ This file tracks overall changes and fixes to the Engine.
 
     - Added a Tilemap class.
 
-    - Added an ExceptionOutputHandler class for dumping exception context to a text file.
+    - Added a CrashOutputHandler class for dumping exception context to a text file.
 
     FIXES
 

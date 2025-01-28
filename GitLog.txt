@@ -1,6 +1,13 @@
 
 This file tracks specific details on what was changed each git push.
 
+30:
+
+   - Renamed ExceptionOutputHandler to CrashOutputHandler for more clarity. The CrashOutputHandler 
+     doesn't need to only be used for exception handling output.
+
+   - Finished initial Tilemap class. 
+
 29:
 
    - Fixed TilemapDemo using the correct add entity function.

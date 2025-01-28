@@ -15,9 +15,9 @@ public:
 
     Simulator()
     {
-        tilemap.add_entity_to_tilemap(tilemap.register_entity('c'), 1, 4);
-        tilemap.add_entity_to_tilemap(tilemap.register_entity('c'), 4, 4);
-        // tilemap.add_entity_to_tilemap(3, 4, 4);
+        m_char_one_id = m_tilemap.register_entity('c');
+
+        m_tilemap.add_entity_to_tilemap(m_char_one_id, 3, 3);
 
         _regenerate_tilemap_display();
     }
@@ -26,9 +26,11 @@ private:
 
     // Members
 
-    std::string output;
+    entity_id m_char_one_id;
 
-    Tilemap<char, 10> tilemap;
+    std::string m_output;
+
+    Tilemap<char, 10> m_tilemap;
 
     // Methods
 
@@ -36,37 +38,41 @@ private:
     {           
         if(InputHandler::is_key_pressed_and_available(SDLK_RIGHT))
         {
+            m_tilemap.modify_entity_position(m_char_one_id, 1, 0);
             _regenerate_tilemap_display();
-            InputHandler::block_key_until_released(SDLK_RIGHT);
+            InputHandler::delay_key(SDLK_RIGHT);
         }
 
         else if(InputHandler::is_key_pressed_and_available(SDLK_LEFT))
         {
+            m_tilemap.modify_entity_position(m_char_one_id, -1, 0);
             _regenerate_tilemap_display();
-            InputHandler::block_key_until_released(SDLK_LEFT);
+            InputHandler::delay_key(SDLK_LEFT);
         }
 
         else if(InputHandler::is_key_pressed_and_available(SDLK_UP))
         {
+            m_tilemap.modify_entity_position(m_char_one_id, 0, -1);
             _regenerate_tilemap_display();
-            InputHandler::block_key_until_released(SDLK_UP);
+            InputHandler::delay_key(SDLK_UP);
         }
 
         else if(InputHandler::is_key_pressed_and_available(SDLK_DOWN))
         {
+            m_tilemap.modify_entity_position(m_char_one_id, 0, 1);
             _regenerate_tilemap_display();
-            InputHandler::block_key_until_released(SDLK_DOWN);
+            InputHandler::delay_key(SDLK_DOWN);
 
         }
 
-        m_coh.add_str(output);
+        m_coh.add_str(m_output);
     }
 
     void _regenerate_tilemap_display()
     {
-        output.clear();
+        m_output.clear();
 
-        const Tilemap<char, 10>::content_type& contents = tilemap.get_contents();
+        const Tilemap<char, 10>::content_type& contents = m_tilemap.get_contents();
 
         for(uint32_t i = 0; i < contents.size(); ++i)
         {
@@ -74,14 +80,14 @@ private:
             {
                 if(contents.at(i).at(j).size() == 0)
                 {
-                    output.push_back('.');
+                    m_output.push_back('.');
                     continue;
                 }
 
-                output.push_back(contents.at(i).at(j).front());
+                m_output.push_back(contents.at(i).at(j).front());
             }
 
-            output.push_back('\n');
+            m_output.push_back('\n');
         }
     }
 };
