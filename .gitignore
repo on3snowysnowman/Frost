@@ -1,6 +1,7 @@
 
 build
 Demos/build_demo
+Demos/bin
 Demos/OutputLog.txt
 Demos/Demo
 AutoFileGen

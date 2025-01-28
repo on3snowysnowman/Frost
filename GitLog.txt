@@ -1,6 +1,10 @@
 
 This file tracks specific details on what was changed each git push.
 
+29:
+
+   - Fixed TilemapDemo using the correct add entity function.
+
 28:
 
    - Add a _user_update method to the FrostEngine class that users of the Engine can

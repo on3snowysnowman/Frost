@@ -15,9 +15,9 @@ public:
 
     Simulator()
     {
-        tilemap.add_entity(tilemap.register_entity('c'), 1, 4);
-        tilemap.add_entity(tilemap.register_entity('c'), 4, 4);
-        tilemap.add_entity(3, 4, 4);
+        tilemap.add_entity_to_tilemap(tilemap.register_entity('c'), 1, 4);
+        tilemap.add_entity_to_tilemap(tilemap.register_entity('c'), 4, 4);
+        // tilemap.add_entity_to_tilemap(3, 4, 4);
 
         _regenerate_tilemap_display();
     }
