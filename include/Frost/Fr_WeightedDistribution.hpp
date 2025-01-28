@@ -31,7 +31,7 @@
  * @tparam N The fixed size of the arrays for values and weights.
  * @tparam T The type of the values being distributed.
  */
-template<typename T,  std::size_t N>
+template<typename T,  uint64_t N>
 class WeightedDistribution
 {
 

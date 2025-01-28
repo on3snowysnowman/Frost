@@ -14,19 +14,21 @@ ConsoleOutputHandler::ConsoleOutputHandler()
     // Default constructor should only be called for a placeholder object.
 }
 
-ConsoleOutputHandler::ConsoleOutputHandler(TextureHandler* texture_handler) 
+ConsoleOutputHandler::ConsoleOutputHandler(TextureHandler* texture_handler, uint8_t font_point_size, 
+        std::string font_path) 
 { 
-    m_text_ren_handler = std::move(TextRenderingHandler(texture_handler));
+    m_text_ren_handler = TextRenderingHandler(texture_handler, font_point_size, font_path);
 
     m_font_width = m_text_ren_handler.get_font_width();
     m_font_height = m_text_ren_handler.get_font_height(); 
     resize_dimensions(0, 0, 0, 0);
 }
 
-ConsoleOutputHandler::ConsoleOutputHandler(TextureHandler* texture_handler, uint16_t start_x, 
-    uint16_t start_y, uint16_t end_x, uint16_t end_y)
+ConsoleOutputHandler::ConsoleOutputHandler(TextureHandler* texture_handler, 
+    uint8_t font_point_size, std::string font_path, uint16_t start_x, uint16_t start_y, 
+    uint16_t end_x, uint16_t end_y)
 {
-    m_text_ren_handler = TextRenderingHandler(texture_handler);
+    m_text_ren_handler = TextRenderingHandler(texture_handler, font_point_size, font_path);
     
     m_font_width = m_text_ren_handler.get_font_width();
     m_font_height = m_text_ren_handler.get_font_height(); 
@@ -319,6 +321,9 @@ uint16_t ConsoleOutputHandler::get_anchor() const { return m_anchor; }
 
 const std::pair<uint16_t, uint16_t>& ConsoleOutputHandler::get_cursor_position() const
 { return m_cursor_position; }
+
+const std::string& ConsoleOutputHandler::get_current_font_path() const
+    { return m_text_ren_handler.get_current_font_path(); }
 
 const std::vector<std::string>& ConsoleOutputHandler::get_available_font_paths() const
     { return m_text_ren_handler.get_available_font_paths(); }

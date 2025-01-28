@@ -13,6 +13,7 @@
 #include "JsonHandler.hpp"
 #include "FileSystemHandler.hpp"
 #include "TextFileHandler.hpp"
+#include "TextRenderingHandler.hpp"
 
 #ifdef FROST_DEBUG
 
@@ -214,14 +215,11 @@ SDL_Texture* TextureHandler::create_texture(std::string png_path) const
     return texture;
 }
 
-SDL_Texture* TextureHandler::create_font_atlas_texture(TTF_Font* font, int font_width, int font_height) 
+SDL_Texture* TextureHandler::create_font_atlas_texture(TTF_Font* font) 
 {
     // Supported renderable characters of the engine.
     // const static std::string RENDERABLE_CHARACTERS = 
     //     "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
-
-    static const char* RENDERABLE_CHARACTERS = 
-        "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
 
     SDL_Color white {255, 255, 255, 255};
 

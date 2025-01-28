@@ -21,7 +21,7 @@ namespace Frost
  * add_to_buffer() method is used, the contents of the string are added to the buffer. Only when the 
  * write() method is called will the buffered strings be emplaced in a file.
  * 
- * When calling the write() method, the user must specify the target behavior for writing to 
+ * When calling the write() method, the user may specify the target behavior for writing to 
  * the file. If the buffer should be added to the content at the target txt file, use the APPEND
  * WriteType. Otherwise, the OVERWRITE WriteType will overwrite the contents of the file.
  * 
@@ -58,7 +58,7 @@ public:
      * @param write_type Specifier for file writing behavior. Default is OVERWRITE.
      * @param clear_buffer Whether to clear the buffer. Default to true.
     */
-    static bool write(std::string file_path, Frost::WriteType write_type = Frost::OVERWRITE, 
+    static bool write(std::string file_path, Frost::WriteType write_type = Frost::APPEND, 
         bool clear_buffer = true);
 
     /** Fetches and returns the contents of a txt file at the path. 

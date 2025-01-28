@@ -20,6 +20,11 @@
 #include "TextureHandler.hpp"
 
 
+// All characters that are supported for rendering. 
+constexpr const char* RENDERABLE_CHARACTERS = "!\"#$%&'()*+,-./0123456789:;<=>?@"
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+
+
 class TextRenderingHandler
 {
 
@@ -27,7 +32,7 @@ public:
 
     TextRenderingHandler();
 
-    TextRenderingHandler(TextureHandler* texture_handler, uint8_t font_point_size = 24);
+    TextRenderingHandler(TextureHandler* texture_handler, uint8_t font_point_size, std::string font_path);
 
     TextRenderingHandler(const TextRenderingHandler& source);
 
@@ -42,11 +47,19 @@ public:
     /** Adds a char to the screen at a pixel position. Color is supported. */
     void add_ch(char c, uint16_t x, uint16_t y, std::string color = "White");
 
-    /** Sets the font point size to a new value. 5 is the minimum. */
+    /** Sets the font point size to a new value. 11 is the minimum. */
     void set_font_size(uint8_t new_font_point_size);
 
     /** Sets the font path to a new path, changing the font. */
     void set_font_path(std::string new_font_path);
+
+    /** 
+     * @brief Sets both the font path and size to new values. 
+     * 
+     * It is beneficial to use this method instead of the 'set_font_size' and 'set_font_path' 
+     * methods individually, as the font texture creation will only be called once in this method,
+     * in contrast to being called twice with the two individual methods. */
+    void set_font_path_and_size(uint8_t new_font_point_size, std::string new_font_path);
 
     /** Returns the font point size. */
     uint8_t get_font_point_size() const;
@@ -56,6 +69,9 @@ public:
 
     /** Returns the font's height.*/
     uint8_t get_font_height() const;
+
+    // Returns the current font path.
+    const std::string& get_current_font_path() const;
 
     /** Returns the available font paths. */
     const std::vector<std::string>& get_available_font_paths() const;

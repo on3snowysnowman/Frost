@@ -9,6 +9,8 @@
  *
  */
 
+#include <cstring>
+
 #include "TextRenderingHandler.hpp"
 #include "TextFileHandler.hpp"
 #include "FileSystemHandler.hpp"
@@ -29,20 +31,21 @@ TextRenderingHandler::TextRenderingHandler()
     _fetch_available_fonts();
 }
 
-TextRenderingHandler::TextRenderingHandler(TextureHandler* texture_handler, uint8_t font_point_size)
+TextRenderingHandler::TextRenderingHandler(TextureHandler* texture_handler, 
+    uint8_t font_point_size, std::string font_path)
 {
     m_tex_handler = texture_handler;
 
     _fetch_available_fonts();
 
-    // This will automatically call the atlas creation method. 
-    set_font_size(font_point_size);
+    set_font_path_and_size(font_point_size, font_path);
 }
 
 TextRenderingHandler::TextRenderingHandler(const TextRenderingHandler& source)
 {
     m_tex_handler = source.m_tex_handler;
     m_font_path = source.m_font_path; 
+    m_available_font_paths = source.m_available_font_paths;
 
     _init_font_dimensions_and_atlas();
 }
@@ -55,7 +58,7 @@ TextRenderingHandler::TextRenderingHandler(TextRenderingHandler&& source)
     m_src = source.m_src;
     m_dest = source.m_dest;
     m_font_path = std::move(source.m_font_path);
-
+    m_font_path = source.m_font_path; 
     m_tex_handler = source.m_tex_handler;
     m_atlas_texture = source.m_atlas_texture;
 
@@ -88,6 +91,7 @@ TextRenderingHandler& TextRenderingHandler::operator=(const TextRenderingHandler
 {
     m_tex_handler = source.m_tex_handler;
     m_font_path = source.m_font_path; 
+    m_available_font_paths = source.m_available_font_paths;
 
     // This object's atlas texture will be automatically destroyed in this function before being
     // replaced.
@@ -120,18 +124,33 @@ void TextRenderingHandler::add_ch(char c, uint16_t x, uint16_t y, std::string co
 
 void TextRenderingHandler::set_font_size(uint8_t new_font_point_size)
 {
-    if(new_font_point_size < 5) new_font_point_size = 5;
+    if(new_font_point_size < 11) new_font_point_size = 11;
 
     m_font_point_size = new_font_point_size;
 
     // Update the font dimensions and atlas since it has now changed.
     _init_font_dimensions_and_atlas();
 }
-
+#include <iostream>
+#include "TimeObserver.hpp"
 void TextRenderingHandler::set_font_path(std::string new_font_path)
 {
     m_font_path = new_font_path;
 
+    // Update the font dimensions and atlas since it has now changed.
+    _init_font_dimensions_and_atlas();
+}
+
+void TextRenderingHandler::set_font_path_and_size(uint8_t new_font_point_size, 
+    std::string new_font_path)
+{
+    if(new_font_point_size < 11) new_font_point_size = 11;
+
+    m_font_point_size = new_font_point_size;
+
+    m_font_path = new_font_path;
+
+    // Update the font dimensions and atlas since it has now changed.
     _init_font_dimensions_and_atlas();
 }
 
@@ -140,6 +159,9 @@ uint8_t TextRenderingHandler::get_font_point_size() const { return m_font_point_
 uint8_t TextRenderingHandler::get_font_width() const { return m_font_width; }
 
 uint8_t TextRenderingHandler::get_font_height() const { return m_font_height; }
+
+const std::string& TextRenderingHandler::get_current_font_path() const
+{ return m_font_path; }
 
 const std::vector<std::string>& TextRenderingHandler::get_available_font_paths() const
     { return m_available_font_paths; }
@@ -160,9 +182,6 @@ void TextRenderingHandler::_fetch_available_fonts()
         TextFileHandler::write("CrashLog.txt", Frost::APPEND);
         exit(1);
     }
-
-    // Set the current font path to the first element of the found available fonts.
-    m_font_path = m_available_font_paths.front();
 }
 
 void TextRenderingHandler::_init_font_dimensions_and_atlas()
@@ -195,9 +214,9 @@ void TextRenderingHandler::_init_font_dimensions_and_atlas()
 
     // Get the size in pixels of a single character. Since the engine only supports Monospaced 
     // fonts, the size of one character represents the size of them all.
-    TTF_SizeUTF8(font, "AB", &text_width, &text_height);
+    TTF_SizeUTF8(font, RENDERABLE_CHARACTERS, &text_width, &text_height);
 
-    m_font_width = text_width / 2;
+    m_font_width = text_width / std::strlen(RENDERABLE_CHARACTERS);
     m_font_height = text_height;
 
     m_src.y = 0;
@@ -213,7 +232,7 @@ void TextRenderingHandler::_init_font_dimensions_and_atlas()
         SDL_DestroyTexture(m_atlas_texture);
     }
 
-    m_atlas_texture = m_tex_handler->create_font_atlas_texture(font, m_font_width, m_font_height);
+    m_atlas_texture = m_tex_handler->create_font_atlas_texture(font);
 
     TTF_CloseFont(font);
 }

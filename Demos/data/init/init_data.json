@@ -5,7 +5,9 @@
         15,
         25
     ],
-    "fullscreen": false,
+    "font_path": "data/fonts/ShareTechMono-Regular.ttf",
+    "font_size": 22,
+    "fullscreen": true,
     "vsync": true,
     "frame_limit": 60,
     "screen_height": 700,

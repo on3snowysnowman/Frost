@@ -27,10 +27,11 @@ public:
 
     ConsoleOutputHandler();
 
-    ConsoleOutputHandler(TextureHandler* texture_handler);
+    ConsoleOutputHandler(TextureHandler* texture_handler, uint8_t font_point_size, 
+        std::string font_path);
 
-    ConsoleOutputHandler(TextureHandler* texture_handler, uint16_t start_x, uint16_t start_y, 
-        uint16_t end_x, uint16_t end_y);
+    ConsoleOutputHandler(TextureHandler* texture_handler, uint8_t font_point_size, 
+        std::string font_path, uint16_t start_x, uint16_t start_y, uint16_t end_x, uint16_t end_y);
 
     ConsoleOutputHandler(const ConsoleOutputHandler& source);
 
@@ -125,7 +126,7 @@ public:
     /** Renders the content buffered this frame, and resets the cursor's position to the top left. */
     void _render();
 
-    /** Sets the font point size to a new value. 5 is the minimum. */
+    /** Sets the font point size to a new value. 11 is the minimum. */
     void set_font_size(uint8_t new_font_point_size);
 
     /** Sets the font path to a new path, changing the font. */
@@ -148,6 +149,9 @@ public:
 
     // Returns the cursor's position.
     const std::pair<uint16_t, uint16_t>& get_cursor_position() const;
+
+    // Returns the current font path.
+    const std::string& get_current_font_path() const;
 
     // Returns the available font paths.
     const std::vector<std::string>& get_available_font_paths() const;

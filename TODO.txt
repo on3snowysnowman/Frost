@@ -11,3 +11,5 @@ Finish README.txt and other documentation.
 
 Add Animation support 
 
+Write time profiling class.
+

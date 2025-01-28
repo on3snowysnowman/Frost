@@ -1,6 +1,17 @@
 
 This file tracks specific details on what was changed each git push.
 
+28:
+
+   - Add a _user_update method to the FrostEngine class that users of the Engine can
+     override to place components in to update each frame.
+
+   - Changed the minimum font size to 11.
+
+   - Added a method to the COH and TRH for retrieving the current font path.
+
+   - Added an ExceptionOutputHandler class.
+
 
 27:
 

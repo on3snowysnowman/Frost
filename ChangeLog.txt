@@ -6,6 +6,9 @@ This file tracks overall changes and fixes to the Engine.
 
     CHANGES
 
+    - ConsoleOutputHandler and TextRenderingHandler now support loading ttf fonts and rendering
+      them at different sizes.
+
     - Added an EventSystem
 
     - Reconfigured TextRenderingHandler to use SDL_ttf.
@@ -13,6 +16,10 @@ This file tracks overall changes and fixes to the Engine.
     - Upgraded SpriteHandler to now support layered rendering of Sprites.
 
     - Added a WeightDistribution class for generating random numbers with set probabilities.
+
+    - Added a Tilemap class.
+
+    - Added an ExceptionOutputHandler class for dumping exception context to a text file.
 
     FIXES
 

@@ -4,26 +4,31 @@
 #include "ConsoleOutputHandler.hpp"
 #include "InputHandler.hpp"
 #include "MenuManager.hpp"
+#include "TextFileHandler.hpp"
+#include "TimeObserver.hpp"
 
 #include <iostream>
 
-class DemoMenu : public Menu
+class FontRenderingMenu : public Menu
 {
 
 public:
 
-    DemoMenu() : Menu("DEMO")
+    FontRenderingMenu() : Menu("DEMO")
     { 
         m_coh = nullptr;
     }
 
-    DemoMenu(ConsoleOutputHandler* coh) : Menu("DEMO")
+    FontRenderingMenu(ConsoleOutputHandler* coh) : Menu("DEMO")
     {
         m_coh = coh;
+    }
 
-        // m_coh->set_font_path("/home/joel/Documents/Code/Frost/Demos/data/fonts/")
-
-        m_coh->set_font_size(12);
+    void start() final
+    {
+        m_current_font_path = m_coh->get_current_font_path();
+        m_current_font_size_readable = std::to_string(m_coh->get_font_point_size());
+        regenerate_output();
     }
 
     void update() final
@@ -40,38 +45,99 @@ public:
             InputHandler::block_key_until_released(SDLK_LEFT);
         }
 
-        m_coh->add_str("The quick brown fox jumps over the lazy dog.");
+        else if(InputHandler::is_key_pressed_and_available(SDLK_UP))
+        {
+            increase_font_size();
+            InputHandler::delay_key(SDLK_UP);
+        }
+
+        else if(InputHandler::is_key_pressed_and_available(SDLK_DOWN))
+        {
+            decrease_font_size();
+            InputHandler::delay_key(SDLK_DOWN);
+        }
+
+        m_coh->add_str(m_output);
     }
 
 private:
 
-    uint8_t current_font_index {};
+    // Current index inside the available font's vector grabbed from the ConsoleOutputHandler.
+    uint8_t m_current_font_index {};
 
-    std::string output;
+    // Path to the font that is currently active.
+    std::string m_current_font_path;
+
+    // Readable integer representing the current font size.
+    std::string m_current_font_size_readable;
+
+    // Text that is displayed each frame. 
+    std::string m_output;
 
     ConsoleOutputHandler* m_coh;
 
+    // Attempts to switch to the next font in the list of available fonts.
     void switch_to_next_font()
     {
         const std::vector<std::string>& available_font_paths = m_coh->get_available_font_paths();
 
-        current_font_index = (current_font_index + 1) % available_font_paths.size();
+        m_current_font_index = (m_current_font_index + 1) % available_font_paths.size();
 
-        std::cout << "Setting font: " << available_font_paths.at(current_font_index) << '\n';
+        m_coh->set_font_path(available_font_paths.at(m_current_font_index));
 
-        m_coh->set_font_path(available_font_paths.at(current_font_index));
+        m_current_font_path = available_font_paths.at(m_current_font_index);
+
+        regenerate_output();
     }
 
+    // Attemps to switch to the previous font in the list of available fonts.
     void switch_to_prev_font()
     {
         const std::vector<std::string>& available_font_paths = m_coh->get_available_font_paths();
 
-        if(current_font_index == 0) current_font_index = available_font_paths.size() - 1;
-        else --current_font_index;
+        if(m_current_font_index == 0) m_current_font_index = available_font_paths.size() - 1;
+        else --m_current_font_index;
         
-        std::cout << "Setting font: " << available_font_paths.at(current_font_index) << '\n';
+        m_coh->set_font_path(available_font_paths.at(m_current_font_index));
 
-        m_coh->set_font_path(available_font_paths.at(current_font_index));
+        m_current_font_path = available_font_paths.at(m_current_font_index);
+
+        regenerate_output();
+    }
+
+    // Attempts to increase the font size.
+    void increase_font_size()
+    {
+        const uint8_t CURRENT_FONT_SIZE = m_coh->get_font_point_size();
+
+        if(CURRENT_FONT_SIZE < 40) m_coh->set_font_size(CURRENT_FONT_SIZE + 1);
+
+        m_current_font_size_readable = std::to_string(m_coh->get_font_point_size());
+
+        regenerate_output();
+    }
+
+    // Attemps to decrease the font size.
+    void decrease_font_size()
+    {
+        const uint8_t CURRENT_FONT_SIZE = m_coh->get_font_point_size();
+
+        if(CURRENT_FONT_SIZE > 11) m_coh->set_font_size(CURRENT_FONT_SIZE - 1);
+
+        m_current_font_size_readable = std::to_string(m_coh->get_font_point_size());
+
+        regenerate_output();
+    }
+
+    // Regenerates the output that is displayed each frame.
+    void regenerate_output()
+    {
+        m_output.clear();
+
+        m_output.append("The quick brown fox jumps over the lazy dog.\n\n");
+        m_output.append(std::string(RENDERABLE_CHARACTERS) + "\n\nFont: ");
+        m_output.append(m_current_font_path + "\nFont size: ");
+        m_output.append(m_current_font_size_readable);
     }
 };
 
@@ -83,21 +149,21 @@ public:
 
     Simulator() 
     {
-        d_m = DemoMenu(&m_coh);
+        font_render_menu = FontRenderingMenu(&m_coh);
     
-        MenuManager::activate_menu(&d_m);
+        MenuManager::activate_menu(&font_render_menu);
     }
-
-
 
 private:
 
-    DemoMenu d_m;
+    FontRenderingMenu font_render_menu;
 };
 
 
 int main()
 {
+    TextFileHandler::clear_file("CrashLog.txt");
+
     Simulator sim;
 
     sim.start();

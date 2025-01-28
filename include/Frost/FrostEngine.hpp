@@ -31,8 +31,11 @@ public:
     static int get_screen_height();
 
 
-
 protected:
+
+    /** Called once per frame. Any user defined components that need to be updated can be placed.
+     * here. */
+    virtual void _user_update();
 
     /** Terminates Engine simulation. This function simply flags the Engine to stop on the next 
      * frame completion. Any change made between this function call and the end of the frame will
@@ -47,7 +50,7 @@ protected:
     bool _set_application_icon(std::string path_to_png);
     
     /** Returns a const reference to the internal variable measuring the time each frame takes. */
-    const double& get_frame_time_reference();
+    const double& _get_frame_time_reference();
 
     TextureHandler m_texture_handler;
     TextRenderingHandler m_text_ren_handler;
@@ -71,7 +74,7 @@ private:
     uint8_t m_target_fps {}; // Target frames per second that the Engine will simulate at.
 
     // Target miliseconds per frame to achieve target fps.
-    uint8_t m_target_milliseconds_per_frame {};  
+    uint16_t m_target_milliseconds_per_frame {};  
 
     // Timestamp of the beginning of the frame. Used to calculate the miliseconds each frame takes.
     c_time_point m_frame_start_timestamp; 

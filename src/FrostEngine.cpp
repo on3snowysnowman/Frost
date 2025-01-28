@@ -48,12 +48,6 @@ FrostEngine::FrostEngine()
     // Initialize SDL and the Engine. 
     _init_SDL_and_engine();
 
-    m_text_ren_handler = std::move(TextRenderingHandler(&m_texture_handler));
-
-    m_coh = ConsoleOutputHandler(&m_texture_handler, 0, 0, s_screen_width, s_screen_height);
-
-    m_sprite_handler = SpriteHandler(&m_texture_handler);
-
     // EventSystem::subscribe<FrostEngine>("QUIT_SIMULATION", this, &FrostEngine::_quit);
     EventHandler::register_event<void>(
         "QUIT_SIMULATION", 
@@ -90,6 +84,8 @@ int FrostEngine::get_screen_height() { return s_screen_height; }
 
 
 // Protected
+
+void FrostEngine::_user_update() {}
 
 void FrostEngine::_quit() 
 { 
@@ -128,7 +124,7 @@ bool FrostEngine::_set_application_icon(std::string path_to_png)
     return true;
 }
 
-const double& FrostEngine::get_frame_time_reference()
+const double& FrostEngine::_get_frame_time_reference()
  { return m_elapsed_milliseconds_this_frame; }
 
 
@@ -252,6 +248,8 @@ void FrostEngine::_init_SDL_and_engine()
 
     if(application_window_name.size() == 0) application_window_name = "Frost";
 
+    // Configure screen size and create window.
+
     if(init_data.at("fullscreen"))
     {
         #ifdef FROST_DEBUG
@@ -285,6 +283,8 @@ void FrostEngine::_init_SDL_and_engine()
     // Create the Renderer.
     m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED);
 
+    // Configure VSYNC.
+
     if(init_data.at("vsync"))
     {
         #ifdef FROST_DEBUG
@@ -293,7 +293,8 @@ void FrostEngine::_init_SDL_and_engine()
         #endif
 
         m_use_vsync = true;
-        // Enable Vsync
+
+        // Enable Vsync.
         SDL_RenderSetVSync(m_renderer, 1);
     }
 
@@ -304,20 +305,34 @@ void FrostEngine::_init_SDL_and_engine()
         ProgramOutputHandler::log("Vsync: false\n");
         #endif
 
-        m_target_milliseconds_per_frame = 1000 / uint8_t(init_data.at("frame_limit"));
+        m_target_milliseconds_per_frame = 1000 / static_cast<int>(init_data.at("frame_limit"));
     }
 
     _set_application_icon("assets/Frost_Icon.png");
+
+    // Set background color.
 
     json background_color = init_data.at("background_color");
 
     SDL_SetRenderDrawColor(m_renderer, background_color.at(0), background_color.at(1), 
         background_color.at(2), 255);
 
+    // Configure colors and create TextureHandler.
+
     if(init_data.at("use_extended_colors")) 
         m_texture_handler = TextureHandler(m_renderer, m_EXTENDED_COLOR_PATH);
 
     else m_texture_handler = TextureHandler(m_renderer, m_BASE_COLOR_PATH);
+
+    // Create remaining components.
+    
+    m_text_ren_handler = TextRenderingHandler(&m_texture_handler, init_data.at("font_size"), 
+        init_data.at("font_path"));
+
+    m_coh = ConsoleOutputHandler(&m_texture_handler, init_data.at("font_size"), 
+        init_data.at("font_path"), 0, 0, s_screen_width, s_screen_height);
+
+    m_sprite_handler = SpriteHandler(&m_texture_handler);
 }
 
 void FrostEngine::_update()
@@ -335,6 +350,8 @@ void FrostEngine::_update()
         EventHandler::invoke_event<void>("QUIT_SIMULATION");
 
     MenuManager::_update_active_menus();
+
+    _user_update();
 
     m_coh._render();
 
