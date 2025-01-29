@@ -16,7 +16,7 @@
 
 // Constructors / Deconstructor
 
-UIFloatVariable::UIFloatVariable(ConsoleOutputHandler& coh, std::string& cursor_color, 
+UIFloatVariable::UIFloatVariable(ConsoleOutputHandler* coh, std::string* cursor_color, 
     std::string name, std::string content, std::string default_content) :
     UIItem(coh, cursor_color, "FLOAT_VARIABLE")
 {
@@ -33,20 +33,20 @@ UIFloatVariable::UIFloatVariable(ConsoleOutputHandler& coh, std::string& cursor_
 
 void UIFloatVariable::render_no_status() const
 {
-    m_coh.add_str("   " + m_name + ": " + m_content);
+    m_coh->add_str("   " + m_name + ": " + m_content);
 }
 
 void UIFloatVariable::render_hovered() const
 {
-    m_coh.add_str(" > ", m_cursor_color);
-    m_coh.add_str(m_name + ": " + m_content);
+    m_coh->add_str(" > ", *m_cursor_color);
+    m_coh->add_str(m_name + ": " + m_content);
 }
 
 void UIFloatVariable::render_selected() const
 {
-    m_coh.add_str(" > ", m_cursor_color);
-    m_coh.add_str(m_name + ": ");
-    m_coh.add_str(m_content + '_', m_cursor_color);
+    m_coh->add_str(" > ", *m_cursor_color);
+    m_coh->add_str(m_name + ": ");
+    m_coh->add_str(m_content + '_', *m_cursor_color);
 }
 
 

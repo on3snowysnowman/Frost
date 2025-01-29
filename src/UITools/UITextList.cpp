@@ -17,7 +17,7 @@
 
 // Constructors / Deconstructor
 
-UITextList::UITextList(ConsoleOutputHandler& coh, std::string& cursor_color, std::string name,
+UITextList::UITextList(ConsoleOutputHandler* coh, std::string* cursor_color, std::string name,
     std::initializer_list<std::string> content, int16_t cursor_position, 
     int16_t selected_position) : UIItem(coh, cursor_color, "TEXT_LIST")
 {
@@ -42,28 +42,28 @@ UITextList::UITextList(ConsoleOutputHandler& coh, std::string& cursor_color, std
 
 void UITextList::render_no_status() const 
 {
-    m_coh.add_str("   " + m_name + ": [...]");
+    m_coh->add_str("   " + m_name + ": [...]");
 }
 
 void UITextList::render_hovered() const 
 {
-    m_coh.add_str(" > ", m_cursor_color);
-    m_coh.add_str(m_name + ": [...]");
+    m_coh->add_str(" > ", *m_cursor_color);
+    m_coh->add_str(m_name + ": [...]");
 }
 
 void UITextList::render_selected() const 
 {
     // Save the anchor so it can be restored after this method is finished.
-    uint16_t previous_anchor = m_coh.get_anchor();
+    uint16_t previous_anchor = m_coh->get_anchor();
 
-    m_coh.set_anchor_here();
+    m_coh->set_anchor_here();
 
-    m_coh.add_str("   " + m_name + ":");
+    m_coh->add_str("   " + m_name + ":");
 
     // Render Text before selected cursor index.
     for(int i = 0; i < m_cursor_index; ++i)
     {
-        m_coh.add_str("\n      " + m_content.at(i));
+        m_coh->add_str("\n      " + m_content.at(i));
     }
 
     // If the Text at the cursor's position is selected.
@@ -71,24 +71,24 @@ void UITextList::render_selected() const
     {
         // Render this text item as selected.
         
-        m_coh.add_str("\n    > " + m_content.at(m_cursor_index) + '_', m_cursor_color);
+        m_coh->add_str("\n    > " + m_content.at(m_cursor_index) + '_', *m_cursor_color);
     }
 
     // This Text is only hovered.
     else
     {
-        m_coh.add_str("\n    > ", m_cursor_color);
-        m_coh.add_str(m_content.at(m_cursor_index));
+        m_coh->add_str("\n    > ", *m_cursor_color);
+        m_coh->add_str(m_content.at(m_cursor_index));
     }
 
     // Render Text after the cursor's index.
     for(int i = m_cursor_index + 1; i < m_content.size(); ++i)
     {
-        m_coh.add_str("\n      " + m_content.at(i));
+        m_coh->add_str("\n      " + m_content.at(i));
     }
 
     // Reset anchor to what it originally was before this method.
-    m_coh.set_anchor(previous_anchor);
+    m_coh->set_anchor(previous_anchor);
 }
 
 UIItem::Status UITextList::handle_input() 

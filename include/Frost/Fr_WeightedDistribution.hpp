@@ -15,10 +15,10 @@
 #include <cstdint>
 #include <initializer_list>
 #include <algorithm>
-#include <iostream>
 
 #include "TextFileHandler.hpp"
-#include"Fr_Random.hpp"
+#include "Fr_Random.hpp"
+#include "CrashOutputHandler.hpp"
 
 /**
  * @class WeightedDistribution
@@ -83,10 +83,9 @@ public:
     {
         if(values.size() != N)
         {
-            TextFileHandler::add_to_buffer("WeightedDistribution::set_values(const Container_T&"
-                " values) where 'Container_T' = " + std::string(typeid(Container_T).name()) + 
-                "-> Passed container size does not match specified template size.\n");
-            TextFileHandler::write("CrashLog.txt", Frost::APPEND);
+            OUTPUT_CRASH_DETAILS(" where 'Container_T' = '" + 
+                std::string(typeid(Container_T).name()) + 
+                "' -> Passed container size does not match specified template size.\n");
             exit(1);
         }
 
@@ -110,10 +109,9 @@ public:
     {
         if(weights.size() != N)
         {
-            TextFileHandler::add_to_buffer("WeightedDistribution::set_weights(const Container_T&"
-                " weights) where 'Container_T' = " + std::string(typeid(Container_T).name()) + 
-                "-> Passed container size does not match specified template size.\n");
-            TextFileHandler::write("CrashLog.txt", Frost::APPEND);
+            OUTPUT_CRASH_DETAILS(" where 'Container_T' = '" + 
+                std::string(typeid(Container_T).name()) + 
+                "' -> Passed container size does not match specified template size.\n");
             exit(1);
         }
 
@@ -185,11 +183,10 @@ private:
     {
         // Index is valid.
         if(index < N) return;
-    
-        TextFileHandler::add_to_buffer("[ERR WeightedDistribution::_handle_index_check(uint32_t "
-            "index) where 'index' = " + std::to_string(index) + " -> Requested index out of "
-            "range.");
-        TextFileHandler::write("CrashLog.txt", Frost::APPEND);
+
+
+        OUTPUT_CRASH_DETAILS(" where 'index' = '" + std::to_string(index) + "' -> Requested index "
+            "is out of range.\n");
         exit(1);
     }   
 };

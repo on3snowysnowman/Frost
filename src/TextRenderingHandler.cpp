@@ -14,6 +14,7 @@
 #include "TextRenderingHandler.hpp"
 #include "TextFileHandler.hpp"
 #include "FileSystemHandler.hpp"
+#include "CrashOutputHandler.hpp"
 
 
 // Constructors / Deconstructor
@@ -131,8 +132,7 @@ void TextRenderingHandler::set_font_size(uint8_t new_font_point_size)
     // Update the font dimensions and atlas since it has now changed.
     _init_font_dimensions_and_atlas();
 }
-#include <iostream>
-#include "TimeObserver.hpp"
+
 void TextRenderingHandler::set_font_path(std::string new_font_path)
 {
     m_font_path = new_font_path;
@@ -177,9 +177,7 @@ void TextRenderingHandler::_fetch_available_fonts()
     // If no fonts were found.
     if(m_available_font_paths.size() == 0)
     {
-        TextFileHandler::add_to_buffer("[ERR] No fonts were found at the fonts directory: '" +
-            m_fonts_directory + "'.\n");
-        TextFileHandler::write("CrashLog.txt", Frost::APPEND);
+        OUTPUT_CRASH_DETAILS(" -> No fonts were found at the fonts directory: '" + m_fonts_directory + "'.\n");
         exit(1);
     }
 }
@@ -188,9 +186,7 @@ void TextRenderingHandler::_init_font_dimensions_and_atlas()
 {
     if(!FileSystemHandler::does_directory_exist(m_font_path))
     {
-        TextFileHandler::add_to_buffer("[ERR] TextRenderingHandler::_init_font_dimensions_and_"
-        "atlas() where m_font_path = '" + m_font_path + "' -> Font path is not valid.\n");
-        TextFileHandler::write("CrashLog.txt", Frost::APPEND);
+        OUTPUT_CRASH_DETAILS(" where 'm_font_path' = '" + m_font_path + "' -> Font path is invalid.\n");
         exit(1);
     }
 
@@ -199,13 +195,9 @@ void TextRenderingHandler::_init_font_dimensions_and_atlas()
 
     if(!font)
     {
-        TextFileHandler::add_to_buffer("[ERR] TextRenderingHandler::_init_font_dimensions_and_"
-        "atlas() -> SDL_TTF failed to create font object.\n");
-        TextFileHandler::write("CrashLog.txt", Frost::APPEND);
+        OUTPUT_CRASH_DETAILS(" -> SDL_TTF failed to create font object.\n");
         exit(1);
     }
-
-    // TTF_SetFontHinting(font, TTF_HINTING_MONO); // Force better clarity for monospace fonts
 
     // Temp variables to grab the font dimensions from SDL. Using temp integers to later store in
     // uint8_ts for efficiency. Sure, it's negligible but it makes me feel good about memory 

@@ -14,6 +14,7 @@
 #include "SpriteHandler.hpp"
 #include "Fr_Math.hpp"
 #include "TextFileHandler.hpp"
+#include "CrashOutputHandler.hpp"
 
 // Static Members
 
@@ -62,40 +63,61 @@ void SpriteHandler::_render()
 
 void SpriteHandler::set_sprite_position(sprite_id id, uint16_t x, uint16_t y)
 {
-    if (!_is_id_valid(id))
-    {
-        // Crash the program, since no valid Sprite object exists for this ID.
 
-        TextFileHandler::add_to_buffer("[ERR] SpriteHandler.set_sprite_position() -> Sprite ID : \"" +
-                std::to_string(id) + "\" does not exist.\n");
-        TextFileHandler::write("CrashLog.txt", Frost::APPEND);
+    Sprite* target_sprite {};
+
+    try
+    {
+        target_sprite = &s_all_sprites.at(id);
+    }
+
+    catch(const std::out_of_range& e)
+    {
+        std::string error_message = " -> " + std::string(e.what());
+
+        if (!_is_id_valid(id))
+        {
+            // Crash the program, since no valid Sprite object exists for this ID.
+
+            error_message = " where 'id' = '" + std::to_string(id) + "': ID does not exist.\n";
+        }
+        
+        OUTPUT_CRASH_DETAILS(error_message);
         exit(1);
     }
 
-    Sprite& sprite = s_all_sprites.at(id);
-
     // Update the Sprite's position.
-    sprite.display_dimensions.x = x;
-    sprite.display_dimensions.y = y;
+    target_sprite->display_dimensions.x = x;
+    target_sprite->display_dimensions.y = y;
 }
 
 void SpriteHandler::modify_sprite_position(sprite_id id, int16_t delta_x, int16_t delta_y)
 {
-    if (!_is_id_valid(id))
-    {
-        // Crash the program, since no valid Sprite object exists for this ID.
+    Sprite* target_sprite {};
 
-        TextFileHandler::add_to_buffer("[ERR] SpriteHandler.modify_sprite_position() -> Sprite ID : \"" +
-                std::to_string(id) + "\" does not exist.\n");
-        TextFileHandler::write("CrashLog.txt", Frost::APPEND);
+    try
+    {
+        target_sprite = &s_all_sprites.at(id);
+    }
+
+    catch(const std::out_of_range& e)
+    {
+        std::string error_message = " -> " + std::string(e.what());
+
+        if (!_is_id_valid(id))
+        {
+            // Crash the program, since no valid Sprite object exists for this ID.
+
+            error_message = " where 'id' = '" + std::to_string(id) + "': ID does not exist.\n";
+        }
+        
+        OUTPUT_CRASH_DETAILS(error_message);
         exit(1);
     }
 
-    Sprite& sprite = s_all_sprites.at(id);
-
     // Update the Sprite's position.
-    sprite.display_dimensions.x += delta_x;
-    sprite.display_dimensions.y += delta_y;
+    target_sprite->display_dimensions.x += delta_x;
+    target_sprite->display_dimensions.y += delta_y;
 }
 
 void SpriteHandler::flag_render(sprite_id id, uint16_t layer)
@@ -152,18 +174,13 @@ void SpriteHandler::deflag_render(sprite_id id)
 
 void SpriteHandler::delete_sprite(sprite_id id)
 {
-    if (!_is_id_valid(id))
+    if(!_is_id_valid(id))
     {
-        // Crash the program, since no valid Sprite object exists for this ID.
-
-        TextFileHandler::add_to_buffer("[ERR] SpriteHandler.delete_sprite() -> Sprite ID : \"" +
-            std::to_string(id) + "\" does not exist.\n");
-        TextFileHandler::write("CrashLog.txt", Frost::APPEND);
+        OUTPUT_CRASH_DETAILS(" where 'id' = '" + std::to_string(id) + "' -> Invalid ID.\n");
         exit(1);
     }
 
-    if (_is_sprite_rendering(id))
-        deflag_render(id);
+    if (_is_sprite_rendering(id)) deflag_render(id);
 
     // "Delete" this Sprite by making its ID available, which in turn makes it unavailable to be
     // modified or referenced until a new Sprite is created and this recycled ID can be assigned to

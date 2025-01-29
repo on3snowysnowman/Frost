@@ -24,10 +24,7 @@ class UIFloatVariable : public UIItem
 
 public:
 
-    // Requires parameters for construction.
-    UIFloatVariable() = delete;
-
-    UIFloatVariable(ConsoleOutputHandler& coh, std::string& cursor_color, std::string name,
+    UIFloatVariable(ConsoleOutputHandler* coh, std::string* cursor_color, std::string name,
         std::string content = "0", std::string default_content = "0");
 
     void render_no_status() const final;

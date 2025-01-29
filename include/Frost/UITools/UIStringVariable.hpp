@@ -22,7 +22,7 @@ public:
     // Requires parameters for construction.
     UIStringVariable() = delete;
 
-    UIStringVariable(ConsoleOutputHandler& coh, std::string& cursor_color, std::string name,
+    UIStringVariable(ConsoleOutputHandler* coh, std::string* cursor_color, std::string name,
         std::string content = "", std::string default_content = "");
 
     void render_no_status() const final;

@@ -16,7 +16,7 @@
 
 // Constructors / Deconstructor
 
-UIStringVariable::UIStringVariable(ConsoleOutputHandler& coh, std::string& cursor_color, 
+UIStringVariable::UIStringVariable(ConsoleOutputHandler* coh, std::string* cursor_color, 
     std::string name, std::string content, std::string default_content) : 
     UIItem(coh, cursor_color, "STRING_VARIABLE")
 {
@@ -31,20 +31,20 @@ UIStringVariable::UIStringVariable(ConsoleOutputHandler& coh, std::string& curso
 
 void UIStringVariable::render_no_status() const 
 {
-    m_coh.add_str("   " + m_name + ": " + m_content);
+    m_coh->add_str("   " + m_name + ": " + m_content);
 };
 
 void UIStringVariable::render_hovered() const 
 {
-    m_coh.add_str(" > ", m_cursor_color); 
-    m_coh.add_str(m_name + ": " + m_content);
+    m_coh->add_str(" > ", *m_cursor_color); 
+    m_coh->add_str(m_name + ": " + m_content);
 };
 
 void UIStringVariable::render_selected() const 
 {
-    m_coh.add_str(" > ", m_cursor_color);
-    m_coh.add_str(m_name + ": ");
-    m_coh.add_str(m_content + '_', m_cursor_color);
+    m_coh->add_str(" > ", *m_cursor_color);
+    m_coh->add_str(m_name + ": ");
+    m_coh->add_str(m_content + '_', *m_cursor_color);
 };
 
 UIItem::Status UIStringVariable::handle_input() 

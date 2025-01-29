@@ -10,6 +10,7 @@
 #include "SpriteHandler.hpp"
 #include "TextRenderingHandler.hpp"
 #include "TimeObserver.hpp"
+#include "Json.hpp"
 
 
 /** Frost Engine by Joel Height. Version 0.2. */
@@ -30,6 +31,8 @@ public:
     /** Gets the screen height in pixels. */
     static int get_screen_height();
 
+    /** Returns a readonly json object containing the data of the init file for the Engine. */
+    const json& get_init_data_json();
 
 protected:
 
@@ -49,7 +52,7 @@ protected:
      */
     bool _set_application_icon(std::string path_to_png);
     
-    /** Returns a const reference to the internal variable measuring the time each frame takes. */
+    // Returns a const reference to the internal variable measuring the time each frame takes.
     const double& _get_frame_time_reference();
 
     TextureHandler m_texture_handler;
@@ -90,6 +93,8 @@ private:
 
     // Path to the extended colors data file.
     const std::string m_EXTENDED_COLOR_PATH = "data/init/extended_colors.json";
+
+    json init_data_json; // Json object created from the contents of the data file. 
 
     SDL_Event m_event; // Instance of the SDL_Event.
 

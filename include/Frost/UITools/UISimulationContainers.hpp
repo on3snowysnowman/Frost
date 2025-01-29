@@ -65,6 +65,7 @@ public:
     ConsoleOutputHandler* coh;
 };
 
+
 /** Stores data that UISimulationTools::simulate_UI_panel uses to simulate a 
  * menu interface. */
 class UIPanelContainer
@@ -74,9 +75,10 @@ public:
 
     UIPanelContainer() {}
 
-    UIPanelContainer(ConsoleOutputHandler& _coh)
+    UIPanelContainer(ConsoleOutputHandler* _coh, std::string* _cursor_color)
     {
-        coh = &_coh;
+        coh = _coh;
+        cursor_color = _cursor_color;
     }
 
     /** Resets the selected_index and cursor_index to their default position.  */

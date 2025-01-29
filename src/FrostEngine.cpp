@@ -23,6 +23,7 @@
 
 #include "TextFileHandler.hpp"
 #include "TimeObserver.hpp"
+#include "CrashOutputHandler.hpp"
 
 
 // Static Members
@@ -31,7 +32,7 @@ int FrostEngine::s_screen_width;
 
 int FrostEngine::s_screen_height;
 
-
+#include <iostream>
 // Constructors / Deconstructor
 
 FrostEngine::FrostEngine()
@@ -48,12 +49,17 @@ FrostEngine::FrostEngine()
     // Initialize SDL and the Engine. 
     _init_SDL_and_engine();
 
-    // EventSystem::subscribe<FrostEngine>("QUIT_SIMULATION", this, &FrostEngine::_quit);
     EventHandler::register_event<void>(
         "QUIT_SIMULATION", 
         std::function<void()>(
             [this]() { this->_quit();}
-        ));
+    ));
+
+    EventHandler::register_event<const json&>(
+        "GET_INIT_DATA",
+        std::function<const json&()>(
+            [this]() -> const json& { return this->init_data_json; }
+    ));
 }
 
 FrostEngine::~FrostEngine() 
@@ -81,6 +87,8 @@ void FrostEngine::start()
 int FrostEngine::get_screen_width() { return s_screen_width; }
 
 int FrostEngine::get_screen_height() { return s_screen_height; }
+
+const json& FrostEngine::get_init_data_json() { return init_data_json; }
 
 
 // Protected
@@ -215,16 +223,16 @@ void FrostEngine::_init_SDL_and_engine()
     // If SDL subsystems failed to initialize.
     if(SDL_Init(SDL_INIT_VIDEO))
     {
-        TextFileHandler::add_to_buffer("[ERR] FrostEngine::_init_SDL_and_engine() -> SDL failed to initialize.\n");
-        TextFileHandler::write("CrashLog.txt", Frost::APPEND);
+        OUTPUT_CRASH_DETAILS(" -> SDL failed to initialize: " + std::string(SDL_GetError()) + 
+            ".\n");
         exit(1);
     }
 
     // IF SDL_ttf failed to initialize.
     if(TTF_Init())
     {
-        TextFileHandler::add_to_buffer("[ERR] FrostEngine::_init_SDL_and_engine() -> SDL_TTF failed to initialize.\n");
-        TextFileHandler::write("CrashLog.txt", Frost::APPEND);
+        OUTPUT_CRASH_DETAILS(" -> SDL_TTF failed to initialize: " + 
+            std::string(SDL_GetError()));
         exit(1);
     }
     
@@ -234,34 +242,49 @@ void FrostEngine::_init_SDL_and_engine()
     // If the init folder does not exist in the working directory.
     if(!FileSystemHandler::does_directory_exist("data"))
     {
-        TextFileHandler::add_to_buffer("[ERR] FrostEngine::_init_SDL_and_engine() -> \"data\" "
-        "folder does not exist\n");
-        TextFileHandler::write("CrashLog.txt", Frost::APPEND);
+        OUTPUT_CRASH_DETAILS(" -> 'data' directory does not exist.\n");
         exit(1);
     }
 
     // The data folder exists, assume the init files already exist.
 
-    json init_data = JsonHandler::get(m_INIT_DATA_DIRECTORY + "/init_data.json");
+    init_data_json = JsonHandler::get(m_INIT_DATA_DIRECTORY + "/init_data.json");
 
-    std::string application_window_name = init_data.at("application_window_name");
+    std::string application_window_name = init_data_json.at("application_window_name");
 
     if(application_window_name.size() == 0) application_window_name = "Frost";
 
     // Configure screen size and create window.
 
-    if(init_data.at("fullscreen"))
+    if(init_data_json.at("fullscreen"))
     {
         #ifdef FROST_DEBUG
 
         ProgramOutputHandler::log("Fullscreen: true\n");
         #endif
 
-        // Create the SDL_Window as fullscreen.
-        m_window = SDL_CreateWindow(application_window_name.c_str(), 0, 0, 0, 0, 
-            SDL_WINDOW_FULLSCREEN_DESKTOP);
+        // Get the display bounds of the primary monitor
+        SDL_Rect fullscreen_dimensions;
+        if (SDL_GetDisplayBounds(0, &fullscreen_dimensions) != 0) 
+        {   
+            OUTPUT_CRASH_DETAILS("SDL_GetDisplayBounds failed: " + std::string(SDL_GetError())
+                + ".\n");
+            exit(1);
+        }
 
-        SDL_GetWindowSize(m_window, &s_screen_width, &s_screen_height);
+        // Create a fullscreen window on the primary monitor
+        m_window = SDL_CreateWindow(
+            application_window_name.c_str(),
+            fullscreen_dimensions.x, 
+            fullscreen_dimensions.y,
+            fullscreen_dimensions.w,
+            fullscreen_dimensions.h,
+            SDL_WINDOW_FULLSCREEN_DESKTOP
+        );
+
+        // Update the tracked screen width and height dimensions. 
+        s_screen_width = fullscreen_dimensions.w;
+        s_screen_height = fullscreen_dimensions.h;
     }
 
     else
@@ -272,8 +295,8 @@ void FrostEngine::_init_SDL_and_engine()
         #endif
 
         // Get the width and height from the data file.
-        s_screen_width = init_data.at("screen_width");
-        s_screen_height = init_data.at("screen_height");
+        s_screen_width = init_data_json.at("screen_width");
+        s_screen_height = init_data_json.at("screen_height");
 
         // Create the SDL_Window with the loaded data.
         m_window = SDL_CreateWindow(application_window_name.c_str(), SDL_WINDOWPOS_CENTERED, 
@@ -285,7 +308,7 @@ void FrostEngine::_init_SDL_and_engine()
 
     // Configure VSYNC.
 
-    if(init_data.at("vsync"))
+    if(init_data_json.at("vsync"))
     {
         #ifdef FROST_DEBUG
 
@@ -305,32 +328,32 @@ void FrostEngine::_init_SDL_and_engine()
         ProgramOutputHandler::log("Vsync: false\n");
         #endif
 
-        m_target_milliseconds_per_frame = 1000 / static_cast<int>(init_data.at("frame_limit"));
+        m_target_milliseconds_per_frame = 1000 / static_cast<int>(init_data_json.at("frame_limit"));
     }
 
     _set_application_icon("assets/Frost_Icon.png");
 
     // Set background color.
 
-    json background_color = init_data.at("background_color");
+    json background_color = init_data_json.at("background_color");
 
     SDL_SetRenderDrawColor(m_renderer, background_color.at(0), background_color.at(1), 
         background_color.at(2), 255);
 
     // Configure colors and create TextureHandler.
 
-    if(init_data.at("use_extended_colors")) 
+    if(init_data_json.at("use_extended_colors")) 
         m_texture_handler = TextureHandler(m_renderer, m_EXTENDED_COLOR_PATH);
 
     else m_texture_handler = TextureHandler(m_renderer, m_BASE_COLOR_PATH);
 
     // Create remaining components.
     
-    m_text_ren_handler = TextRenderingHandler(&m_texture_handler, init_data.at("font_size"), 
-        init_data.at("font_path"));
+    m_text_ren_handler = TextRenderingHandler(&m_texture_handler, init_data_json.at("font_size"), 
+        init_data_json.at("font_path"));
 
-    m_coh = ConsoleOutputHandler(&m_texture_handler, init_data.at("font_size"), 
-        init_data.at("font_path"), 0, 0, s_screen_width, s_screen_height);
+    m_coh = ConsoleOutputHandler(&m_texture_handler, init_data_json.at("font_size"), 
+        init_data_json.at("font_path"), 0, 0, s_screen_width, s_screen_height);
 
     m_sprite_handler = SpriteHandler(&m_texture_handler);
 }

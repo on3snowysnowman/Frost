@@ -14,7 +14,7 @@
 #include "ConsoleOutputHandler.hpp"
 
 
-/** Provides the base infastructure for more in depth UIItems to derive from. UIItems are used to
+/** Provides the base infrastructure for more in depth UIItems to derive from. UIItems are used to
  * create modular and recursive interfaces for users to interact with in a text-menu system.
 */
 class UIItem
@@ -34,10 +34,9 @@ public:
         SELECTED
     };
 
-    // Requires ctor with item type specifier
-    UIItem() = delete;
+    UIItem();
 
-    UIItem(ConsoleOutputHandler& coh, std::string& cursor_color, std::string item_type);
+    UIItem(ConsoleOutputHandler* coh, std::string* cursor_color, std::string item_type);
 
     /** Renders this UIItem with respect to having no status. */
     virtual void render_no_status() const;
@@ -60,11 +59,11 @@ public:
 protected:
 
     // Item type of this UIItem, specifically which derived class type. Example would be "CHOICE".
-    const std::string m_ITEM_TYPE;
+    std::string m_item_type;
 
     /** Color of the cursor. The target of this pointer is managed by the Menu that created and is
      * handling the simulation of this Item. */
-    std::string& m_cursor_color;
+    std::string* m_cursor_color;
 
-    ConsoleOutputHandler& m_coh;
+    ConsoleOutputHandler* m_coh;
 };

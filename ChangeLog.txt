@@ -23,6 +23,8 @@ This file tracks overall changes and fixes to the Engine.
 
     FIXES
 
+    - Fullscreen window now opens on the primary monitor instead of the first found one by the OS. 
+
     - Fixed InputHandler not properly blocking keys after about a minute of simulation.
 
     - TextRenderingHandler and ConsoleOutputHandler now properly handle move and copy constructor

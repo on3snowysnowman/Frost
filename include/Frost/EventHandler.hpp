@@ -19,6 +19,7 @@
 #include <queue>
 
 #include "TextFileHandler.hpp"
+#include "CrashOutputHandler.hpp"
 
 using event_id = uint64_t;
 
@@ -46,10 +47,7 @@ public:
         // If this invoke key doesn't exist.
         if(s_invoke_keys_to_events.find(invoke_key) == s_invoke_keys_to_events.end())
         {
-            TextFileHandler::add_to_buffer("[ERR] EventHandler::unsubscribe(const std::string& "
-            "invoke_key, event_id id) where 'invoke_key' == " + invoke_key + " -> attempted to " 
-            "unsubscribe an event with an invoke key that does not exist.\n");
-            TextFileHandler::write("CrashLog.txt", Frost::APPEND);
+            OUTPUT_CRASH_DETAILS(" where 'invoke_key' = '" + invoke_key + "' -> No such invoke key exists.\n");
             exit(1);
         }
 
@@ -70,12 +68,11 @@ public:
             return;
         }
 
-        // If the function makes it to this point, the id wasn't found in the vector.
-        TextFileHandler::add_to_buffer("[ERR] EventHandler::unsubscribe(const std::string& "
-            "invoke_key, event_id id) where 'invoke_key' == '" + invoke_key + "' & 'id' == '" + 
-            std::to_string(id) + "' -> Event of 'id' not found in the list of subscribed events for"
-            " this invoke key.\n");
-        TextFileHandler::write("CrashLog.txt", Frost::APPEND);
+        // If the function makes it to this point, the ID wasn't found in the vector.
+
+        OUTPUT_CRASH_DETAILS(" where 'invoke_key' = '" + invoke_key + "' & 'id' = " + 
+            std::to_string(id) + "' -> specified id was not found in the list of subscribed events"
+            " for this invoke key.\n");
         exit(1);
     }
 
@@ -116,10 +113,7 @@ public:
         // If this invoke key does not exist
         if(it == s_invoke_keys_to_events.end())
         {
-            TextFileHandler::add_to_buffer("[ERR] EventHandler::invoke_event(const std::string& "
-                "invoke_key, FunctionArgs... args) where 'invoke_key' = '" + invoke_key  + "' -> "
-                "Invoke key is not valid, and does not point to any subscribed events.\n");
-            TextFileHandler::write("CrashLog.txt", Frost::APPEND);
+            OUTPUT_CRASH_DETAILS(" where 'invoke_key' = '" + invoke_key + "' -> No such invoke key exists.\n");
             exit(1);
         }
 

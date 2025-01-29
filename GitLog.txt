@@ -3,10 +3,24 @@ This file tracks specific details on what was changed each git push.
 
 30:
 
+   - Reconfigured all UIItems to use pointers to the COH and cursor color. Additionally, removed 
+     the deletion from the base constructor.
+
+   - Began work on a SettingsMenuDemo.
+
+   - All crashes now use the CrashOutputHandler now instead of directly outputting the error 
+     details using the TextFileHandler.
+
+   - Changed the "Color.hpp" filename to "Fr_Color.hpp" for separation from potential multiple 
+     library name conflicts. Additionally, wrapped the Color struct inside the Frost namespace for 
+     the same purpose. 
+
+   - Changed the initialization of the SDL Window to open on the primary monitor. 
+
    - Renamed ExceptionOutputHandler to CrashOutputHandler for more clarity. The CrashOutputHandler 
      doesn't need to only be used for exception handling output.
 
-   - Finished initial Tilemap class. 
+   - Finished base Tilemap class. 
 
 29:
 

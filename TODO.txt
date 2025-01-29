@@ -13,3 +13,4 @@ Add Animation support
 
 Write time profiling class.
 
+Write a delayed text renderer

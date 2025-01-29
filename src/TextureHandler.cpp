@@ -14,6 +14,7 @@
 #include "FileSystemHandler.hpp"
 #include "TextFileHandler.hpp"
 #include "TextRenderingHandler.hpp"
+#include "CrashOutputHandler.hpp"
 
 #ifdef FROST_DEBUG
 
@@ -67,14 +68,12 @@ void TextureHandler::draw(SDL_Texture* texture, const SDL_Rect& source, const SD
     // If this color isn't registered.
     if(m_colors.find(color) == m_colors.end())
     {
-        TextFileHandler::add_to_buffer("TextureHandler.draw() -> Color: \"" + color 
-            + "\" is not a registered color.\n");
-        TextFileHandler::write("CrashLog.txt", Frost::APPEND);
+        OUTPUT_CRASH_DETAILS(" where 'color' = '" + color + "' ->  Non valid color.\n");
         exit(1);
     }
 
     // Color object respective to the passed color name.
-    const Color& targ_color = m_colors.at(color);
+    const Frost::Color& targ_color = m_colors.at(color);
 
     // Store the original color values of the texture, since the texture's color channels must be
     // modified during the rendering process, and needs to be restored after to their original value.
@@ -183,7 +182,7 @@ bool TextureHandler::create_png_from_static_texture(SDL_Texture* staticTexture, 
 }
 
 
-const std::unordered_map<std::string, Color>& TextureHandler::get_colors() const
+const std::unordered_map<std::string, Frost::Color>& TextureHandler::get_colors() const
 { return m_colors; }
 
 SDL_Texture* TextureHandler::create_texture(std::string png_path) const
@@ -197,9 +196,7 @@ SDL_Texture* TextureHandler::create_texture(std::string png_path) const
     // If the file does not exist.
     if(!FileSystemHandler::does_directory_exist(png_path))
     {
-        TextFileHandler::add_to_buffer("[ERR] TextureHandler.create_texture()-> Path \""
-            + png_path + "\" does not exist.\n");
-        TextFileHandler::write("CrashLog.txt", Frost::APPEND);
+        OUTPUT_CRASH_DETAILS(" where 'png_path' = '" + png_path + "' -> Path does not exist.\n");
         exit(1);
     }
 
@@ -245,6 +242,6 @@ void TextureHandler::_get_colors_from_disk()
     for(const json& color : colors)
     {
         // Create a color, and register it in the map using its name as the key.
-        m_colors[color.at(0)] = Color(color.at(1), color.at(2), color.at(3), color.at(0));
+        m_colors[color.at(0)] = Frost::Color(color.at(1), color.at(2), color.at(3), color.at(0));
     }
 }

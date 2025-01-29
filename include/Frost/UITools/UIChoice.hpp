@@ -24,11 +24,9 @@ class UIChoice : public UIItem
 
 public:
 
-    // Requires parameters for construction.
-    UIChoice() = delete;
+    UIChoice();
 
-    /** @note "content" is moved with std::move and will have its ownership transferred. */
-    UIChoice(ConsoleOutputHandler& coh, std::string& cursor_color, std::string name,
+    UIChoice(ConsoleOutputHandler* coh, std::string* cursor_color, std::string name,
         std::initializer_list<ColorString> content, uint16_t initial_cursor_index = 0, 
         uint16_t initial_selected_index = 0);
 
@@ -44,7 +42,7 @@ public:
      * 
      * @param new_choice Choice to add.
      */
-    void add_choice(ColorString& new_choice);
+    void add_choice(ColorString&& new_choice);
 
     Status handle_input() final;
 

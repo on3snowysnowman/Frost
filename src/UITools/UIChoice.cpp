@@ -16,7 +16,9 @@
 
 // Constructors / Deconstructor
 
-UIChoice::UIChoice(ConsoleOutputHandler& coh, std::string& cursor_color, std::string name,
+UIChoice::UIChoice() : UIItem() {}
+
+UIChoice::UIChoice(ConsoleOutputHandler* coh, std::string* cursor_color, std::string name,
     std::initializer_list<ColorString> content, uint16_t initial_cursor_index, 
     uint16_t initial_selected_index) : UIItem(coh, cursor_color, "CHOICE")
 {
@@ -35,47 +37,47 @@ UIChoice::UIChoice(ConsoleOutputHandler& coh, std::string& cursor_color, std::st
 
 void UIChoice::render_no_status() const 
 {
-    m_coh.add_str("   " + m_name + ": ");
-    m_coh.add_str(get_choice().content, get_choice().color);
+    m_coh->add_str("   " + m_name + ": ");
+    m_coh->add_str(get_choice().content, get_choice().color);
 }
 
 void UIChoice::render_hovered() const 
 {
-    m_coh.add_str(" > ", m_cursor_color);
-    m_coh.add_str(m_name + ": ");
-    m_coh.add_str(get_choice().content, get_choice().color);
+    m_coh->add_str(" > ", *m_cursor_color);
+    m_coh->add_str(m_name + ": ");
+    m_coh->add_str(get_choice().content, get_choice().color);
 }
 
 void UIChoice::render_selected() const
 {
     // Save the anchor so it can be restored after this method is finished.
-    uint16_t previous_anchor = m_coh.get_anchor();
+    uint16_t previous_anchor = m_coh->get_anchor();
 
-    m_coh.set_anchor_here();
+    m_coh->set_anchor_here();
 
-    m_coh.add_str("   " + m_name + ": ");
+    m_coh->add_str("   " + m_name + ": ");
 
     // Render choices before the cursor index.
     for(int i = 0; i < m_cursor_index; ++i)
     {
-        m_coh.add_str("\n      " + m_content.at(i).content, m_content.at(i).color);
+        m_coh->add_str("\n      " + m_content.at(i).content, m_content.at(i).color);
     }
 
     // Render hovered choice.
-    m_coh.add_str("\n    > ", m_cursor_color);
-    m_coh.add_str(m_content.at(m_cursor_index).content, m_content.at(m_cursor_index).color);
+    m_coh->add_str("\n    > ", *m_cursor_color);
+    m_coh->add_str(m_content.at(m_cursor_index).content, m_content.at(m_cursor_index).color);
 
     // Render choices after the cursor index.
     for(int i = m_cursor_index + 1; i < m_content.size(); ++i)
     {
-        m_coh.add_str("\n      " + m_content.at(i).content, m_content.at(i).color);
+        m_coh->add_str("\n      " + m_content.at(i).content, m_content.at(i).color);
     }
 
     // Reset anchor to what it originally was before this method.
-    m_coh.set_anchor(previous_anchor);
+    m_coh->set_anchor(previous_anchor);
 }
 
-void UIChoice::add_choice(ColorString& new_choice) { m_content.push_back(std::move(new_choice)); }
+void UIChoice::add_choice(ColorString&& new_choice) { m_content.push_back(new_choice); }
 
 UIItem::Status UIChoice::handle_input() 
 {

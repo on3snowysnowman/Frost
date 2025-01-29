@@ -8,7 +8,7 @@
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 
-#include "Color.hpp"
+#include "Fr_Color.hpp"
 
 
 /** Used for creating SDL_Textures, along with drawing these textures to the screen using SDL. 
@@ -59,7 +59,7 @@ public:
     bool create_png_from_static_texture(SDL_Texture* staticTexture, const std::string& filePath);
 
     /** Returns a const reference to the internal map of colors. */
-    const std::unordered_map<std::string, Color>& get_colors() const;
+    const std::unordered_map<std::string, Frost::Color>& get_colors() const;
 
     /** Creates and returns an SDL_Texture from the png at the passed path. If a texture has 
      * already been created from this path, it is fetched. 
@@ -79,7 +79,7 @@ private:
     std::string m_color_data_path;
 
     // Color names to their Color objects.
-    std::unordered_map<std::string, Color> m_colors;
+    std::unordered_map<std::string, Frost::Color> m_colors;
 
     // Texture objects to the path they have been created from.
     static std::unordered_map<SDL_Texture*, std::string> s_textures_to_paths;

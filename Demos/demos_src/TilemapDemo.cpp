@@ -32,6 +32,7 @@ private:
 
     Tilemap<char, 10> m_tilemap;
 
+
     // Methods
 
     void _user_update() final

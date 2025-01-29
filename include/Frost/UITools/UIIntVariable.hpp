@@ -22,7 +22,7 @@ public:
     // Requires parameters for construction.
     UIIntVariable() = delete;
 
-    UIIntVariable(ConsoleOutputHandler& coh, std::string& cursor_color, std::string name,
+    UIIntVariable(ConsoleOutputHandler* coh, std::string* cursor_color, std::string name,
         std::string content = "0", std::string default_content = "0");
 
     void render_no_status() const final;

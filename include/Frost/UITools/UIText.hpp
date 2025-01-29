@@ -23,7 +23,7 @@ public:
     // Requires parameters for construction.
     UIText() = delete;
 
-    UIText(ConsoleOutputHandler& coh, std::string& cursor_color, std::string content = "");
+    UIText(ConsoleOutputHandler* coh, std::string* cursor_color, std::string content = "");
 
     void render_no_status() const final;
     void render_hovered() const final;

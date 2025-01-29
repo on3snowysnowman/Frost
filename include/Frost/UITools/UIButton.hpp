@@ -21,20 +21,7 @@ class UIButton : public UIItem
 
 public:
 
-    // Requires parameters for construction.
-    UIButton() = delete;
-
-    // UIButton(ConsoleOutputHandler& coh, std::string& cursor_color, std::string name,
-    //     std::string button_color, T* obj, std::function<ReturnT(T&)> callback_method) : 
-    //     UIItem(coh, cursor_color, "BUTTON"), m_object_pointer(obj)
-    // {
-    //     m_name = name;
-    //     m_button_color = button_color;
-
-    //     m_callback_method = callback_method;
-    // }
-
-    UIButton(ConsoleOutputHandler& coh, std::string& cursor_color, std::string name,
+    UIButton(ConsoleOutputHandler* coh, std::string* cursor_color, std::string name,
         std::string button_color, T* obj, void(T::*callback_method)()) : 
         UIItem(coh, cursor_color, "BUTTON"), m_object_pointer(obj)
     {
@@ -46,13 +33,13 @@ public:
 
     void render_no_status() const final 
     {
-        m_coh.add_str("   " + m_name, m_button_color);
+        m_coh->add_str("   " + m_name, m_button_color);
     }
 
     void render_hovered() const final 
     {
-        m_coh.add_str(" > ", m_cursor_color);
-        m_coh.add_str(m_name, m_button_color);
+        m_coh->add_str(" > ", *m_cursor_color);
+        m_coh->add_str(m_name, m_button_color);
     }
 
     void render_selected() const final 
