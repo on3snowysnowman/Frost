@@ -31,8 +31,22 @@ public:
     /** Gets the screen height in pixels. */
     static int get_screen_height();
 
-    /** Returns a readonly json object containing the data of the init file for the Engine. */
-    const json& get_init_data_json();
+    /** Returns a readonly json object containing the data of the init file for the Engine. 
+     * 
+     * This method is available through the EventHandler using the 'GET_INIT_DATA' invoke key.
+    */
+    const json& get_init_data() const;
+
+    /**
+     * @brief Overwrites the initialization data for the engine on the disk. Restart the program 
+     * for changes to take place.
+     * 
+     * This method is available to invoke through the EventHandler using the 'SAVE_INIT_DATA' 
+     * invoke key.
+     * 
+     * @param new_init_data_json Data to save to disk. 
+     */
+    void save_new_init_data(const json& new_init_data_json);
 
 protected:
 
@@ -94,7 +108,7 @@ private:
     // Path to the extended colors data file.
     const std::string m_EXTENDED_COLOR_PATH = "data/init/extended_colors.json";
 
-    json init_data_json; // Json object created from the contents of the data file. 
+    json m_init_data_json; // Json object created from the contents of the data file. 
 
     SDL_Event m_event; // Instance of the SDL_Event.
 
@@ -105,6 +119,9 @@ private:
 
 
     // Methods
+
+    /** Registers several Engine methods to the EventHandler. */
+    void _register_events();
 
     void _create_default_data_components();
 

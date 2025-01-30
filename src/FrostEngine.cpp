@@ -20,7 +20,6 @@
 #include "MenuManager.hpp"
 #include "EventHandler.hpp"
 #include "ProgramOutputHandler.hpp"
-
 #include "TextFileHandler.hpp"
 #include "TimeObserver.hpp"
 #include "CrashOutputHandler.hpp"
@@ -49,17 +48,7 @@ FrostEngine::FrostEngine()
     // Initialize SDL and the Engine. 
     _init_SDL_and_engine();
 
-    EventHandler::register_event<void>(
-        "QUIT_SIMULATION", 
-        std::function<void()>(
-            [this]() { this->_quit();}
-    ));
-
-    EventHandler::register_event<const json&>(
-        "GET_INIT_DATA",
-        std::function<const json&()>(
-            [this]() -> const json& { return this->init_data_json; }
-    ));
+    _register_events();
 }
 
 FrostEngine::~FrostEngine() 
@@ -88,7 +77,16 @@ int FrostEngine::get_screen_width() { return s_screen_width; }
 
 int FrostEngine::get_screen_height() { return s_screen_height; }
 
-const json& FrostEngine::get_init_data_json() { return init_data_json; }
+const json& FrostEngine::get_init_data() const { return m_init_data_json; }
+
+void FrostEngine::save_new_init_data(const json& new_init_data) 
+{ 
+    JsonHandler::dump(new_init_data, m_INIT_DATA_DIRECTORY + "/init_data.json"); 
+
+    m_init_data_json = new_init_data;
+
+    m_coh.set_font_path_and_size(new_init_data.at("font_size"), new_init_data.at("font_path"));
+}
 
 
 // Protected
@@ -137,6 +135,27 @@ const double& FrostEngine::_get_frame_time_reference()
 
 
 // Private
+
+void FrostEngine::_register_events()
+{
+    EventHandler::register_event<void>(
+        "QUIT_SIMULATION", 
+        std::function<void()>(
+            [this]() { this->_quit();}
+    ));
+
+    EventHandler::register_event<const json&>(
+        "GET_INIT_DATA",
+        std::function<const json&()>(
+            [this]() -> const json& { return this->m_init_data_json; }
+    ));
+
+    EventHandler::register_event<void, const json&>(
+        "SET_INIT_DATA",
+        std::function<void(const json&)>(
+           [this](const json& new_init_data) { this->save_new_init_data(new_init_data); } 
+    ));
+}
 
 void FrostEngine::_create_default_data_components()
 {
@@ -248,15 +267,15 @@ void FrostEngine::_init_SDL_and_engine()
 
     // The data folder exists, assume the init files already exist.
 
-    init_data_json = JsonHandler::get(m_INIT_DATA_DIRECTORY + "/init_data.json");
+    m_init_data_json = JsonHandler::get(m_INIT_DATA_DIRECTORY + "/init_data.json");
 
-    std::string application_window_name = init_data_json.at("application_window_name");
+    std::string application_window_name = m_init_data_json.at("application_window_name");
 
     if(application_window_name.size() == 0) application_window_name = "Frost";
 
     // Configure screen size and create window.
 
-    if(init_data_json.at("fullscreen"))
+    if(m_init_data_json.at("fullscreen"))
     {
         #ifdef FROST_DEBUG
 
@@ -295,8 +314,8 @@ void FrostEngine::_init_SDL_and_engine()
         #endif
 
         // Get the width and height from the data file.
-        s_screen_width = init_data_json.at("screen_width");
-        s_screen_height = init_data_json.at("screen_height");
+        s_screen_width = m_init_data_json.at("screen_width");
+        s_screen_height = m_init_data_json.at("screen_height");
 
         // Create the SDL_Window with the loaded data.
         m_window = SDL_CreateWindow(application_window_name.c_str(), SDL_WINDOWPOS_CENTERED, 
@@ -308,7 +327,7 @@ void FrostEngine::_init_SDL_and_engine()
 
     // Configure VSYNC.
 
-    if(init_data_json.at("vsync"))
+    if(m_init_data_json.at("vsync"))
     {
         #ifdef FROST_DEBUG
 
@@ -328,32 +347,32 @@ void FrostEngine::_init_SDL_and_engine()
         ProgramOutputHandler::log("Vsync: false\n");
         #endif
 
-        m_target_milliseconds_per_frame = 1000 / static_cast<int>(init_data_json.at("frame_limit"));
+        m_target_milliseconds_per_frame = 1000 / static_cast<int>(m_init_data_json.at("frame_limit"));
     }
 
     _set_application_icon("assets/Frost_Icon.png");
 
     // Set background color.
 
-    json background_color = init_data_json.at("background_color");
+    json background_color = m_init_data_json.at("background_color");
 
     SDL_SetRenderDrawColor(m_renderer, background_color.at(0), background_color.at(1), 
         background_color.at(2), 255);
 
     // Configure colors and create TextureHandler.
 
-    if(init_data_json.at("use_extended_colors")) 
+    if(m_init_data_json.at("use_extended_colors")) 
         m_texture_handler = TextureHandler(m_renderer, m_EXTENDED_COLOR_PATH);
 
     else m_texture_handler = TextureHandler(m_renderer, m_BASE_COLOR_PATH);
 
     // Create remaining components.
     
-    m_text_ren_handler = TextRenderingHandler(&m_texture_handler, init_data_json.at("font_size"), 
-        init_data_json.at("font_path"));
+    m_text_ren_handler = TextRenderingHandler(&m_texture_handler, m_init_data_json.at("font_size"), 
+        m_init_data_json.at("font_path"));
 
-    m_coh = ConsoleOutputHandler(&m_texture_handler, init_data_json.at("font_size"), 
-        init_data_json.at("font_path"), 0, 0, s_screen_width, s_screen_height);
+    m_coh = ConsoleOutputHandler(&m_texture_handler, m_init_data_json.at("font_size"), 
+        m_init_data_json.at("font_path"), 0, 0, s_screen_width, s_screen_height);
 
     m_sprite_handler = SpriteHandler(&m_texture_handler);
 }

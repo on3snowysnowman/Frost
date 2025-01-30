@@ -10,6 +10,7 @@
  */
 
 #include <cstring>
+#include <SDL_ttf.h>
 
 #include "TextRenderingHandler.hpp"
 #include "TextFileHandler.hpp"
@@ -200,17 +201,22 @@ void TextRenderingHandler::_init_font_dimensions_and_atlas()
     }
 
     // Temp variables to grab the font dimensions from SDL. Using temp integers to later store in
-    // uint8_ts for efficiency. Sure, it's negligible but it makes me feel good about memory 
-    // efficiency.
+    // uint8_ts for efficiency. Sure, it's negligible but it makes me feel good. 
     int text_width, text_height;
 
-    // Get the size in pixels of a single character. Since the engine only supports Monospaced 
-    // fonts, the size of one character represents the size of them all.
+    // Get size of the full glyph of renderable characters. Even though we're working with 
+    // monospaced fonts, some glyphs like the character 'A' dont' match in height to a character
+    // like 'g'. While the width maintains consistency, rendering the entire glyph of all 
+    // characters ensures that the character with the largest height is accounted for. 
     TTF_SizeUTF8(font, RENDERABLE_CHARACTERS, &text_width, &text_height);
 
+    // Since `text_width` is the width of ALL renderable characters, divide it by the number of 
+    // renderable characters to obtain a single character's width. 
     m_font_width = text_width / std::strlen(RENDERABLE_CHARACTERS);
     m_font_height = text_height;
 
+    // The y component of the source dimensions will ALWAYS be 0, as all characters are stored in 
+    // a single line.
     m_src.y = 0;
     m_src.w = m_font_width;
     m_src.h = m_font_height;

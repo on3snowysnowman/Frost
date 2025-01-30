@@ -17,7 +17,7 @@ namespace Frost
 {
 
     /** Provides a user interface simulation for selecting a ColorString choice out of a selection
-     * of choices. Handles user input so users can navigate the selection and select a chioce. 
+     * of choices. Handles user input so users can navigate the selection and select a choice. 
      * Read Documentation/UITools.txt for more info.
      *
      * @param data Data for simulation. */

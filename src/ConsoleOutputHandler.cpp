@@ -146,21 +146,21 @@ void ConsoleOutputHandler::resize_dimensions(uint16_t start_x, uint16_t start_y,
    _calculate_character_dimensions();
 }   
 
-void ConsoleOutputHandler::move_cursor(uint16_t x, uint16_t y)
+void ConsoleOutputHandler::set_cursor(uint16_t x, uint16_t y)
 {
     // Attempt to move both dimensions of the cursor. Each method contains bounds checking.
-    move_cursor_x(x);
-    move_cursor_y(y);
+    set_cursor_x(x);
+    set_cursor_y(y);
 }
 
-void ConsoleOutputHandler::move_cursor_x(uint16_t x)
+void ConsoleOutputHandler::set_cursor_x(uint16_t x)
 {
     if(x > m_screen_character_width) return;
 
     m_cursor_position.first = x;
 }
 
-void ConsoleOutputHandler::move_cursor_y(uint16_t y)
+void ConsoleOutputHandler::set_cursor_y(uint16_t y)
 {
     if(y > m_screen_character_height) return;
 
@@ -305,6 +305,10 @@ void ConsoleOutputHandler::set_font_path(std::string new_font_path)
 
     _calculate_character_dimensions();
 }
+
+void ConsoleOutputHandler::set_font_path_and_size(uint8_t new_font_point_size, 
+    std::string new_font_path) 
+{ m_text_ren_handler.set_font_path_and_size(new_font_point_size, new_font_path); }
 
 uint8_t ConsoleOutputHandler::get_font_point_size() const
     { return m_text_ren_handler.get_font_point_size(); }

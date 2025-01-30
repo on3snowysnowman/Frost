@@ -1,6 +1,21 @@
 
 This file tracks specific details on what was changed each git push.
 
+31:
+
+   - Added set method for font and point size to the COH. 
+
+   - Added methods for getting and setting the initialization data to the Engine.
+
+   - Fixed InputHandler not updating the bool for checking if available keys were already generated
+     per arbitrary frame. 
+
+   - Added class documentation for TextRenderingHandler.
+
+   - Changed 'display_colored_int' to now be templated, along with renaming it to 
+     'generate_colored_int'. This method now returns a ColorString, so that the calculation process
+     only needs to be done on-request instead of each frame.
+
 30:
 
    - Reconfigured all UIItems to use pointers to the COH and cursor color. Additionally, removed 

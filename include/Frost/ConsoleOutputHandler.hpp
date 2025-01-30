@@ -57,21 +57,21 @@ public:
      * @param x X character position.
      * @param y Y character position
      */
-    void move_cursor(uint16_t x, uint16_t y);
+    void set_cursor(uint16_t x, uint16_t y);
 
     /** Moves the cursor's x position to a new position on the screen, measured in characters. 
      * Contains bounds checking for the position.
      * 
      * @param x X character position.
      */
-    void move_cursor_x(uint16_t x);
+    void set_cursor_x(uint16_t x);
 
     /** Moves the cursor's y position to a new position on the screen, measured in characters. 
      * Contains bounds checking for the position.
      * 
      * @param y Y character position.
      */
-    void move_cursor_y(uint16_t y);
+    void set_cursor_y(uint16_t y);
 
     /** Modifies the cursor's position by the passed amount, measured in characters. This is an 
      * addition arithmetic. Contains bounds checking for the position, if the x boundary is 
@@ -131,6 +131,14 @@ public:
 
     /** Sets the font path to a new path, changing the font. */
     void set_font_path(std::string new_font_path);
+
+    /** 
+     * @brief Sets both the font path and size to new values. 
+     * 
+     * It is beneficial to use this method instead of the `set_font_size` and `set_font_path`
+     * methods individually, as the font texture creation will only be called once in this method,
+     * in contrast to being called twice with the two individual methods. */
+    void set_font_path_and_size(uint8_t new_font_point_size, std::string new_font_path);
 
     /** Returns the font point size. */
     uint8_t get_font_point_size() const;

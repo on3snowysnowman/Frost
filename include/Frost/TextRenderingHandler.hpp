@@ -14,17 +14,25 @@
 #include <string>
 #include <vector>
 
-#include <SDL_ttf.h>
-#include <SDL_image.h>
+#include <SDL_render.h>
 
 #include "TextureHandler.hpp"
 
 
-// All characters that are supported for rendering. 
+// Characters that are supported for rendering by the Engine. 
 constexpr const char* RENDERABLE_CHARACTERS = "!\"#$%&'()*+,-./0123456789:;<=>?@"
     "ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
 
 
+/**
+ * @brief Handles rendering individual characters to the screen at given pixel positions.
+ * 
+ * While this class is typically used under the hood by more complex classes that render structured 
+ * text such as the ConsoleOutputHandler), it may still be used as a standalone way of putting 
+ * characters on the screen individually.
+ * 
+ * @note Does not support any character wrapping or screen bounds checking.
+ */
 class TextRenderingHandler
 {
 
@@ -56,7 +64,7 @@ public:
     /** 
      * @brief Sets both the font path and size to new values. 
      * 
-     * It is beneficial to use this method instead of the 'set_font_size' and 'set_font_path' 
+     * It is beneficial to use this method instead of the `set_font_size` and `set_font_path`
      * methods individually, as the font texture creation will only be called once in this method,
      * in contrast to being called twice with the two individual methods. */
     void set_font_path_and_size(uint8_t new_font_point_size, std::string new_font_path);
@@ -99,7 +107,7 @@ private:
 
     TextureHandler* m_tex_handler; 
 
-    SDL_Texture* m_atlas_texture = nullptr; // Full texture containing all renderable characters.
+    SDL_Texture* m_atlas_texture {}; // Full texture containing all renderable characters.
 
     // Methods
 

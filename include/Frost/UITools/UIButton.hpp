@@ -21,6 +21,12 @@ class UIButton : public UIItem
 
 public:
 
+    UIButton() 
+    { 
+        m_object_pointer = nullptr; 
+        m_callback_method = nullptr;    
+    }
+
     UIButton(ConsoleOutputHandler* coh, std::string* cursor_color, std::string name,
         std::string button_color, T* obj, void(T::*callback_method)()) : 
         UIItem(coh, cursor_color, "BUTTON"), m_object_pointer(obj)
@@ -67,7 +73,7 @@ private:
     std::string m_button_color;
 
     // Pointer to the object $m_callback_function belongs to.
-    T* const m_object_pointer;
+    T* m_object_pointer;
 
     // The method that is called when this button is selected in simulation.
     // std::function<ReturnT(T&)> m_callback_method;

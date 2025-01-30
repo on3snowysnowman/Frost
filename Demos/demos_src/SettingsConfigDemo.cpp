@@ -11,6 +11,7 @@
 #include "EventHandler.hpp"
 #include "FrostEngine.hpp"
 #include "UISimulationTools.hpp"
+#include "InputHandler.hpp"
 
 
 class SettingsMenu : public Menu
@@ -24,16 +25,20 @@ public:
         
         init_data_json = &EventHandler::invoke_event<const json&>("GET_INIT_DATA");
 
-        font_choice = std::move(UIChoice(coh, &m_cursor_color, "Font Path", {}));
+        m_font_choice = std::move(UIChoice(coh, &m_cursor_color, "Font Path", {}));
 
         // Add each font path to the font UIChoice content.
-        for(const std::string& _str : coh->get_available_font_paths()) font_choice.add_choice(ColorString {_str, "White"});
+        for(const std::string& _str : coh->get_available_font_paths()) m_font_choice.add_choice(ColorString {_str, "White"});
+
+        m_save_button = UIButton<SettingsMenu> (coh, &m_cursor_color, "Save", "Green", this,
+            &SettingsMenu::_save_settings);
 
         m_menu_panel.coh = coh;
         m_menu_panel.cursor_color = &m_cursor_color;
 
         m_menu_panel = std::move(UIPanelContainer(coh, &m_cursor_color));
-        m_menu_panel.content.push_back(&font_choice);
+        m_menu_panel.content.push_back(&m_font_choice);
+        m_menu_panel.content.push_back(&m_save_button);
     }
 
     void start() final 
@@ -58,11 +63,24 @@ private:
     // Panel container for the menu items for menu simulation.
     UIPanelContainer m_menu_panel; 
 
-    UIChoice font_choice;
+    // Choice for selecting the font path.
+    UIChoice m_font_choice;
 
+    // Button for saving settings to disk. 
+    UIButton<SettingsMenu> m_save_button;
 
     // Methods
 
+    /** Saves the settings to disk. */
+    void _save_settings()
+    {
+        json settings = EventHandler::invoke_event<const json&>("GET_INIT_DATA");
+
+        settings.at("font_path") = m_font_choice.get_choice().content;
+
+        // Save the settings to disk using the Engine through the EventHandler.
+        EventHandler::invoke_event<void, const json&>("SET_INIT_DATA", settings);
+    }
 };
 
 
@@ -81,6 +99,11 @@ private:
 
     // Members
 
+    void _user_update() final
+    {
+        m_coh.set_cursor(70, 0);
+        m_coh.add_ch('>');
+    }
 
     // Methods
 };

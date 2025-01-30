@@ -13,7 +13,6 @@
 #include "Fr_Math.hpp"
 #include "InputHandler.hpp"
 
-
 // Constructors / Deconstructor
 
 UIChoice::UIChoice() : UIItem() {}
@@ -139,6 +138,7 @@ UIItem::Status UIChoice::handle_input()
 
 const ColorString& UIChoice::get_choice() const { return m_content.at(m_selected_index); }
 
+const std::vector<ColorString>& UIChoice::get_content() const { return m_content; }
 
 // Private
 

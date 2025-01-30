@@ -6,24 +6,6 @@
 
 // Public
 
-void Frost::display_colored_int(ConsoleOutputHandler& coh, int num, int min, int max,
-    const std::vector<std::string> color_distribution)
-{
-    if(min >= num)
-    {
-        coh.add_str(std::to_string(num), color_distribution.at(0));
-        return;
-    };
-
-    if(max <= num)
-    {
-        coh.add_str(std::to_string(num), *(--color_distribution.end()));
-        return;
-    }
-    coh.add_str(std::to_string(num), color_distribution.at(
-        Frost::get_ratio_of_range(num, min, max, color_distribution.size())));
-}
-
 void Frost::display_single_color_meter(ConsoleOutputHandler& coh, int num, int min, 
     int max, const std::string color)
 {

@@ -50,6 +50,8 @@ public:
      */
     const ColorString& get_choice() const;
 
+    const std::vector<ColorString>& get_content() const;
+
 private:
 
     // Index of the cursor inside m_content.

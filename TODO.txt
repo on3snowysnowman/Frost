@@ -1,4 +1,10 @@
-Fix full static class static fiasco
+Fix TextRenderingHandler rendering special characters (for instance, when "->" gets turned
+   into an actual arrow sprite) in some fonts during the full glyph creation.
+
+Rewrite UIItems to be pure storage structs, removing the privacy layer of underlying components.
+
+Reconfigure UIButton to use std::function similar to EventHandler so that any function return 
+   type can be used.
 
 Add auto generation of binary files by the Engine if no data file or asset file exists.
 
@@ -14,3 +20,5 @@ Add Animation support
 Write time profiling class.
 
 Write a delayed text renderer
+
+Write perlin noise generator

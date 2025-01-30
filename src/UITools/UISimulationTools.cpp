@@ -76,7 +76,7 @@ void Frost::simulate_UI_selection(UISelectionContainer& data)
             return;
     }
 }
-
+#include<iostream>
 void Frost::simulate_UI_panel(UIPanelContainer& data) 
 {
     // Rendering
@@ -116,7 +116,7 @@ void Frost::simulate_UI_panel(UIPanelContainer& data)
         return;
     }
 
-    // else : No item is selected.
+    // else: No item is selected.
 
     // Get pressed keys from the user that are available (not delayed).
     const std::vector<Key>& keys = InputHandler::get_pressed_and_available_keys();

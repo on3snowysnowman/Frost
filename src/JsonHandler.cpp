@@ -24,7 +24,7 @@ std::fstream JsonHandler::s_file_stream;
 
 // Public
 
-bool JsonHandler::clear(std::string file_path)
+bool JsonHandler::clear(const std::string& file_path)
 {
     // If the path does not exist.
     if(!FileSystemHandler::does_directory_exist(file_path))
@@ -58,7 +58,7 @@ bool JsonHandler::clear(std::string file_path)
     return true;
 }
 
-bool JsonHandler::dump(json& json_obj, std::string file_path)
+bool JsonHandler::dump(const json& json_obj, std::string file_path)
 {
     // File is automatically created if it doesn't exist.
 
@@ -80,7 +80,7 @@ bool JsonHandler::dump(json& json_obj, std::string file_path)
     return true;
 }
 
-json JsonHandler::get(std::string file_path)
+json JsonHandler::get(const std::string& file_path)
 {
     // If the path does not exist.
     if(!FileSystemHandler::does_directory_exist(file_path))

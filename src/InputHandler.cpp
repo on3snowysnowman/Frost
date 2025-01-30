@@ -63,7 +63,12 @@ void InputHandler::flag_key_released(Key key)
     s_delayed_keys.erase(key);
 }
 
-void InputHandler::_reset_tracked_keys() { s_raw_pressed_keys.clear(); }
+void InputHandler::_reset_tracked_keys() 
+{ 
+    s_raw_pressed_keys.clear(); 
+    s_pressed_available_keys.clear();
+    s_is_available_keys_generated = false;
+}
 
 bool InputHandler::is_key_pressed(Key key) 
 { 
@@ -79,8 +84,6 @@ const std::vector<Key>& InputHandler::get_pressed_and_available_keys()
 {
     // Available keys have already been generated this frame.
     if(s_is_available_keys_generated) return s_pressed_available_keys;
-
-    s_pressed_available_keys.clear();
 
     s_is_available_keys_generated = true;
 
