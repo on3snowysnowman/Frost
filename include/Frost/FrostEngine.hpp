@@ -6,6 +6,7 @@
 #include <SDL2/SDL.h>
 
 #include "TextureHandler.hpp"
+#include "RenderingHandler.hpp"
 #include "ConsoleOutputHandler.hpp"
 #include "SpriteHandler.hpp"
 #include "TextRenderingHandler.hpp"
@@ -70,6 +71,7 @@ protected:
     const double& _get_frame_time_reference();
 
     TextureHandler m_texture_handler;
+    RenderingHandler m_render_handler;
     TextRenderingHandler m_text_ren_handler;
     ConsoleOutputHandler m_coh;
     SpriteHandler m_sprite_handler;
@@ -88,10 +90,10 @@ private:
 
     double m_elapsed_milliseconds_this_frame; // Number of miliseconds this frame took.
 
-    uint8_t m_target_fps {}; // Target frames per second that the Engine will simulate at.
+    uint16_t m_target_fps {}; // Target frames per second that the Engine will simulate at.
 
     // Target miliseconds per frame to achieve target fps.
-    uint16_t m_target_milliseconds_per_frame {};  
+    float m_target_milliseconds_per_frame {};  
 
     // Timestamp of the beginning of the frame. Used to calculate the miliseconds each frame takes.
     c_time_point m_frame_start_timestamp; 

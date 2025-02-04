@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstring>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
@@ -8,8 +9,13 @@
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 
-#include "Fr_Color.hpp"
 
+// Characters that are supported for rendering by the Engine. 
+static constexpr const char* RENDERABLE_CHARACTERS = "!\"#$%&'()*+,-./0123456789:;<=>?@"
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+
+// Number of renderable characters. 
+static constexpr std::size_t NUM_RENDERABLE_CHARS = std::strlen(RENDERABLE_CHARACTERS);
 
 /** Used for creating SDL_Textures, along with drawing these textures to the screen using SDL. 
  * The paths to textures created are tracked, such that if two requests are made to create a 
@@ -24,32 +30,10 @@ public:
 
     TextureHandler();
 
-    TextureHandler(SDL_Renderer* renderer, std::string color_data_path);
+    TextureHandler(SDL_Renderer* renderer);
 
     ~TextureHandler();
-
-    /** Draws a portion of the passed texture to the screen. The portion of the texture is 
-     * determined by the passed source SDL_Rect, while the dimensions on the screen is determined
-     * by the passed dest SDL_Rect.
-     * 
-     * @param texture Texture to draw.
-     * @param source Dimensions to portion from the texture.
-     * @param dest Dimensions to place on the screen.
-     */
-    void draw(SDL_Texture* texture, const SDL_Rect& source, const SDL_Rect& dest) const;
-
-    /** Draws a portion of the passed texture to the screen. The portion of the texture is 
-     * determined by the passed source SDL_Rect, while the dimensions on the screen is determined
-     * by the passed dest SDL_Rect. The passed color is applied to the texture.
-     * 
-     * @param texture Texture to draw.
-     * @param source Dimensions to portion from the texture.
-     * @param dest Dimensions to place on the screen.
-     * @param color Color to draw the texture with.
-     */
-    void draw(SDL_Texture* texture, const SDL_Rect& source, 
-        const SDL_Rect& dest, const std::string color) const;
-
+    
     /** Deletes the SDL_Texture and removes it from internal components.
      * 
      * @param texture SDL_Texture to delete.
@@ -58,9 +42,6 @@ public:
 
     bool create_png_from_static_texture(SDL_Texture* staticTexture, const std::string& filePath);
 
-    /** Returns a const reference to the internal map of colors. */
-    const std::unordered_map<std::string, Frost::Color>& get_colors() const;
-
     /** Creates and returns an SDL_Texture from the png at the passed path. If a texture has 
      * already been created from this path, it is fetched. 
      * 
@@ -68,18 +49,19 @@ public:
      */
     SDL_Texture* create_texture(std::string png_path) const;
 
-    /** Given an open font, create an atlas texture containing all renderable characters. */
-    SDL_Texture* create_font_atlas_texture(TTF_Font* font);
+    /** 
+     * @brief Given a font path, returns an atlas texture containing all 
+     * rendered glyphs in a row. 
+     * 
+     * The `font_width` and `font_height` parameters are pointers, and will be 
+     * set to the created font's dimensions. 
+     */
+    SDL_Texture* create_font_atlas_texture(std::string font_path, 
+        int font_point_size, uint16_t& font_width, uint16_t& font_height);
 
 private:
 
     // Members
-
-    // Path to the color data file.
-    std::string m_color_data_path;
-
-    // Color names to their Color objects.
-    std::unordered_map<std::string, Frost::Color> m_colors;
 
     // Texture objects to the path they have been created from.
     static std::unordered_map<SDL_Texture*, std::string> s_textures_to_paths;
@@ -92,6 +74,10 @@ private:
     
     // Methods
 
-    /** Creates and registers Color objects from the color data file. */
-    void _get_colors_from_disk();
+    /** 
+     * @brief Given an open font, iterates through each renderable character to
+     * calculate the font's final width and height.
+     */
+    void _calculate_font_dimensions(TTF_Font* font, uint16_t& font_width, 
+        uint16_t& font_height);
 };

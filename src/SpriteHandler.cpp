@@ -31,12 +31,16 @@ SpriteHandler::SpriteHandler()
     // Default constructor should only be called for a placeholder object.
 
     m_texture_handler = nullptr;
+    m_render_handler = nullptr;
 }
 
-SpriteHandler::SpriteHandler(TextureHandler* texture_handler)
+SpriteHandler::SpriteHandler(TextureHandler* texture_handler, 
+    RenderingHandler* rendering_handler)
 {
     m_texture_handler = texture_handler;
+    m_render_handler = rendering_handler;
 }
+
 
 // Public
 
@@ -55,7 +59,7 @@ void SpriteHandler::_render()
             sprite.display_dimensions.w = sprite.splice_dimensions.w * m_sprite_scale_factor;
             sprite.display_dimensions.h = sprite.splice_dimensions.h * m_sprite_scale_factor;
 
-            m_texture_handler->draw(sprite.texture, sprite.splice_dimensions,
+            m_render_handler->draw(sprite.texture, sprite.splice_dimensions,
                 sprite.display_dimensions);
         }
     }

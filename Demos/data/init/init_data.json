@@ -5,12 +5,12 @@
         15,
         25
     ],
-    "font_path": "data/fonts/FiraCode-Regular.ttf",
+    "font_path": "data/fonts/ShareTechMono-Regular.ttf",
     "font_size": 22,
-    "frame_limit": 60,
     "fullscreen": false,
+    "vsync": false,
+    "frame_limit": 12000,
     "screen_height": 700,
     "screen_width": 1250,
-    "use_extended_colors": true,
-    "vsync": true
+    "use_extended_colors": true
 }

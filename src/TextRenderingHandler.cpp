@@ -9,7 +9,6 @@
  *
  */
 
-#include <cstring>
 #include <SDL_ttf.h>
 
 #include "TextRenderingHandler.hpp"
@@ -34,9 +33,11 @@ TextRenderingHandler::TextRenderingHandler()
 }
 
 TextRenderingHandler::TextRenderingHandler(TextureHandler* texture_handler, 
-    uint8_t font_point_size, std::string font_path)
+    RenderingHandler* rendering_handler, uint8_t font_point_size, 
+    std::string font_path)
 {
     m_tex_handler = texture_handler;
+    m_render_handler = rendering_handler;
 
     _fetch_available_fonts();
 
@@ -46,6 +47,8 @@ TextRenderingHandler::TextRenderingHandler(TextureHandler* texture_handler,
 TextRenderingHandler::TextRenderingHandler(const TextRenderingHandler& source)
 {
     m_tex_handler = source.m_tex_handler;
+    m_render_handler = source.m_render_handler;
+    
     m_font_path = source.m_font_path; 
     m_available_font_paths = source.m_available_font_paths;
 
@@ -54,6 +57,9 @@ TextRenderingHandler::TextRenderingHandler(const TextRenderingHandler& source)
 
 TextRenderingHandler::TextRenderingHandler(TextRenderingHandler&& source)
 {
+    m_tex_handler = source.m_tex_handler;
+    m_render_handler = source.m_render_handler;
+
     m_font_point_size = source.m_font_point_size;
     m_font_width = source.m_font_width;
     m_font_height = source.m_font_height;
@@ -61,23 +67,24 @@ TextRenderingHandler::TextRenderingHandler(TextRenderingHandler&& source)
     m_dest = source.m_dest;
     m_font_path = std::move(source.m_font_path);
     m_font_path = source.m_font_path; 
-    m_tex_handler = source.m_tex_handler;
     m_atlas_texture = source.m_atlas_texture;
 
     source.m_atlas_texture = nullptr;
     source.m_tex_handler = nullptr;
+    source.m_render_handler = nullptr;
 }
 
 TextRenderingHandler& TextRenderingHandler::operator=(TextRenderingHandler&& source)
 {
+    m_tex_handler = source.m_tex_handler;
+    m_render_handler = source.m_render_handler;
+
     m_font_point_size = source.m_font_point_size;
     m_font_width = source.m_font_width;
     m_font_height = source.m_font_height;
     m_src = source.m_src;
     m_dest = source.m_dest;
     m_font_path = std::move(source.m_font_path);
-
-    m_tex_handler = source.m_tex_handler;
 
     // Destroy original texture of this object before transferring the source's one.
     SDL_DestroyTexture(m_atlas_texture);
@@ -92,6 +99,8 @@ TextRenderingHandler& TextRenderingHandler::operator=(TextRenderingHandler&& sou
 TextRenderingHandler& TextRenderingHandler::operator=(const TextRenderingHandler& source)
 {
     m_tex_handler = source.m_tex_handler;
+    m_render_handler = source.m_render_handler;
+    
     m_font_path = source.m_font_path; 
     m_available_font_paths = source.m_available_font_paths;
 
@@ -121,12 +130,13 @@ void TextRenderingHandler::add_ch(char c, uint16_t x, uint16_t y, std::string co
     m_dest.x = x;
     m_dest.y = y;
 
-    m_tex_handler->draw(m_atlas_texture, m_src, m_dest, color);
+    m_render_handler->draw(m_atlas_texture, m_src, m_dest, color);
 }
 
 void TextRenderingHandler::set_font_size(uint8_t new_font_point_size)
 {
-    if(new_font_point_size < 11) new_font_point_size = 11;
+    // Set point size to 12 if it is below it.
+    new_font_point_size < 12 ? new_font_point_size = 12 : 0;
 
     m_font_point_size = new_font_point_size;
 
@@ -185,35 +195,16 @@ void TextRenderingHandler::_fetch_available_fonts()
 
 void TextRenderingHandler::_init_font_dimensions_and_atlas()
 {
-    if(!FileSystemHandler::does_directory_exist(m_font_path))
+    // If a font texture already exists, destroy it as it will be replaced.
+    if(m_atlas_texture)
     {
-        OUTPUT_CRASH_DETAILS(" where 'm_font_path' = '" + m_font_path + "' -> Font path is invalid.\n");
-        exit(1);
+        SDL_DestroyTexture(m_atlas_texture);
     }
 
-    // Create font object from the font file.
-    TTF_Font* font = TTF_OpenFont(m_font_path.c_str(), m_font_point_size);
-
-    if(!font)
-    {
-        OUTPUT_CRASH_DETAILS(" -> SDL_TTF failed to create font object.\n");
-        exit(1);
-    }
-
-    // Temp variables to grab the font dimensions from SDL. Using temp integers to later store in
-    // uint8_ts for efficiency. Sure, it's negligible but it makes me feel good. 
-    int text_width, text_height;
-
-    // Get size of the full glyph of renderable characters. Even though we're working with 
-    // monospaced fonts, some glyphs like the character 'A' dont' match in height to a character
-    // like 'g'. While the width maintains consistency, rendering the entire glyph of all 
-    // characters ensures that the character with the largest height is accounted for. 
-    TTF_SizeUTF8(font, RENDERABLE_CHARACTERS, &text_width, &text_height);
-
-    // Since `text_width` is the width of ALL renderable characters, divide it by the number of 
-    // renderable characters to obtain a single character's width. 
-    m_font_width = text_width / std::strlen(RENDERABLE_CHARACTERS);
-    m_font_height = text_height;
+    // Create atlas texture, along with updating font sizes through reference
+    // parameters.
+    m_atlas_texture = m_tex_handler->create_font_atlas_texture(m_font_path, 
+        m_font_point_size, m_font_width, m_font_height);
 
     // The y component of the source dimensions will ALWAYS be 0, as all characters are stored in 
     // a single line.
@@ -223,15 +214,5 @@ void TextRenderingHandler::_init_font_dimensions_and_atlas()
 
     m_dest.w = m_font_width;
     m_dest.h = m_font_height;
-
-    // If a font texture already exists, destroy it as it will be replaced.
-    if(m_atlas_texture)
-    {
-        SDL_DestroyTexture(m_atlas_texture);
-    }
-
-    m_atlas_texture = m_tex_handler->create_font_atlas_texture(font);
-
-    TTF_CloseFont(font);
 }
 

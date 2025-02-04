@@ -27,9 +27,6 @@ std::unordered_map<SDL_Texture*, std::string> TextureHandler::s_textures_to_path
 
 std::unordered_map<std::string, SDL_Texture*> TextureHandler::s_paths_to_textures;
 
-
-
-
 // Constructors / Deconstructor
 
 TextureHandler::TextureHandler() 
@@ -37,13 +34,9 @@ TextureHandler::TextureHandler()
     m_renderer = nullptr;
 }
 
-TextureHandler::TextureHandler(SDL_Renderer* renderer, std::string color_data_path)
+TextureHandler::TextureHandler(SDL_Renderer* renderer)
 {
     m_renderer = renderer;
-    m_color_data_path = color_data_path;
-
-    // Get colors. 
-    _get_colors_from_disk();
 }
 
 TextureHandler::~TextureHandler()
@@ -56,42 +49,6 @@ TextureHandler::~TextureHandler()
 
 
 // Public
-
-void TextureHandler::draw(SDL_Texture* texture, const SDL_Rect& source, const SDL_Rect& dest) const
-{
-    SDL_RenderCopy(m_renderer, texture, &source, &dest);
-}
-
-void TextureHandler::draw(SDL_Texture* texture, const SDL_Rect& source, const SDL_Rect& dest, 
-    const std::string color) const
-{
-    // If this color isn't registered.
-    if(m_colors.find(color) == m_colors.end())
-    {
-        OUTPUT_CRASH_DETAILS(" where 'color' = '" + color + "' ->  Non valid color.\n");
-        exit(1);
-    }
-
-    // Color object respective to the passed color name.
-    const Frost::Color& targ_color = m_colors.at(color);
-
-    // Store the original color values of the texture, since the texture's color channels must be
-    // modified during the rendering process, and needs to be restored after to their original value.
-
-    SDL_Color original_texture_color;
-    SDL_GetTextureColorMod(texture, &original_texture_color.r, &original_texture_color.g, 
-        &original_texture_color.b);
-
-    // Apply the color to the texture.
-    SDL_SetTextureColorMod(texture, targ_color.r, targ_color.g, targ_color.b);
-
-    // Copy the texture into the renderer.
-    SDL_RenderCopy(m_renderer, texture, &source, &dest);
-
-    // Restore the texture to its original color.
-    SDL_SetTextureColorMod(texture, original_texture_color.r, original_texture_color.g,
-        original_texture_color.b);
-}
 
 void TextureHandler::handle_texture_deletion(SDL_Texture* texture)
 {
@@ -182,8 +139,8 @@ bool TextureHandler::create_png_from_static_texture(SDL_Texture* staticTexture, 
 }
 
 
-const std::unordered_map<std::string, Frost::Color>& TextureHandler::get_colors() const
-{ return m_colors; }
+// const std::unordered_map<std::string, Frost::Color>& TextureHandler::get_colors() const
+// { return m_colors; }
 
 SDL_Texture* TextureHandler::create_texture(std::string png_path) const
 {
@@ -212,36 +169,104 @@ SDL_Texture* TextureHandler::create_texture(std::string png_path) const
     return texture;
 }
 
-SDL_Texture* TextureHandler::create_font_atlas_texture(TTF_Font* font) 
+SDL_Texture* TextureHandler::create_font_atlas_texture(std::string font_path,
+    int font_point_size, uint16_t& font_width, uint16_t& font_height)
 {
-    // Supported renderable characters of the engine.
-    // const static std::string RENDERABLE_CHARACTERS = 
-    //     "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+    // Create font object from the font file.
+    TTF_Font* font = TTF_OpenFont(font_path.c_str(), font_point_size);
 
-    SDL_Color white {255, 255, 255, 255};
+    // SDL Failed to create font.
+    if(!font)
+    {
+        OUTPUT_CRASH_DETAILS(" -> SDL_TTF failed to create font object: " + 
+            std::string(SDL_GetError()) + ".\n");
+        exit(1);
+    }
 
-    // SDL_Surface* font_surface = TTF_RenderUTF8_Shaded(font, RENDERABLE_CHARACTERS.c_str(), white, gray);
-    SDL_Surface* font_surface = TTF_RenderUTF8_Blended(font, RENDERABLE_CHARACTERS, white);
+    // Fetch font dimensions
+    _calculate_font_dimensions(font, font_width, font_height);
 
-    SDL_Texture* atlas_texture = SDL_CreateTextureFromSurface(m_renderer, font_surface);
+    // Full atlas to contain all rendered glyphs.
+    SDL_Texture* font_atlas = SDL_CreateTexture(m_renderer, 
+        SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, font_width * 
+        NUM_RENDERABLE_CHARS, font_height);
 
-    SDL_FreeSurface(font_surface);
+    // Change this texture to use blending, so that alpha channels are 
+    // respected when rendering to the screen later. 
+    SDL_SetTextureBlendMode(font_atlas, SDL_BLENDMODE_BLEND);
 
-    return atlas_texture;
+    // Dimensions for each individual glyph to be copied into the final atlas.
+    SDL_Rect src {0, 0, font_width, font_height};
+    SDL_Rect dest {0, 0, font_width, font_height};
+
+    // Color of the each glyph. 
+    static constexpr SDL_Color WHITE {255, 255, 255, 255};
+
+    // Set the font atlas as the rendering target.
+    SDL_SetRenderTarget(m_renderer, font_atlas);
+
+    // Iterate through each renderable character and draw its glyph to the 
+    // final texture.
+    for(uint8_t i = 0; i < NUM_RENDERABLE_CHARS; ++i)
+    {
+        // Create a const char* of the target char to render. Stored in a new 
+        // buffer like this, since you can't pass a single char to SDL's TTF 
+        // render method. Only a const char* with a null terminated character.
+        char targ_char[2] = {RENDERABLE_CHARACTERS[i], '\0'};
+
+        SDL_Surface* glyph_surface = TTF_RenderUTF8_Blended(font, 
+            targ_char, WHITE);
+
+        // Convert the glyph surface into a texture. 
+        SDL_Texture* glyph_texture = SDL_CreateTextureFromSurface(m_renderer, 
+            glyph_surface);
+
+        // Set the blend mode to NONE, so that when the glyph is copied into
+        // the font atlas, it does not blend it with any values. Simply 
+        // replaces the values of the font atlas with the values of the glyph.
+        SDL_SetTextureBlendMode(glyph_texture, SDL_BLENDMODE_NONE);
+
+        // X pixel position to place the glyph inside the font atlas. 
+        dest.x = i * font_width;
+        
+        // Copy this glyph into the render target which is set to the atlas
+        // texture.
+        SDL_RenderCopy(m_renderer, glyph_texture, &src, &dest);
+
+        // Cleanup.
+        SDL_FreeSurface(glyph_surface);
+        SDL_DestroyTexture(glyph_texture);
+    }
+
+    // Restore the render target to the screen. 
+    SDL_SetRenderTarget(m_renderer, nullptr);
+
+    // Cleanup.
+    TTF_CloseFont(font);
+
+    return font_atlas;
 }
 
 
 // Private 
 
-void TextureHandler::_get_colors_from_disk()
+void TextureHandler::_calculate_font_dimensions(TTF_Font* font, 
+    uint16_t& font_width, uint16_t& font_height)
 {
-    // List of colors in json format.
-    const json colors = JsonHandler::get(m_color_data_path);
+    font_width = font_height = 0;
 
-    // Iterate through each color.
-    for(const json& color : colors)
-    {
-        // Create a color, and register it in the map using its name as the key.
-        m_colors[color.at(0)] = Frost::Color(color.at(1), color.at(2), color.at(3), color.at(0));
-    }
+    // Temp variables for passing references to SDL_TTF calculations, to then 
+    // be placed into the smaller uin16_t actual font variables.
+    int temp_width, temp_height;
+
+    // Calculate dimension for all rendered characters in a line, to account 
+    // for any sticklers like 'j' or 'g' that may be greater in vertical glyph
+    // height than characters like 'A". The final height will be equal to the
+    // largest vertical glyph, so the largest case is always accounted for.
+    TTF_SizeUTF8(font, RENDERABLE_CHARACTERS, &temp_width, &temp_height);
+
+    // Divide the SDL calculated width by the number of renderable characters,
+    // since the width is the size of all rendered characters in a line. 
+    font_width = temp_width / NUM_RENDERABLE_CHARS;
+    font_height = temp_height;
 }

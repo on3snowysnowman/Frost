@@ -1,5 +1,12 @@
 # Frost ( Simple Text and 2D Image Engine ) by Joel Height #
 
+# NOTE: For any confusion why the assets/data folders are copied into my Demos folder, along with
+    the Demos linking to the Engine on disk instead of inside the project: The Demos folder is 
+    meant to simulate an independent project in another directory, that needs the respective data 
+    and assets files during runtime, along with being able to link to the engine. Having the Demos 
+    structured in this way, where the Engine is first built and copied into disk, ensures the final
+    product will work the way I intend it to, rather than simply fetching and linking files from 
+    inside the project, files which a project using this Engine won't have. 
 
 # Description #
 

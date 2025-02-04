@@ -17,11 +17,7 @@
 #include <SDL_render.h>
 
 #include "TextureHandler.hpp"
-
-
-// Characters that are supported for rendering by the Engine. 
-constexpr const char* RENDERABLE_CHARACTERS = "!\"#$%&'()*+,-./0123456789:;<=>?@"
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+#include "RenderingHandler.hpp"
 
 
 /**
@@ -40,7 +36,9 @@ public:
 
     TextRenderingHandler();
 
-    TextRenderingHandler(TextureHandler* texture_handler, uint8_t font_point_size, std::string font_path);
+    TextRenderingHandler(TextureHandler* texture_handler, 
+        RenderingHandler* rendering_handler, uint8_t font_point_size, 
+        std::string font_path);
 
     TextRenderingHandler(const TextRenderingHandler& source);
 
@@ -55,7 +53,7 @@ public:
     /** Adds a char to the screen at a pixel position. Color is supported. */
     void add_ch(char c, uint16_t x, uint16_t y, std::string color = "White");
 
-    /** Sets the font point size to a new value. 11 is the minimum. */
+    /** Sets the font point size to a new value. 12 is the minimum. */
     void set_font_size(uint8_t new_font_point_size);
 
     /** Sets the font path to a new path, changing the font. */
@@ -89,10 +87,10 @@ private:
     // Members
 
     // Pint size of the font. 
-    uint8_t m_font_point_size;
+    uint16_t m_font_point_size;
 
-    uint8_t m_font_width; // Width of the active font.
-    uint8_t m_font_height; // Height of the active font.
+    uint16_t m_font_width; // Width of the active font.
+    uint16_t m_font_height; // Height of the active font.
 
     SDL_Rect m_src; // Dimensions to splice from the font atlas when rendering a character.
     SDL_Rect m_dest; // Dimensions to place character on screen when rendering a character.
@@ -106,6 +104,7 @@ private:
     std::vector<std::string> m_available_font_paths;
 
     TextureHandler* m_tex_handler; 
+    RenderingHandler* m_render_handler;
 
     SDL_Texture* m_atlas_texture {}; // Full texture containing all renderable characters.
 

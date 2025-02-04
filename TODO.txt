@@ -1,5 +1,5 @@
-Fix TextRenderingHandler rendering special characters (for instance, when "->" gets turned
-   into an actual arrow sprite) in some fonts during the full glyph creation.
+Add functionality for storing the current render target so it can be restored 
+   if it is changed. 
 
 Rewrite UIItems to be pure storage structs, removing the privacy layer of underlying components.
 
@@ -11,7 +11,8 @@ Add auto generation of binary files by the Engine if no data file or asset file 
 Add functionality for UITool Items to be able to move the cursor when editing any text.
 
 Iterate through function docstrings to ensure consistency, as style has changed slightly over 
-   time.
+   time. Additionally iterate through all files to ensure line lengths are 
+   below the standard of 80 characters.
 
 Finish README.txt and other documentation.
 

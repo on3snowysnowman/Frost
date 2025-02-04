@@ -347,7 +347,8 @@ void FrostEngine::_init_SDL_and_engine()
         ProgramOutputHandler::log("Vsync: false\n");
         #endif
 
-        m_target_milliseconds_per_frame = 1000 / static_cast<int>(m_init_data_json.at("frame_limit"));
+        m_target_milliseconds_per_frame = 1000 / 
+            static_cast<float>(m_init_data_json.at("frame_limit"));
     }
 
     _set_application_icon("assets/Frost_Icon.png");
@@ -359,22 +360,29 @@ void FrostEngine::_init_SDL_and_engine()
     SDL_SetRenderDrawColor(m_renderer, background_color.at(0), background_color.at(1), 
         background_color.at(2), 255);
 
-    // Configure colors and create TextureHandler.
+    m_texture_handler = TextureHandler(m_renderer);
+
+    // Configure colors and create RenderingHandler.
 
     if(m_init_data_json.at("use_extended_colors")) 
-        m_texture_handler = TextureHandler(m_renderer, m_EXTENDED_COLOR_PATH);
+        m_render_handler = RenderingHandler(m_renderer, m_EXTENDED_COLOR_PATH,
+            s_screen_width, s_screen_height);
 
-    else m_texture_handler = TextureHandler(m_renderer, m_BASE_COLOR_PATH);
+    else m_render_handler = RenderingHandler(m_renderer, m_BASE_COLOR_PATH,
+            s_screen_width, s_screen_height);
 
     // Create remaining components.
     
-    m_text_ren_handler = TextRenderingHandler(&m_texture_handler, m_init_data_json.at("font_size"), 
+    m_text_ren_handler = TextRenderingHandler(&m_texture_handler, 
+        &m_render_handler, m_init_data_json.at("font_size"), 
         m_init_data_json.at("font_path"));
+    
+    m_coh = ConsoleOutputHandler(&m_texture_handler, &m_render_handler,
+        m_init_data_json.at("font_size"), m_init_data_json.at("font_path"), 
+        0, 0, s_screen_width, s_screen_height);
+    
+    m_sprite_handler = SpriteHandler(&m_texture_handler, &m_render_handler);
 
-    m_coh = ConsoleOutputHandler(&m_texture_handler, m_init_data_json.at("font_size"), 
-        m_init_data_json.at("font_path"), 0, 0, s_screen_width, s_screen_height);
-
-    m_sprite_handler = SpriteHandler(&m_texture_handler);
 }
 
 void FrostEngine::_update()
@@ -399,6 +407,8 @@ void FrostEngine::_update()
 
     m_sprite_handler._render();
 
+    m_render_handler._render_buffer_to_screen();
+
     _present_SDL_renderer();
 
     // Calculate the miliseconds this frame took.
@@ -413,6 +423,16 @@ void FrostEngine::_simulation_loop_vsync()
         _update();
 
         // Since SDL vsync is enabled, no manual frame delay is needed.
+        // If the measured frame time is less than the target frame time.
+        if(m_elapsed_milliseconds_this_frame < m_target_milliseconds_per_frame)
+        {
+            // Delay for the difference between the measured miliseconds and target miliseconds.
+            SDL_Delay(m_target_milliseconds_per_frame - m_elapsed_milliseconds_this_frame);
+
+            // Override the milliseconds that were measure this frame, since an artificial delay 
+            // has just been invoked to maintain target framerate.
+            m_elapsed_milliseconds_this_frame = m_target_milliseconds_per_frame;
+        }
     }
 }
 

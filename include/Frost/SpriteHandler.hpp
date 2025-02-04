@@ -19,6 +19,7 @@
 
 #include "Sprite.hpp"
 #include "TextureHandler.hpp"
+#include "RenderingHandler.hpp"
 
 
 /** 
@@ -31,7 +32,8 @@ public:
 
     SpriteHandler();
 
-    SpriteHandler(TextureHandler* texture_handler);
+    SpriteHandler(TextureHandler* texture_handler, 
+        RenderingHandler* rendering_handler);
     
     /** Renders all Sprites that have been flagged to render. */
     void _render();
@@ -127,6 +129,7 @@ private:
     static std::unordered_map<SDL_Texture*, uint64_t> s_texture_dependencies;
 
     TextureHandler* m_texture_handler;
+    RenderingHandler* m_render_handler;
 
 
     // Methods
