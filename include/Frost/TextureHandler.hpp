@@ -17,11 +17,36 @@ static constexpr const char* RENDERABLE_CHARACTERS = "!\"#$%&'()*+,-./0123456789
 // Number of renderable characters. 
 static constexpr std::size_t NUM_RENDERABLE_CHARS = std::strlen(RENDERABLE_CHARACTERS);
 
-/** Used for creating SDL_Textures, along with drawing these textures to the screen using SDL. 
- * The paths to textures created are tracked, such that if two requests are made to create a 
- * texture from the same path, the texture will be created one time and will be fetched the second
- * time. This is an underlying class, used by other classes to provide meaningful output to the 
- * screen like the TextRenderingHandler or SpriteHandler. 
+/** 
+ * 
+ * @brief Used for creating SDL_Textures, including making font atlas textures.
+ * 
+ * When the `create_texture()` method is called, the TextureHandler checks if 
+ * a request has already been made to create a texture from this path. If there 
+ * has been a request made already, said Texture will be fetched and returned,
+ * instead of creating a new Texture from the path. The TextureHandler tracks 
+ * the number of 'dependencies' the rely on a texture. The method for doing so
+ * is quite primitive, it simply keeps a numerical track of each time the 
+ * `create_texture()` method is called. For each `handle_texture_deletion()`
+ * method call, the number of dependencies is deducted by 1. This means that 
+ * the caller must be careful in how many times the `create_texture()` method
+ * is called. If it is called twice, but deletion is only called once,
+ * the SDL_Texture will continute to sit in GPU memory until the second 
+ * deletion call is made to match the two creation calls (Two established 
+ * dependencies). 
+ * 
+ * The `handle_texture_deletion()` is NOT guaranteed to delete the Texture.
+ * The Texture will only be deleted from the GPU if that call was the last 
+ * logged dependency. If the Texture were deleted and other objects were 
+ * sharing that Texture (since they also requested a Texture to be created
+ * from the same path, as specified previously), this would invoke undefined
+ * behavior from dangling pointers. 
+ * 
+ * @attention SDL_Textures are created in GPU VRAM, and must be deleted 
+ * properly! Simply using `delete` on the pointer is not sufficient and will 
+ * lead to GPU memory leaks, along with dangling pointers if other objects are
+ * sharing the SDL_Texture* that was deleted. If an SDL_Texture has reached the 
+ * end of its service, call the `handle_texture_deletion()`. 
 */
 class TextureHandler
 {
@@ -34,16 +59,26 @@ public:
 
     ~TextureHandler();
     
-    /** Deletes the SDL_Texture and removes it from internal components.
+    /** 
+     * @brief Deducts 1 from the tracked dependencies of the texture, and if 
+     * that is now 0, deletes the SDL_Texture* from GPU VRAM along with the
+     * pointer on heap. 
      * 
-     * @param texture SDL_Texture to delete.
+     * If an SDL_Texture* is passed through this method that was not created
+     * using the TextureHandler, the Texture will be properly deleted 
+     * regardless.
+     * 
+     * @param texture SDL_Texture to handle.
     */
     void handle_texture_deletion(SDL_Texture* texture);
 
     bool create_png_from_static_texture(SDL_Texture* staticTexture, const std::string& filePath);
 
-    /** Creates and returns an SDL_Texture from the png at the passed path. If a texture has 
-     * already been created from this path, it is fetched. 
+    /** 
+     * @brief Returns an SDL_Texture from the png at the passed path. 
+     * 
+     * If a Texture has already been created from this path, it is fetched
+     * and another dependency is logged for the Texture.
      * 
      * @param png_path Path to the png.
      */
@@ -63,12 +98,16 @@ private:
 
     // Members
 
-    // Texture objects to the path they have been created from.
+    // Texture to the path they have been created from.
     static std::unordered_map<SDL_Texture*, std::string> s_textures_to_paths;
+
+    // Textures to the number of dependencies that rely on them.
+    static std::unordered_map<SDL_Texture*, uint64_t> 
+        s_textures_to_dependencies;
 
     // Texture paths that have already had a texture created from them.
     static std::unordered_map<std::string, SDL_Texture*> s_paths_to_textures;
-
+    
     SDL_Renderer* m_renderer;
 
     

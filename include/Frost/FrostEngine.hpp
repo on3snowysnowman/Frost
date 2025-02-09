@@ -2,11 +2,12 @@
 
 #include <cstdint>
 #include <string>
+#include <vector>
 
 #include <SDL2/SDL.h>
 
 #include "TextureHandler.hpp"
-#include "RenderingHandler.hpp"
+#include "DrawHandler.hpp"
 #include "ConsoleOutputHandler.hpp"
 #include "SpriteHandler.hpp"
 #include "TextRenderingHandler.hpp"
@@ -34,7 +35,7 @@ public:
 
     /** Returns a readonly json object containing the data of the init file for the Engine. 
      * 
-     * This method is available through the EventHandler using the 'GET_INIT_DATA' invoke key.
+     * This method is available through the EventHandler using the "GET_INIT_DATA" invoke key.
     */
     const json& get_init_data() const;
 
@@ -42,7 +43,7 @@ public:
      * @brief Overwrites the initialization data for the engine on the disk. Restart the program 
      * for changes to take place.
      * 
-     * This method is available to invoke through the EventHandler using the 'SAVE_INIT_DATA' 
+     * This method is available to invoke through the EventHandler using the "SAVE_INIT_DATA" 
      * invoke key.
      * 
      * @param new_init_data_json Data to save to disk. 
@@ -71,7 +72,7 @@ protected:
     const double& _get_frame_time_reference();
 
     TextureHandler m_texture_handler;
-    RenderingHandler m_render_handler;
+    DrawHandler m_draw_handler;
     TextRenderingHandler m_text_ren_handler;
     ConsoleOutputHandler m_coh;
     SpriteHandler m_sprite_handler;
@@ -124,12 +125,6 @@ private:
 
     /** Registers several Engine methods to the EventHandler. */
     void _register_events();
-
-    void _create_default_data_components();
-
-    /** Creates default init files, along with initializing the engine with default values. This 
-     * method is called on Engine construction when no user created init files were found. */
-    void _create_default_init_files_and_engine();
 
     /** Initializes SDL and creates SDL Components, along with the rest of the Engine. */
     void _init_SDL_and_engine();

@@ -6,15 +6,17 @@ Rewrite UIItems to be pure storage structs, removing the privacy layer of underl
 Reconfigure UIButton to use std::function similar to EventHandler so that any function return 
    type can be used.
 
-Add auto generation of binary files by the Engine if no data file or asset file exists.
-
 Add functionality for UITool Items to be able to move the cursor when editing any text.
 
 Iterate through function docstrings to ensure consistency, as style has changed slightly over 
    time. Additionally iterate through all files to ensure line lengths are 
    below the standard of 80 characters.
 
+Iterate through all pointer declarations and change the asterisk to associate
+   with variable name declaration, instead of type for readability.
+
 Finish README.txt and other documentation.
+
 
 Add Animation support 
 

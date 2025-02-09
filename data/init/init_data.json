@@ -9,7 +9,7 @@
     "font_size": 22,
     "fullscreen": false,
     "vsync": false,
-    "frame_limit": 12000,
+    "frame_limit": 20000,
     "screen_height": 700,
     "screen_width": 1250,
     "use_extended_colors": true

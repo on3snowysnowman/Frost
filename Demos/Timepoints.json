@@ -1,0 +1,11 @@
+{
+    "COH Render": 0.02303,
+    "Check for Escape Key": 0.013021,
+    "Draw Handler Clear Buffer": 0.000812,
+    "Draw Handler Render Buffer": 35.012845,
+    "Input Handler Clear Keys": 0.001234,
+    "Menu Handler Update": 0.013463,
+    "SDL Handle Events": 0.146624,
+    "Sprite Render": 31.586264,
+    "User Update": 0.01645
+}

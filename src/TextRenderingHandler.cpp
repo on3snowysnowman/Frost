@@ -33,11 +33,11 @@ TextRenderingHandler::TextRenderingHandler()
 }
 
 TextRenderingHandler::TextRenderingHandler(TextureHandler* texture_handler, 
-    RenderingHandler* rendering_handler, uint8_t font_point_size, 
+    DrawHandler* draw_handler, uint8_t font_point_size, 
     std::string font_path)
 {
     m_tex_handler = texture_handler;
-    m_render_handler = rendering_handler;
+    m_draw_handler = draw_handler;
 
     _fetch_available_fonts();
 
@@ -47,7 +47,7 @@ TextRenderingHandler::TextRenderingHandler(TextureHandler* texture_handler,
 TextRenderingHandler::TextRenderingHandler(const TextRenderingHandler& source)
 {
     m_tex_handler = source.m_tex_handler;
-    m_render_handler = source.m_render_handler;
+    m_draw_handler = source.m_draw_handler;
     
     m_font_path = source.m_font_path; 
     m_available_font_paths = source.m_available_font_paths;
@@ -58,7 +58,7 @@ TextRenderingHandler::TextRenderingHandler(const TextRenderingHandler& source)
 TextRenderingHandler::TextRenderingHandler(TextRenderingHandler&& source)
 {
     m_tex_handler = source.m_tex_handler;
-    m_render_handler = source.m_render_handler;
+    m_draw_handler = source.m_draw_handler;
 
     m_font_point_size = source.m_font_point_size;
     m_font_width = source.m_font_width;
@@ -71,13 +71,13 @@ TextRenderingHandler::TextRenderingHandler(TextRenderingHandler&& source)
 
     source.m_atlas_texture = nullptr;
     source.m_tex_handler = nullptr;
-    source.m_render_handler = nullptr;
+    source.m_draw_handler = nullptr;
 }
 
 TextRenderingHandler& TextRenderingHandler::operator=(TextRenderingHandler&& source)
 {
     m_tex_handler = source.m_tex_handler;
-    m_render_handler = source.m_render_handler;
+    m_draw_handler = source.m_draw_handler;
 
     m_font_point_size = source.m_font_point_size;
     m_font_width = source.m_font_width;
@@ -99,7 +99,7 @@ TextRenderingHandler& TextRenderingHandler::operator=(TextRenderingHandler&& sou
 TextRenderingHandler& TextRenderingHandler::operator=(const TextRenderingHandler& source)
 {
     m_tex_handler = source.m_tex_handler;
-    m_render_handler = source.m_render_handler;
+    m_draw_handler = source.m_draw_handler;
     
     m_font_path = source.m_font_path; 
     m_available_font_paths = source.m_available_font_paths;
@@ -130,7 +130,7 @@ void TextRenderingHandler::add_ch(char c, uint16_t x, uint16_t y, std::string co
     m_dest.x = x;
     m_dest.y = y;
 
-    m_render_handler->draw(m_atlas_texture, m_src, m_dest, color);
+    m_draw_handler->draw(m_atlas_texture, m_src, m_dest, color);
 }
 
 void TextRenderingHandler::set_font_size(uint8_t new_font_point_size)

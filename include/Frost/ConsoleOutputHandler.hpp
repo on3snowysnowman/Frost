@@ -6,7 +6,7 @@
 
 #include "TextRenderingHandler.hpp"
 #include "TextureHandler.hpp"
-#include "RenderingHandler.hpp"
+#include "DrawHandler.hpp"
 
 /** Allows for printing text to the screen in a structured and bounds friendly way like you would 
  * expect a console to. Has an internal "cursor" that moves across the screen automatically as 
@@ -29,11 +29,11 @@ public:
     ConsoleOutputHandler();
 
     ConsoleOutputHandler(TextureHandler* texture_handler, 
-        RenderingHandler* rendering_handler, uint8_t font_point_size, 
+        DrawHandler* draw_handler, uint8_t font_point_size, 
         std::string font_path);
 
     ConsoleOutputHandler(TextureHandler* texture_handler, 
-        RenderingHandler* rendering_handler, uint8_t font_point_size, 
+        DrawHandler* draw_handler, uint8_t font_point_size, 
         std::string font_path, uint16_t start_x, uint16_t start_y, 
         uint16_t end_x, uint16_t end_y);
 

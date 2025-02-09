@@ -15,11 +15,11 @@ ConsoleOutputHandler::ConsoleOutputHandler()
 }
 
 ConsoleOutputHandler::ConsoleOutputHandler(TextureHandler* texture_handler, 
-    RenderingHandler* rendering_handler, uint8_t font_point_size, 
+    DrawHandler* draw_handler, uint8_t font_point_size, 
     std::string font_path) 
 { 
     m_text_ren_handler = TextRenderingHandler(texture_handler, 
-        rendering_handler, font_point_size, font_path);
+        draw_handler, font_point_size, font_path);
 
     m_font_width = m_text_ren_handler.get_font_width();
     m_font_height = m_text_ren_handler.get_font_height(); 
@@ -27,12 +27,12 @@ ConsoleOutputHandler::ConsoleOutputHandler(TextureHandler* texture_handler,
 }
 
 ConsoleOutputHandler::ConsoleOutputHandler(TextureHandler* texture_handler, 
-    RenderingHandler* rendering_handler, uint8_t font_point_size, 
+    DrawHandler* draw_handler, uint8_t font_point_size, 
     std::string font_path, uint16_t start_x, uint16_t start_y, uint16_t end_x, 
     uint16_t end_y)
 {
     m_text_ren_handler = TextRenderingHandler(texture_handler, 
-        rendering_handler, font_point_size, font_path);
+        draw_handler, font_point_size, font_path);
     
     m_font_width = m_text_ren_handler.get_font_width();
     m_font_height = m_text_ren_handler.get_font_height(); 

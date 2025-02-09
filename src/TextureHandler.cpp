@@ -1,7 +1,7 @@
 /**
  * @file TextureHandler.cpp
  * @author Joel Height (On3SnowySnowman@gmail.com)
- * @brief Single class implementation.
+ * @brief Implementation of the TextHandler class.
  * @version 0.1
  * @date ?
  *
@@ -25,6 +25,9 @@
 
 std::unordered_map<SDL_Texture*, std::string> TextureHandler::s_textures_to_paths;
 
+std::unordered_map<SDL_Texture*, uint64_t> 
+    TextureHandler::s_textures_to_dependencies;
+
 std::unordered_map<std::string, SDL_Texture*> TextureHandler::s_paths_to_textures;
 
 // Constructors / Deconstructor
@@ -34,7 +37,7 @@ TextureHandler::TextureHandler()
     m_renderer = nullptr;
 }
 
-TextureHandler::TextureHandler(SDL_Renderer* renderer)
+TextureHandler::TextureHandler(SDL_Renderer *renderer)
 {
     m_renderer = renderer;
 }
@@ -52,22 +55,31 @@ TextureHandler::~TextureHandler()
 
 void TextureHandler::handle_texture_deletion(SDL_Texture* texture)
 {
-    // If this Texture was not found.
-    if(s_textures_to_paths.find(texture) == s_textures_to_paths.end())
+    // This Texture was not created using the TextureHandler, just delete it
+    // outright.
+    if(s_textures_to_dependencies.find(texture) == 
+        s_textures_to_dependencies.end())
     {
-        #ifdef FROST_DEBUG
-
-        ProgramOutputHandler::log("TextureHandler.handle_texture_deletion() -> Attempted to delete"
-            " an SDL_Texture that does not exist.", Frost::WARN);
-        #endif
-
+        SDL_DestroyTexture(texture);
+        delete texture;
         return;
     }
+
+    // Deduct a dependency from this texture.
+    --s_textures_to_dependencies[texture];
+
+    // There are still more objects that depend on this Texture. Do not 
+    // delete it.
+    if(s_textures_to_dependencies[texture] > 0) return;
+
+    // This is the last dependency, it can be safely deleted.
 
     SDL_DestroyTexture(texture);
 
     s_paths_to_textures.erase(s_textures_to_paths.at(texture));
     s_textures_to_paths.erase(texture);
+
+    delete texture;
 }
 
 bool TextureHandler::create_png_from_static_texture(SDL_Texture* staticTexture, const std::string& filePath) 
@@ -84,7 +96,8 @@ bool TextureHandler::create_png_from_static_texture(SDL_Texture* staticTexture, 
     SDL_QueryTexture(staticTexture, nullptr, nullptr, &width, &height);
 
     // Step 2: Create a new targetable texture
-    SDL_Texture* targetTexture = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, width, height);
+    SDL_Texture* targetTexture = SDL_CreateTexture(m_renderer, 
+        SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, width, height);
     if (!targetTexture) {
         // std::cerr << "Failed to create targetable texture: " << SDL_GetError() << "\n";
         return false;
@@ -99,6 +112,7 @@ bool TextureHandler::create_png_from_static_texture(SDL_Texture* staticTexture, 
     SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 0);
     SDL_RenderClear(m_renderer);
     SDL_RenderCopy(m_renderer, staticTexture, nullptr, nullptr);
+
     SDL_SetRenderTarget(m_renderer, nullptr);
     
     // Reistablish Render draw color.
@@ -114,7 +128,8 @@ bool TextureHandler::create_png_from_static_texture(SDL_Texture* staticTexture, 
 
     // Step 5: Read pixels from the targetable texture
     SDL_SetRenderTarget(m_renderer, targetTexture);
-    if (SDL_RenderReadPixels(m_renderer, nullptr, SDL_PIXELFORMAT_RGBA8888, surface->pixels, surface->pitch) != 0) {
+    if (SDL_RenderReadPixels(m_renderer, nullptr, 
+        SDL_PIXELFORMAT_RGBA8888, surface->pixels, surface->pitch) != 0) {
         // std::cerr << "Failed to read pixels: " << SDL_GetError() << "\n";
         SDL_FreeSurface(surface);
         SDL_DestroyTexture(targetTexture);
@@ -138,33 +153,34 @@ bool TextureHandler::create_png_from_static_texture(SDL_Texture* staticTexture, 
     return true;
 }
 
-
-// const std::unordered_map<std::string, Frost::Color>& TextureHandler::get_colors() const
-// { return m_colors; }
-
 SDL_Texture* TextureHandler::create_texture(std::string png_path) const
 {
     // A texture has been created from this path already. 
     if(s_paths_to_textures.find(png_path) != s_paths_to_textures.end())
-    {
+    {   
+        // Add a another dependency for this Texture. 
+        ++s_textures_to_dependencies[s_paths_to_textures[png_path]];
         return s_paths_to_textures.at(png_path);
     }
 
     // If the file does not exist.
     if(!FileSystemHandler::does_directory_exist(png_path))
     {
-        OUTPUT_CRASH_DETAILS(" where 'png_path' = '" + png_path + "' -> Path does not exist.\n");
+        OUTPUT_CRASH_DETAILS(" where 'png_path' = '" + png_path + "': Path does not exist.\n");
         exit(1);
     }
 
     SDL_Surface* temp_surface = IMG_Load(png_path.c_str());
 
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(m_renderer, temp_surface);
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(m_renderer, 
+        temp_surface);
 
     SDL_FreeSurface(temp_surface);
 
-    // Register this texture in the known textures that have been created.
+    // Register this new texture with internal components.
     s_paths_to_textures.emplace(png_path, texture);
+    s_textures_to_paths.emplace(texture, png_path);
+    s_textures_to_dependencies.emplace(texture, 1);
 
     return texture;
 }
@@ -178,7 +194,7 @@ SDL_Texture* TextureHandler::create_font_atlas_texture(std::string font_path,
     // SDL Failed to create font.
     if(!font)
     {
-        OUTPUT_CRASH_DETAILS(" -> SDL_TTF failed to create font object: " + 
+        OUTPUT_CRASH_DETAILS("SDL_TTF failed to create font object: " + 
             std::string(SDL_GetError()) + ".\n");
         exit(1);
     }
@@ -218,8 +234,8 @@ SDL_Texture* TextureHandler::create_font_atlas_texture(std::string font_path,
             targ_char, WHITE);
 
         // Convert the glyph surface into a texture. 
-        SDL_Texture* glyph_texture = SDL_CreateTextureFromSurface(m_renderer, 
-            glyph_surface);
+        SDL_Texture* glyph_texture = SDL_CreateTextureFromSurface(
+            m_renderer, glyph_surface);
 
         // Set the blend mode to NONE, so that when the glyph is copied into
         // the font atlas, it does not blend it with any values. Simply 
@@ -238,7 +254,7 @@ SDL_Texture* TextureHandler::create_font_atlas_texture(std::string font_path,
         SDL_DestroyTexture(glyph_texture);
     }
 
-    // Restore the render target to the screen. 
+    // Restore the renderer back to the screen.
     SDL_SetRenderTarget(m_renderer, nullptr);
 
     // Cleanup.

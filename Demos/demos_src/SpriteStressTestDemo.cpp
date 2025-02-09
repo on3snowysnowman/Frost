@@ -18,7 +18,7 @@ public:
 
     Simulator() 
     {
-        constexpr uint32_t NUM_SPRITES = 1;
+        constexpr uint32_t NUM_SPRITES = 100000;
 
         for(uint32_t i = 0; i < NUM_SPRITES; ++i)
         {
@@ -26,10 +26,10 @@ public:
                 m_sprite_handler.create_sprite(0, 0, 27, 28, 100, 100, 
                 "assets/Frost_Icon.png"));
         }
-        // frost_icon = m_sprite_handler.create_sprite(0, 0, 27, 28, 100, 100, 
-                // "assets/Frost_Icon.png");
+        frost_icon = m_sprite_handler.create_sprite(0, 0, 27, 28, 100, 100, 
+                "assets/Frost_Icon.png");
 
-        // m_sprite_handler.flag_render(frost_icon);
+        m_sprite_handler.flag_render(frost_icon);
 
         last_timestamp = TimeObserver::get_time_point();
     }

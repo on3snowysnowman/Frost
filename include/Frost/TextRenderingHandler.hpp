@@ -17,7 +17,7 @@
 #include <SDL_render.h>
 
 #include "TextureHandler.hpp"
-#include "RenderingHandler.hpp"
+#include "DrawHandler.hpp"
 
 
 /**
@@ -37,7 +37,7 @@ public:
     TextRenderingHandler();
 
     TextRenderingHandler(TextureHandler* texture_handler, 
-        RenderingHandler* rendering_handler, uint8_t font_point_size, 
+        DrawHandler* draw_handler, uint8_t font_point_size, 
         std::string font_path);
 
     TextRenderingHandler(const TextRenderingHandler& source);
@@ -104,7 +104,7 @@ private:
     std::vector<std::string> m_available_font_paths;
 
     TextureHandler* m_tex_handler; 
-    RenderingHandler* m_render_handler;
+    DrawHandler* m_draw_handler;
 
     SDL_Texture* m_atlas_texture {}; // Full texture containing all renderable characters.
 

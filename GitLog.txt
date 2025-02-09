@@ -3,11 +3,9 @@ This file tracks specific details on what was changed each git push.
 
 32:
 
-   - Wrote a RenderingHandler to split up the functionality of rendering and creating
-     textures between it and the TextureHandler. Methods are in place to switch render
-     copying to a buffered texture, but the functionality is not working yet as there 
-     is no way to restore the render target if it is changed, and it is getting 
-     changed before the RenderingHandler can make use of its buffer.
+   - Wrote a DrawHandler that now handles the "drawing" to the screen, which 
+     was originally present in the TextureHandler. This should be a bit more
+     clear and intuitive. 
 
    - Removed Frost::Color class, modified engine to simply use SDL_Color instead.
 

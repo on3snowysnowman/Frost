@@ -31,7 +31,7 @@ int FrostEngine::s_screen_width;
 
 int FrostEngine::s_screen_height;
 
-#include <iostream>
+
 // Constructors / Deconstructor
 
 FrostEngine::FrostEngine()
@@ -155,86 +155,6 @@ void FrostEngine::_register_events()
         std::function<void(const json&)>(
            [this](const json& new_init_data) { this->save_new_init_data(new_init_data); } 
     ));
-}
-
-void FrostEngine::_create_default_data_components()
-{
-    // Create the data directory.
-    FileSystemHandler::make_directory("data");
-
-    // Create the init directory
-    FileSystemHandler::make_directory("data/init");
-
-    #ifdef FROST_DEBUG
-
-    ProgramOutputHandler::log("Fullscreen: true");
-    #endif
-
-
-}
-
-void FrostEngine::_create_default_init_files_and_engine()
-{
-    // Create the data directory.
-    FileSystemHandler::make_directory(m_INIT_DATA_DIRECTORY);
-
-    #ifdef FROST_DEBUG
-
-    ProgramOutputHandler::log("Fullscreen: true");
-    #endif
-
-    // Create the SDL Window
-    m_window = SDL_CreateWindow("Frost", 0, 0, 0, 0, SDL_WINDOW_FULLSCREEN_DESKTOP);
-
-    // Update the dimensions of the Engine to reflect the new dimensions of the fullscreen 
-    // SDL_Window.
-    SDL_GetWindowSize(m_window, &s_screen_width, &s_screen_height);
-
-    // Create the SDL_Renderer.
-    m_renderer = SDL_CreateRenderer(m_window, -1, 0);
-    
-    // Set the background color of the renderer.
-    SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
-
-    // Stores temporary data to transfer to a json file.
-    json temp;
-
-    // Use temp to store default init data.
-
-    temp["application_window_name"] = "Frost";
-
-    temp["screen_width"] = s_screen_width;
-    temp["screen_height"] = s_screen_height;
-
-    temp["fullscreen"] = true;
-
-    temp["background_color"] = json::array({20, 20, 30});
-
-    // Dump the init data to the init file.
-    JsonHandler::dump(temp, m_INIT_DATA_DIRECTORY + "/init_data.json");
-
-    temp.clear();
-
-    // Use temp to store default color data.
-
-    temp = json::array({});
-
-    // Add the default color data to the temp json.
-    temp.push_back(json::array({"Blue", 93, 97, 217}));
-    temp.push_back(json::array({"Red", 201, 77, 77}));
-    temp.push_back(json::array({"Green", 88, 184, 84}));
-    temp.push_back(json::array({"Yellow", 222, 218, 111}));
-    temp.push_back(json::array({"Orange", 224, 153, 90}));
-    temp.push_back(json::array({"Purple", 141, 99, 219}));
-    temp.push_back(json::array({"Brown", 153, 108, 84}));
-    temp.push_back(json::array({"Dark_Gray", 153, 108, 84}));
-    temp.push_back(json::array({"Light_Gray", 166, 167, 179}));
-    temp.push_back(json::array({"White", 235, 235, 247}));
-
-    // Dump the color data to the colors file.
-    JsonHandler::dump(temp, m_INIT_DATA_DIRECTORY + "/colors.json");
-
-    // #TODO Place the color loading for the TextureHandler here.
 }
 
 void FrostEngine::_init_SDL_and_engine() 
@@ -365,23 +285,23 @@ void FrostEngine::_init_SDL_and_engine()
     // Configure colors and create RenderingHandler.
 
     if(m_init_data_json.at("use_extended_colors")) 
-        m_render_handler = RenderingHandler(m_renderer, m_EXTENDED_COLOR_PATH,
+        m_draw_handler = DrawHandler(m_renderer, m_EXTENDED_COLOR_PATH,
             s_screen_width, s_screen_height);
 
-    else m_render_handler = RenderingHandler(m_renderer, m_BASE_COLOR_PATH,
+    else m_draw_handler = DrawHandler(m_renderer, m_BASE_COLOR_PATH,
             s_screen_width, s_screen_height);
 
     // Create remaining components.
     
     m_text_ren_handler = TextRenderingHandler(&m_texture_handler, 
-        &m_render_handler, m_init_data_json.at("font_size"), 
+        &m_draw_handler, m_init_data_json.at("font_size"), 
         m_init_data_json.at("font_path"));
     
-    m_coh = ConsoleOutputHandler(&m_texture_handler, &m_render_handler,
+    m_coh = ConsoleOutputHandler(&m_texture_handler, &m_draw_handler,
         m_init_data_json.at("font_size"), m_init_data_json.at("font_path"), 
         0, 0, s_screen_width, s_screen_height);
     
-    m_sprite_handler = SpriteHandler(&m_texture_handler, &m_render_handler);
+    m_sprite_handler = SpriteHandler(&m_texture_handler, &m_draw_handler);
 
 }
 
@@ -406,8 +326,6 @@ void FrostEngine::_update()
     m_coh._render();
 
     m_sprite_handler._render();
-
-    m_render_handler._render_buffer_to_screen();
 
     _present_SDL_renderer();
 
