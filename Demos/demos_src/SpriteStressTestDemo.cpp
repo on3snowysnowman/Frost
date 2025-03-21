@@ -18,7 +18,7 @@ public:
 
     Simulator() 
     {
-        constexpr uint32_t NUM_SPRITES = 100000;
+        constexpr uint32_t NUM_SPRITES = 10000;
 
         for(uint32_t i = 0; i < NUM_SPRITES; ++i)
         {

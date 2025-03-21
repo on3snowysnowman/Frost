@@ -25,11 +25,11 @@ public:
 
     UIText(ConsoleOutputHandler* coh, std::string* cursor_color, std::string content = "");
 
-    void render_no_status() const final;
-    void render_hovered() const final;
-    void render_selected() const final;
+    void _render_no_status() const final;
+    void _render_hovered() const final;
+    void _render_selected() const final;
 
-    UIItem::Status handle_input() final;
+    UIItem::Status _handle_input() final;
 
 private:
 

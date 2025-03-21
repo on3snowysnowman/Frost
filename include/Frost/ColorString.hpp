@@ -13,7 +13,10 @@
 
 #include <string>
 
-/** Pure storage struct. A string with a color assigned to it. */
+/** 
+ * @brief A string with a color associated with it.
+ * 
+ * */
 struct ColorString
 {
     std::string content;

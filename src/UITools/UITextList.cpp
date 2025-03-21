@@ -40,18 +40,18 @@ UITextList::UITextList(ConsoleOutputHandler* coh, std::string* cursor_color, std
 
 // Public
 
-void UITextList::render_no_status() const 
+void UITextList::_render_no_status() const 
 {
     m_coh->add_str("   " + m_name + ": [...]");
 }
 
-void UITextList::render_hovered() const 
+void UITextList::_render_hovered() const 
 {
     m_coh->add_str(" > ", *m_cursor_color);
     m_coh->add_str(m_name + ": [...]");
 }
 
-void UITextList::render_selected() const 
+void UITextList::_render_selected() const 
 {
     // Save the anchor so it can be restored after this method is finished.
     uint16_t previous_anchor = m_coh->get_anchor();
@@ -91,7 +91,7 @@ void UITextList::render_selected() const
     m_coh->set_anchor(previous_anchor);
 }
 
-UIItem::Status UITextList::handle_input() 
+UIItem::Status UITextList::_handle_input() 
 {
     // There is Text selected.
     if(m_selected_index > -1)

@@ -383,11 +383,11 @@ void FrostEngine::_handle_SDL_events()
 
         // Keyboard key was pressed.
         else if(m_event.type == SDL_KEYDOWN)
-        { InputHandler::flag_key_pressed(m_event.key.keysym.sym); }
+        { InputHandler::_flag_key_pressed(m_event.key.keysym.sym); }
 
         // Keyboard key was released.
         else if(m_event.type == SDL_KEYUP)
-        { InputHandler::flag_key_released(m_event.key.keysym.sym); }
+        { InputHandler::_flag_key_released(m_event.key.keysym.sym); }
     }
 }
 

@@ -42,6 +42,14 @@ class EventHandler
 
 public:
 
+    /**
+     * @brief "Unsubscribes" an event from an invoke key, removing it from 
+     * being associated with it and cleaning internal memory.
+     * 
+     * @param invoke_key Invoke key to remove event from.
+     * @param id ID of the subscribed event.
+     * 
+     */
     static void unsubscribe(const std::string& invoke_key, event_id id)
     {
         // If this invoke key doesn't exist.
@@ -76,11 +84,15 @@ public:
         exit(1);
     }
 
-    /** Register an event with the EventHandler, passing 'invoke_key' as the token used 
+    /** 
+     * 
+     * @brief Register an event with the EventHandler, passing 'invoke_key' as the token used 
      * to invoke the passed method. 
      * 
      * @param invoke_key Unique token to register this event under. 
-     * @param target_function Function to call when the event is invoked. */
+     * @param target_function Function to call when the event is invoked. 
+     * 
+     * */
     template<typename ReturnType, typename... FunctionArgs>
     static const event_id& register_event(const std::string& invoke_key, 
         std::function<ReturnType(FunctionArgs...)> target_function)
@@ -102,6 +114,7 @@ public:
      * 
      * @param invoke_key Unique token to lookup the events to invoke.
      * @param args Arguments to pass to each invoked event.
+     * 
      */
     template<typename ReturnType, typename... FunctionArgs>
     static ReturnType invoke_event(const std::string& invoke_key, FunctionArgs... args)
@@ -136,8 +149,11 @@ private:
 
     // Classes / Structs
 
-    /** Base Event class, only exists to allow derived child class types to be placed in vector
-     * memory as pointers to this base class. */
+    /** 
+     * @brief Base Event class, only exists to allow derived child class types to be placed in vector
+     * memory as pointers to this base class. 
+     * 
+     * */
     class EventBase
     {   
     
@@ -153,7 +169,10 @@ private:
 
     };
 
-    /** Derived Event class for specific function signatures. */
+    /** 
+     * @brief Derived Event class for specific function signatures. 
+     * 
+     * */
     template <typename ReturnType, typename... FunctionArgs>
     class Event : public EventBase
     {
@@ -187,8 +206,11 @@ private:
 
     // Methods
 
-    /** Generates an ID for a newly created Event. This ID can either be a newly generated one, 
-     * or an ID that has existed before and is recycled. */
+    /** 
+     * @brief Generates an ID for a newly created Event. This ID can either be 
+     * a newly generated one, or an ID that has existed before and is recycled. 
+     * 
+     * */
     static event_id _get_available_id()
     {
         event_id id;
@@ -213,7 +235,9 @@ private:
      * list of avaiable decomissioned Id's.
      * 
      * Additionally, checks the bounds of the vector that had the event in it. If it is 0, it is 
-     * deleted from the invoke key map. */
+     * deleted from the invoke key map. 
+     * 
+     * */
     static void _handle_remove_event(const std::string& invoke_key, std::vector<EventBase*>::const_iterator it)
     {
         // Delete the event from heap memory.

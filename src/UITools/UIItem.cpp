@@ -15,10 +15,10 @@ UIItem::UIItem(ConsoleOutputHandler* coh, std::string* cursor_color,
 
 // Public
 
-void UIItem::render_no_status() const {}
+void UIItem::_render_no_status() const {}
 
-void UIItem::render_hovered() const {}
+void UIItem::_render_hovered() const {}
 
-void UIItem::render_selected() const {}
+void UIItem::_render_selected() const {}
 
-UIItem::Status UIItem::handle_input() { return HOVERED; }
+UIItem::Status UIItem::_handle_input() { return HOVERED; }

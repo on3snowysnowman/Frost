@@ -33,7 +33,7 @@ UIList::UIList(ConsoleOutputHandler* coh, std::string* cursor_color, std::string
 
 // Public
 
-void UIList::render_no_status() const
+void UIList::_render_no_status() const
 {
     if(m_content.size() == 0) 
     {
@@ -45,13 +45,13 @@ void UIList::render_no_status() const
     m_coh->add_str("   " + m_name + ": [...]");
 }
 
-void UIList::render_hovered() const 
+void UIList::_render_hovered() const 
 {
     m_coh->add_str(" > ", *m_cursor_color);
     m_coh->add_str(m_name + ": [...]");
 }
 
-void UIList::render_selected() const 
+void UIList::_render_selected() const 
 {
     if(m_content.size() == 0)
     {
@@ -74,42 +74,42 @@ void UIList::render_selected() const
     for(int i = 0; i < m_cursor_index; ++i)
     {
         m_coh->add_new_line();
-        m_content.at(i)->render_no_status();
+        m_content.at(i)->_render_no_status();
     }
 
     // The Item at the cursor's position is selected.
     if(m_selected_index > -1)
     {
         m_coh->add_new_line();
-        m_content.at(m_cursor_index)->render_selected();
+        m_content.at(m_cursor_index)->_render_selected();
     }
 
     // The Item is hovered by the cursor.
     else
     {
         m_coh->add_new_line();
-        m_content.at(m_cursor_index)->render_hovered();
+        m_content.at(m_cursor_index)->_render_hovered();
     }
 
     // Render Items after the cursor's position.
     for(int i = m_cursor_index + 1; i < m_content.size(); ++i)
     {
         m_coh->add_new_line();
-        m_content.at(i)->render_no_status();
+        m_content.at(i)->_render_no_status();
     }
     
     // Reset anchor to what it originally was before this method.
     m_coh->set_anchor(previous_anchor);
 }
 
-UIItem::Status UIList::handle_input() 
+UIItem::Status UIList::_handle_input() 
 {
     // There is an item selected.
     if(m_selected_index > -1)
     {
         // Flag the selected item to handle input, and process the return status. If the return 
         // status is HOVERED, this item is no longer selected.
-        if(m_content.at(m_selected_index)->handle_input() == HOVERED) m_selected_index = -1;
+        if(m_content.at(m_selected_index)->_handle_input() == HOVERED) m_selected_index = -1;
         return SELECTED;
     }
 

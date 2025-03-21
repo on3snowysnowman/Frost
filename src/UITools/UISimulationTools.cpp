@@ -84,22 +84,22 @@ void Frost::simulate_UI_panel(UIPanelContainer& data)
     // Render UIItems before cursor index.
     for(int i = 0; i < data.cursor_index; ++i) 
     {
-        data.content.at(i)->render_no_status();
+        data.content.at(i)->_render_no_status();
         data.coh->add_new_line();
     }
 
     // The item at the cursor's position is selected.
-    if(data.selected_index != -1) data.content.at(data.cursor_index)->render_selected();
+    if(data.selected_index != -1) data.content.at(data.cursor_index)->_render_selected();
 
     // The item is only hovered by the cursor.
-    else data.content.at(data.cursor_index)->render_hovered();
+    else data.content.at(data.cursor_index)->_render_hovered();
 
     data.coh->add_new_line();
 
     // Render UIItems after cursor index.
     for(int i = data.cursor_index + 1; i < data.content.size(); ++i) 
     {
-        data.content.at(i)->render_no_status();
+        data.content.at(i)->_render_no_status();
         data.coh->add_new_line();
     }
 
@@ -110,7 +110,7 @@ void Frost::simulate_UI_panel(UIPanelContainer& data)
     {
         // Flag the selected item to handle input, and process the return status. If the return 
         // status is HOVERED, this item is no longer selected.
-        if(data.content.at(data.selected_index)->handle_input() == UIItem::HOVERED)
+        if(data.content.at(data.selected_index)->_handle_input() == UIItem::HOVERED)
             data.selected_index = -1;
 
         return;

@@ -44,7 +44,7 @@ void InputHandler::block_key_until_released(Key key)
     s_delayed_keys[key] = Frost::UINT32_LIMIT;
 }
 
-void InputHandler::flag_key_pressed(Key key)
+void InputHandler::_flag_key_pressed(Key key)
 {
     // Add this key to the raw keys pressed this frame.
     s_raw_pressed_keys.push_back(key);
@@ -53,7 +53,7 @@ void InputHandler::flag_key_pressed(Key key)
     s_pressed_keys.emplace(key);
 }
 
-void InputHandler::flag_key_released(Key key)
+void InputHandler::_flag_key_released(Key key)
 {
     // Erase this key from the currently pressed keys.
     s_pressed_keys.erase(key);

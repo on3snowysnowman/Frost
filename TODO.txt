@@ -1,8 +1,3 @@
-Add functionality for storing the current render target so it can be restored 
-   if it is changed. 
-
-Rewrite UIItems to be pure storage structs, removing the privacy layer of underlying components.
-
 Reconfigure UIButton to use std::function similar to EventHandler so that any function return 
    type can be used.
 

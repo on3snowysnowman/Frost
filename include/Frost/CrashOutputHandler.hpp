@@ -19,18 +19,22 @@
  * 
  * By default, the output file is 'CrashLog.txt'. This can be changed through the 
  * `set_output_file_path` method.
+ * 
  */
 class CrashOutputHandler
 {
 
 public:
 
-    /** Sets the path of the output file to a new path.
+    /** 
+     * @brief Sets the path of the output file to a new path.
      * 
      * @param new_file_path New path to set.
+     * 
     */
     static void set_output_file_path(const std::string& new_file_path);
 
+    // User verbose function output if the using GNU or Clang.
     #if defined(__clang__) || defined(__GNUC__)
 
     static void output_crash(const std::string& message, const std::string& func);
@@ -44,6 +48,7 @@ public:
 
 private:
 
+    // Path to the error output txt file.
     static std::string s_output_file_path;
 };
 

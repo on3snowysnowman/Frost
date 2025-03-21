@@ -30,29 +30,33 @@ public:
         std::initializer_list<ColorString> content, uint16_t initial_cursor_index = 0, 
         uint16_t initial_selected_index = 0);
 
-    void render_no_status() const final;
+    void _render_no_status() const final;
 
-    void render_hovered() const final;
+    void _render_hovered() const final;
 
-    void render_selected() const final;
+    void _render_selected() const final;
 
-    /** Adds another choice to the content.
+    /** 
+     * @brief Adds another choice to the content.
      * 
-     * @note "new_choice" is moved with std::move and will have its ownership transferred.
+     * @note "new_choice" is moved with std::move and will have its ownership 
+     * transferred.
      * 
      * @param new_choice Choice to add.
+     * 
      */
     void add_choice(ColorString&& new_choice);
 
-    Status handle_input() final;
+    Status _handle_input() final;
 
-    /** Returns a const reference to the ColorString object that is currently selected.
+    /** 
+     * @brief Returns a const reference to the ColorString object that is 
+     * currently selected.
+     * 
      */
     const ColorString& get_choice() const;
 
     const std::vector<ColorString>& get_content() const;
-
-private:
 
     // Index of the cursor inside m_content.
     uint16_t m_cursor_index;

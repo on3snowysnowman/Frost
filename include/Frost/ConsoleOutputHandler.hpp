@@ -8,21 +8,31 @@
 #include "TextureHandler.hpp"
 #include "DrawHandler.hpp"
 
-/** Allows for printing text to the screen in a structured and bounds friendly way like you would 
- * expect a console to. Has an internal "cursor" that moves across the screen automatically as 
- * text is added, and is placed on the next line when it reaches the edge of the screen. Uses the 
- * TextRenderingHandler as the underlying class to place individual characters on the screen.
+/** 
+ * @brief Handles placing characters on the screen in a structured way like a 
+ * "Console" does.
+ * 
+ * Allows for printing text to the screen in a structured and bounds friendly 
+ * way like you would expect a console to. Has an internal "cursor" that moves
+ * across the screen automatically as text is added, and is placed on the next 
+ * line when it reaches the edge of the screen. Uses the TextRenderingHandler 
+ * as the underlying class to place individual characters on the screen.
+ * 
  */
 class ConsoleOutputHandler
 {
 
-/** I have thought about making ConsoleOutputHandler a child class of TextRenderingHandler to 
- * prevent the COH from needing to maintain many of the get and set methods that the TRH has. 
- * However, this ultimately proved to be not a great idea, as the public methods of the TRH like
- * the font setting and changing of the sizes and what not, would not update the COH's tracking,
- * such as the number of characters that can fit on the screen. I could make these sorts of methods
- * virtual, then have COH overload the TRH ones that would cause conflicting issue but ultimately
- * for efficiency and readability's sake, I've kept the classes independent. */
+/** 
+ * I have thought about making ConsoleOutputHandler a child class of 
+ * TextRenderingHandler to prevent the COH from needing to maintain many of the 
+ * get and set methods that the TRH has. However, this ultimately proved to be 
+ * not a great idea, as the public methods of the TRH like the font setting and 
+ * changing of the sizes and what not, would not update the COH's tracking, 
+ * such as the number of characters that can fit on the screen. I could make 
+ * these sorts of methods virtual, then have COH overload the TRH ones that 
+ * would cause conflicting issue but ultimately for efficiency and 
+ * readability's sake, I've kept the classes independent. 
+ * */
 
 public:
 
@@ -45,95 +55,139 @@ public:
 
     ConsoleOutputHandler& operator=(ConsoleOutputHandler&& source);
 
-    /** Resizes the dimensions of the COH, measured in pixels.
+    /** 
+     * @brief Resizes the dimensions of the COH, measured in pixels.
      * 
      * @param start_x Start x position.
      * @param start_y Start y position.
      * @param end_x Ending x position.
      * @param end_y Ending y position.
+     * 
      */
     void resize_dimensions(uint16_t start_x, uint16_t start_y, uint16_t end_x, uint16_t end_y);
 
 
-    /** Moves the cursor to a new position on the screen, measured in characters. Contains bounds 
+    /** 
+     * @brief Moves the cursor to a new position on the screen, measured in characters. Contains bounds 
      * checking for the position. 
      * 
      * @param x X character position.
-     * @param y Y character position
+     * @param y Y character position.
+     * 
      */
     void set_cursor(uint16_t x, uint16_t y);
 
-    /** Moves the cursor's x position to a new position on the screen, measured in characters. 
+    /** 
+     * @brief Moves the cursor's x position to a new position on the screen, measured in characters. 
+     * 
      * Contains bounds checking for the position.
      * 
      * @param x X character position.
+     * 
      */
     void set_cursor_x(uint16_t x);
 
-    /** Moves the cursor's y position to a new position on the screen, measured in characters. 
+    /** 
+     * @brief Moves the cursor's y position to a new position on the screen, measured in characters. 
+     * 
      * Contains bounds checking for the position.
      * 
      * @param y Y character position.
+     * 
      */
     void set_cursor_y(uint16_t y);
 
-    /** Modifies the cursor's position by the passed amount, measured in characters. This is an 
-     * addition arithmetic. Contains bounds checking for the position, if the x boundary is 
-     * breached, the cursor will be placed on the the next line and continue to be incremented. 
+    /** 
+     * @brief Modifies the cursor's position by the passed amount, measured 
+     * in characters. 
+     * 
+     * This is an addition arithmetic. Contains bounds checking for the 
+     * position, if the x boundary is breached, the cursor will be placed on 
+     * the the next line and continue to be incremented. 
      * 
      * @param x_modify Amount to modify the cursor's x position by. 
      * @param y_modify Amount to modify the cursor's y position by.
+     * 
      * */
     void modify_cursor_position(int16_t x_modify, int16_t y_modify);
 
-    /** Adds a character to the screen at the cursor's position.
+    /** 
+     * @brief Adds a character to the screen at the cursor's position.
      * 
      * @param C Character to add.
      * @param color Color of the character, default is White.
+     * 
      */
     void add_ch(char c, std::string color = "White");
 
-    /** Adds a string to the screen starting at the cursor's position. Supports automatic wrapping
-     * of characters if they breach the screen's bounds.
+    /** 
+     * @brief Adds a string to the screen starting at the cursor's position. 
+     * 
+     * Supports automatic wrapping of characters if they breach the screen's bounds.
      * 
      * @param str String to add.
      * @param color Color of the string, default is White.
+     * 
      */
     void add_str(std::string str, std::string color = "White");
 
-    /** Moves the cursor's y position down "num" times, and places the x position at the set
+    /** 
+     * @brief Moves the cursor's y position down "num" times, and places the x position at the set
      * anchor. 
      * 
      * @param num Number of new lines to add, default is 1.
+     * 
      */
     void add_new_line(uint8_t num = 1);
     
-    /** Resets the cursor's position to the top left. This is called automatically during each 
-     * render call. */
+    /** 
+     * @brief Resets the cursor's position to the top of the screen, with the
+     * x position at the set anchor.
+     * 
+     * This is called automatically during each render call. 
+     * 
+     * */
     void reset_cursor_position();
 
-    /** Sets the anchor to a new value.
+    /** 
+     * @brief Sets the anchor to a new value.
      * 
      * @param new_anchor New value.
+     * 
      */
     void set_anchor(uint16_t new_anchor);
 
-    /** Sets the anchor to the current X position of the cursor.  */
+    /** 
+     * @brief Sets the anchor to the current X position of the cursor.  
+     * 
+     * */
     void set_anchor_here();
 
-    /** Sets the focus to a new value.
+    /** 
+     * @brief Sets the focus to a new value.
      * 
      * @param new_focus New value.
+     * 
      */
     void set_focus(uint16_t new_focus);
 
-    /** Renders the content buffered this frame, and resets the cursor's position to the top left. */
+    /** 
+     * @brief Renders the content buffered this frame, and resets the cursor's 
+     * position to the top left. 
+     * 
+     * */
     void _render();
 
-    /** Sets the font point size to a new value. 11 is the minimum. */
+    /** 
+     * @brief Sets the font point size to a new value. 11 is the minimum. 
+     * 
+     * */
     void set_font_size(uint8_t new_font_point_size);
 
-    /** Sets the font path to a new path, changing the font. */
+    /** 
+     * @brief Sets the font path to a new path, changing the font. 
+     * 
+     * */
     void set_font_path(std::string new_font_path);
 
     /** 
@@ -141,38 +195,68 @@ public:
      * 
      * It is beneficial to use this method instead of the `set_font_size` and `set_font_path`
      * methods individually, as the font texture creation will only be called once in this method,
-     * in contrast to being called twice with the two individual methods. */
+     * in contrast to being called twice with the two individual methods. 
+     * 
+     * */
     void set_font_path_and_size(uint8_t new_font_point_size, std::string new_font_path);
 
-    /** Returns the font point size. */
+    /** 
+     * @brief Returns the font point size. 
+     * 
+     * */
     uint8_t get_font_point_size() const;
 
-    /** Returns the font's width.*/
+    /** 
+     * @brief Returns the font's width.
+     * 
+     * */
     uint8_t get_font_width() const;
 
-    /** Returns the font's height.*/
+    /** 
+     * @brief Returns the font's height.
+     * 
+     * */
     uint8_t get_font_height() const;
 
-    /** Returns the focus. */
+    /** 
+     * @brief Returns the focus. 
+     * 
+     * */
     uint16_t get_focus() const;
 
-    // Returns the anchor.
+    /**
+     * @brief Returns the anchor.
+     * 
+     */
     uint16_t get_anchor() const;
 
-    // Returns the cursor's position.
+    /**
+     * @brief Returns the cursor's position.
+     * 
+     */
     const std::pair<uint16_t, uint16_t>& get_cursor_position() const;
-
-    // Returns the current font path.
+ 
+    /**
+     * @brief Returns the current font path.
+     * 
+     */
     const std::string& get_current_font_path() const;
 
-    // Returns the available font paths.
+    /**
+     * @brief Returns the available font paths.
+     * 
+     */
     const std::vector<std::string>& get_available_font_paths() const;
 
 private:
 
     // Classes / Structs 
 
-    // Stores data for a character that has been queued to be rendered on next render call.
+    /**
+     * @brief Stores data for a character that has been queued to be rendered
+     * on next render call.
+     * 
+     */
     struct QueuedCharacter
     {
         // Character symbol this struct represents
@@ -220,8 +304,7 @@ private:
     uint16_t m_focus {};
 
     /** The specific y position of the buffered rendered characters that the screen will start
-     * at, based on the focus.
-     */
+     * at, based on the focus. */
     uint16_t m_start_character_render_y {0};
 
     uint16_t m_end_character_render_y {0};
@@ -247,12 +330,22 @@ private:
 
     // Methods
 
-    /** Calculates the number of characters that can fit on the screen. */
+    /** 
+     * @brief Calculates the number of characters that can fit on the screen. 
+     * 
+     * */
     void _calculate_character_dimensions();
 
+    /**
+     * @brief 
+     * 
+     */
     void _calculate_view_around_focus();
 
-    /** Returns true if the passed x position, measured in characters, is within the bounds of the
-     * screen. */
+    /** 
+     * @brief Returns true if the passed x position, measured in characters, is 
+     * within the bounds of the screen. 
+     * 
+     * */
     bool _is_x_character_position_in_bounds(uint16_t character_x_position) const;
 };

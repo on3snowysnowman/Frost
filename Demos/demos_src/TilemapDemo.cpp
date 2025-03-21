@@ -82,10 +82,12 @@ private:
                 if(contents.at(i).at(j).size() == 0)
                 {
                     m_output.push_back('.');
+                    m_output.push_back(' ');
                     continue;
                 }
 
                 m_output.push_back(contents.at(i).at(j).front());
+                m_output.push_back(' ');
             }
 
             m_output.push_back('\n');

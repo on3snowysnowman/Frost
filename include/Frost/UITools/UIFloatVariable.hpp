@@ -24,26 +24,18 @@ class UIFloatVariable : public UIItem
 
 public:
 
+    UIFloatVariable();
+
     UIFloatVariable(ConsoleOutputHandler* coh, std::string* cursor_color, std::string name,
         std::string content = "0", std::string default_content = "0");
 
-    void render_no_status() const final;
+    void _render_no_status() const final;
 
-    void render_hovered() const final;
+    void _render_hovered() const final;
 
-    void render_selected() const final;
+    void _render_selected() const final;
 
-    Status handle_input() final;
-
-private:
-
-    // Members
-
-    // If a decimal point currently exists inside m_content.
-    bool m_content_has_decimal = false;
-
-    // If a decimal point exists m_default_content.
-    bool m_default_content_has_decimal = false;
+    Status _handle_input() final;
 
     // Name of this variable.
     std::string m_name;
@@ -55,16 +47,23 @@ private:
      * item. */
     std::string m_default_content;
 
+    // If a decimal point currently exists inside m_content.
+    bool m_content_has_decimal = false;
 
-    // Methods
+    // If a decimal point exists m_default_content.
+    bool m_default_content_has_decimal = false;
 
-    /** Checks m_content after construction, iterating through each character to see if they are
-     * all valid integers.
+    /** 
+     * @brief Checks m_content after construction, iterating through each 
+     * character to see if they are all valid integers.
+     * 
     */
     void _check_content_on_init();
 
-     /** Checks m_default_content after construction, iterating through each character to see if they are
-     * all valid integers.
+    /** 
+     * @brief Checks m_default_content after construction, iterating through 
+     * each character to see if they are all valid integers.
+     * 
     */
     void _check_default_content_on_init();
 };

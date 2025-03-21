@@ -26,15 +26,13 @@ public:
         std::initializer_list<UIItem*> content, int16_t cursor_index = 0,
         int16_t selected_index = -1);
 
-    void render_no_status() const final;
+    void _render_no_status() const final;
 
-    void render_hovered() const final;
+    void _render_hovered() const final;
 
-    void render_selected() const final;
+    void _render_selected() const final;
 
-    Status handle_input() final;
-
-private:
+    Status _handle_input() final;
 
     //Index of the cursor inside m_content.
     int16_t m_cursor_index;

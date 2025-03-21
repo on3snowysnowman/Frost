@@ -37,24 +37,24 @@ public:
         m_callback_method = callback_method;
     }
 
-    void render_no_status() const final 
+    void _render_no_status() const final 
     {
         m_coh->add_str("   " + m_name, m_button_color);
     }
 
-    void render_hovered() const final 
+    void _render_hovered() const final 
     {
         m_coh->add_str(" > ", *m_cursor_color);
         m_coh->add_str(m_name, m_button_color);
     }
 
-    void render_selected() const final 
+    void _render_selected() const final 
     {
         // No difference between hovered and selected. 
-        render_hovered();
+        _render_hovered();
     }
 
-    Status handle_input() final 
+    Status _handle_input() final 
     {
         // Invoke callback method
         (m_object_pointer->*m_callback_method)();
@@ -62,9 +62,6 @@ public:
         // Deselect this button after invoking the callback method.
         return HOVERED;
     }
-
-
-private:
 
     // Name of this button.
     std::string m_name;

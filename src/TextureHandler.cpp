@@ -61,7 +61,6 @@ void TextureHandler::handle_texture_deletion(SDL_Texture* texture)
         s_textures_to_dependencies.end())
     {
         SDL_DestroyTexture(texture);
-        delete texture;
         return;
     }
 
@@ -74,12 +73,10 @@ void TextureHandler::handle_texture_deletion(SDL_Texture* texture)
 
     // This is the last dependency, it can be safely deleted.
 
-    SDL_DestroyTexture(texture);
-
     s_paths_to_textures.erase(s_textures_to_paths.at(texture));
     s_textures_to_paths.erase(texture);
 
-    delete texture;
+    SDL_DestroyTexture(texture);
 }
 
 bool TextureHandler::create_png_from_static_texture(SDL_Texture* staticTexture, const std::string& filePath) 

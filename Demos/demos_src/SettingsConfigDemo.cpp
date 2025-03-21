@@ -7,6 +7,7 @@
 #include "UISimulationContainers.hpp"
 #include "UIChoice.hpp"
 #include "UIButton.hpp"
+#include "UIIntVariable.hpp"
 #include "Json.hpp"
 #include "EventHandler.hpp"
 #include "FrostEngine.hpp"
@@ -63,11 +64,18 @@ private:
     // Panel container for the menu items for menu simulation.
     UIPanelContainer m_menu_panel; 
 
+    // UI Variable for modifying application screen width.
+    UIIntVariable screen_width;
+
+    // UI Variable for modifying application screen height.
+    UIIntVariable screen_height;
+
     // Choice for selecting the font path.
     UIChoice m_font_choice;
 
     // Button for saving settings to disk. 
     UIButton<SettingsMenu> m_save_button;
+
 
     // Methods
 

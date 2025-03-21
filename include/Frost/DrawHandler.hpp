@@ -54,6 +54,7 @@ public:
      * @param source Dimensions to portion from the texture.
      * @param dest Dimensions to place on the screen.
      * @param color_name Name of the color to apply.
+     * 
      */
     void draw(SDL_Texture* texture, const SDL_Rect& source, 
         const SDL_Rect& dest, const std::string& color_name);
@@ -62,6 +63,7 @@ public:
      * @brief Returns a const reference to the tracked colors. 
      * 
      * The key of each pair is the name of the color. 
+     * 
     */
     const std::unordered_map<std::string, SDL_Color>& get_colors() const;
     
@@ -80,6 +82,9 @@ private:
 
     // Methods
 
-    /** Creates and registers SDL_Color objects from the color data file. */
+    /** 
+     * @brief Creates and registers SDL_Color objects from the color data file. 
+     * 
+     * */
     void _fetch_colors_from_disk();
 };

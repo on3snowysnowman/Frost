@@ -21,6 +21,8 @@
 
 // Constructors / Deconstructor
 
+UIIntVariable::UIIntVariable() {}
+
 UIIntVariable::UIIntVariable(ConsoleOutputHandler* coh, std::string* cursor_color, 
     std::string name, std::string content, std::string default_content) :
     UIItem(coh, cursor_color, "INT_VARIABLE")
@@ -36,25 +38,25 @@ UIIntVariable::UIIntVariable(ConsoleOutputHandler* coh, std::string* cursor_colo
 
 // Public
 
-void UIIntVariable::render_no_status() const 
+void UIIntVariable::_render_no_status() const 
 {
     m_coh->add_str("   " + m_name + ": " + m_content);
 }
 
-void UIIntVariable::render_hovered() const 
+void UIIntVariable::_render_hovered() const 
 {
     m_coh->add_str(" > ", *m_cursor_color);
     m_coh->add_str(m_name + ": " + m_content);
 }
 
-void UIIntVariable::render_selected() const 
+void UIIntVariable::_render_selected() const 
 {
     m_coh->add_str(" > ", *m_cursor_color);
     m_coh->add_str(m_name + ": ");
     m_coh->add_str(m_content + '_', *m_cursor_color);
 }
 
-UIItem::Status UIIntVariable::handle_input() 
+UIItem::Status UIIntVariable::_handle_input() 
 {
     if(InputHandler::is_key_pressed_and_available(SDLK_RETURN))
     {

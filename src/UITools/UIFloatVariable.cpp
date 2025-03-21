@@ -16,6 +16,8 @@
 
 // Constructors / Deconstructor
 
+UIFloatVariable::UIFloatVariable() {}
+
 UIFloatVariable::UIFloatVariable(ConsoleOutputHandler* coh, std::string* cursor_color, 
     std::string name, std::string content, std::string default_content) :
     UIItem(coh, cursor_color, "FLOAT_VARIABLE")
@@ -31,18 +33,18 @@ UIFloatVariable::UIFloatVariable(ConsoleOutputHandler* coh, std::string* cursor_
 
 // Public
 
-void UIFloatVariable::render_no_status() const
+void UIFloatVariable::_render_no_status() const
 {
     m_coh->add_str("   " + m_name + ": " + m_content);
 }
 
-void UIFloatVariable::render_hovered() const
+void UIFloatVariable::_render_hovered() const
 {
     m_coh->add_str(" > ", *m_cursor_color);
     m_coh->add_str(m_name + ": " + m_content);
 }
 
-void UIFloatVariable::render_selected() const
+void UIFloatVariable::_render_selected() const
 {
     m_coh->add_str(" > ", *m_cursor_color);
     m_coh->add_str(m_name + ": ");
@@ -50,7 +52,7 @@ void UIFloatVariable::render_selected() const
 }
 
 
-UIItem::Status UIFloatVariable::handle_input()
+UIItem::Status UIFloatVariable::_handle_input()
 {
     if(InputHandler::is_key_pressed_and_available(SDLK_RETURN))
     {

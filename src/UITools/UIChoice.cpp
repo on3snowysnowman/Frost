@@ -34,20 +34,20 @@ UIChoice::UIChoice(ConsoleOutputHandler* coh, std::string* cursor_color, std::st
 
 // Public
 
-void UIChoice::render_no_status() const 
+void UIChoice::_render_no_status() const 
 {
     m_coh->add_str("   " + m_name + ": ");
     m_coh->add_str(get_choice().content, get_choice().color);
 }
 
-void UIChoice::render_hovered() const 
+void UIChoice::_render_hovered() const 
 {
     m_coh->add_str(" > ", *m_cursor_color);
     m_coh->add_str(m_name + ": ");
     m_coh->add_str(get_choice().content, get_choice().color);
 }
 
-void UIChoice::render_selected() const
+void UIChoice::_render_selected() const
 {
     // Save the anchor so it can be restored after this method is finished.
     uint16_t previous_anchor = m_coh->get_anchor();
@@ -78,7 +78,7 @@ void UIChoice::render_selected() const
 
 void UIChoice::add_choice(ColorString&& new_choice) { m_content.push_back(new_choice); }
 
-UIItem::Status UIChoice::handle_input() 
+UIItem::Status UIChoice::_handle_input() 
 {
     const std::vector<Key>& keys = InputHandler::get_pressed_and_available_keys();
 

@@ -247,7 +247,7 @@ void ConsoleOutputHandler::add_new_line(uint8_t num)
         Frost::return_largest_of_two_nums<uint16_t>(m_greatest_y_position_buffered, m_cursor_position.second);
 }
 
-void ConsoleOutputHandler::reset_cursor_position() { m_cursor_position = {0, 0}; }
+void ConsoleOutputHandler::reset_cursor_position() { m_cursor_position = {m_anchor, 0}; }
 
 void ConsoleOutputHandler::set_anchor(uint16_t new_anchor) { m_anchor = new_anchor; }
 

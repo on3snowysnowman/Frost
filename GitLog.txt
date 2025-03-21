@@ -1,5 +1,17 @@
 This file tracks specific details on what was changed each git push.
 
+34:
+
+   - Reconfigured UIItems to be fully public classes, allowing for full user
+     control of internal components.
+
+   - Fixed incorrect deletion of SDL Textures. 
+
+
+33:
+
+   - Added and Rewrote parts of the README.
+
 
 32:
 

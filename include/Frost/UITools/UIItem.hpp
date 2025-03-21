@@ -39,24 +39,22 @@ public:
     UIItem(ConsoleOutputHandler* coh, std::string* cursor_color, std::string item_type);
 
     /** Renders this UIItem with respect to having no status. */
-    virtual void render_no_status() const;
+    virtual void _render_no_status() const;
 
     /** Renders this UIItem with respect to being hovered by the cursor. */
-    virtual void render_hovered() const;
+    virtual void _render_hovered() const;
 
     /** Renders this UIItem with respect to being selected.  */
-    virtual void render_selected() const;
+    virtual void _render_selected() const;
 
     /** Called each frame when this UIItem is selected in the UISimulationTools' simulation,
      * allows this UIItem to handle user input and make changes to itself. Returns the updated
      * status of this UIItem after it has handled the user's input. 
      */
-    virtual Status handle_input();
+    virtual Status _handle_input();
 
     /** Returns a const reference to this Item's type, represented as a string.  */
     const std::string& get_item_type() const;
-
-protected:
 
     // Item type of this UIItem, specifically which derived class type. Example would be "CHOICE".
     std::string m_item_type;

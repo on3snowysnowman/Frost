@@ -26,15 +26,15 @@ public:
         std::initializer_list<std::string> content, int16_t cursor_index = 0, 
         int16_t selected_index = -1);
 
-    void render_no_status() const final;
+    void _render_no_status() const final;
 
-    void render_hovered() const final;
+    void _render_hovered() const final;
 
-    void render_selected() const final;
+    void _render_selected() const final;
 
     void add_item(UIItem* item);
 
-    Status handle_input() final;
+    Status _handle_input() final;
 
 private:
 
