@@ -226,7 +226,7 @@ uint8_t Frost::str_to_uint8(std::string& str)
 uint16_t Frost::str_to_uint16(std::string& str)
 {
     // The number this string represents is negative
-    if(str.at(0) == '-') return 0;
+    if(str.size() == 0 || str[0] == '-') return 0;
 
     try
     {

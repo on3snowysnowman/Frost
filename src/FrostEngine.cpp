@@ -31,9 +31,12 @@ int FrostEngine::s_screen_width;
 
 int FrostEngine::s_screen_height;
 
+int FrostEngine::s_native_screen_width;
+
+int FrostEngine::s_native_screen_height;
 
 // Constructors / Deconstructor
-
+#include "iostream"
 FrostEngine::FrostEngine()
 { 
     #ifdef FROST_DEBUG
@@ -76,6 +79,10 @@ void FrostEngine::start()
 int FrostEngine::get_screen_width() { return s_screen_width; }
 
 int FrostEngine::get_screen_height() { return s_screen_height; }
+
+int FrostEngine::get_native_screen_width() { return s_native_screen_width; }
+
+int FrostEngine::get_native_screen_height() { return s_native_screen_height; }
 
 const json& FrostEngine::get_init_data() const { return m_init_data_json; }
 
@@ -138,22 +145,39 @@ const double& FrostEngine::_get_frame_time_reference()
 
 void FrostEngine::_register_events()
 {
+    // Quits the simulation.
     EventHandler::register_event<void>(
         "QUIT_SIMULATION", 
         std::function<void()>(
             [this]() { this->_quit();}
     ));
 
+    // Returns the init data for the engine.
     EventHandler::register_event<const json&>(
         "GET_INIT_DATA",
         std::function<const json&()>(
             [this]() -> const json& { return this->m_init_data_json; }
     ));
 
+    // Saves new init data for the engine to disk.
     EventHandler::register_event<void, const json&>(
         "SET_INIT_DATA",
         std::function<void(const json&)>(
            [this](const json& new_init_data) { this->save_new_init_data(new_init_data); } 
+    ));
+
+    // Returns the native screen width.
+    EventHandler::register_event<int>(
+        "GET_NATIVE_SCREEN_WIDTH",
+        std::function<int()>(
+            [this]() { return get_native_screen_width(); }
+    ));
+
+    // Returns the native screen height.
+    EventHandler::register_event<int>(
+        "GET_NATIVE_SCREEN_HEIGHT",
+        std::function<int()>(
+            [this]() { return get_native_screen_height(); }
     ));
 }
 
@@ -195,6 +219,19 @@ void FrostEngine::_init_SDL_and_engine()
 
     // Configure screen size and create window.
 
+    // Get the display bounds of the primary monitor
+    SDL_Rect fullscreen_dimensions;
+    if (SDL_GetDisplayBounds(0, &fullscreen_dimensions) != 0) 
+    {   
+        OUTPUT_CRASH_DETAILS("SDL_GetDisplayBounds failed: " + std::string(SDL_GetError())
+            + ".\n");
+        exit(1);
+    }
+
+    s_native_screen_width = fullscreen_dimensions.w;
+    s_native_screen_height = fullscreen_dimensions.h;
+
+
     if(m_init_data_json.at("fullscreen"))
     {
         #ifdef FROST_DEBUG
@@ -203,13 +240,13 @@ void FrostEngine::_init_SDL_and_engine()
         #endif
 
         // Get the display bounds of the primary monitor
-        SDL_Rect fullscreen_dimensions;
-        if (SDL_GetDisplayBounds(0, &fullscreen_dimensions) != 0) 
-        {   
-            OUTPUT_CRASH_DETAILS("SDL_GetDisplayBounds failed: " + std::string(SDL_GetError())
-                + ".\n");
-            exit(1);
-        }
+        // SDL_Rect fullscreen_dimensions;
+        // if (SDL_GetDisplayBounds(0, &fullscreen_dimensions) != 0) 
+        // {   
+        //     OUTPUT_CRASH_DETAILS("SDL_GetDisplayBounds failed: " + std::string(SDL_GetError())
+        //         + ".\n");
+        //     exit(1);
+        // }
 
         // Create a fullscreen window on the primary monitor
         m_window = SDL_CreateWindow(

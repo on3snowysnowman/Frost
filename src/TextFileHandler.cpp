@@ -143,7 +143,7 @@ std::string TextFileHandler::fetch(std::string file_path)
     // Get the string value of the string stream.
     fetched_content = s_string_stream.str();
 
-    s_string_stream.clear();
+    s_string_stream.str("");
 
     s_input_stream.close();
 

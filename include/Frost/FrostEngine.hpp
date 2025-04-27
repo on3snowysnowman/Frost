@@ -27,11 +27,17 @@ public:
     /** Starts the Engine. */
     void start();
 
-    /** Gets the screen width in pixels. */
+    /** Gets the application's screen width in pixels. */
     static int get_screen_width();
 
-    /** Gets the screen height in pixels. */
+    /** Gets the application's screen height in pixels. */
     static int get_screen_height();
+
+    /** Gets the device's screen width in pixels. */
+    static int get_native_screen_width();
+
+    /** Gets the device's screen height in pixels.  */
+    static int get_native_screen_height();
 
     /** Returns a readonly json object containing the data of the init file for the Engine. 
      * 
@@ -99,8 +105,10 @@ private:
     // Timestamp of the beginning of the frame. Used to calculate the miliseconds each frame takes.
     c_time_point m_frame_start_timestamp; 
 
-    static int s_screen_width; // Screen width in pixels.
-    static int s_screen_height; // Screen height in pixels.
+    static int s_screen_width; // Application screen width in pixels.
+    static int s_screen_height; // Application screen height in pixels.
+    static int s_native_screen_width; // Native screen width in pixels.
+    static int s_native_screen_height; // Native screen height in pixels.
 
     // Path to the init data folder to setup the engine.
     const std::string m_INIT_DATA_DIRECTORY = "data/init"; 

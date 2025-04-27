@@ -138,6 +138,14 @@ private:
      * respective layer. */
     void _insert_id_in_layer_vector(sprite_id id, uint16_t layer);
 
+    /**
+     * @brief Removes a layer that is no longer active from the active layers
+     * vector.
+     * 
+     * @param layer Layer to remove. 
+     */
+    void _remove_inactive_layer(uint16_t layer);
+
     /** Deducts 1 from the number of tracked Sprite dependencies from the passed Texture. If the 
      * number of dependencies reaches 0, the Texture is removed from the map and is deleted from 
      * heap memory using the TextureHandler.

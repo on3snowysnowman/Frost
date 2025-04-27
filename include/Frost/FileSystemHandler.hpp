@@ -60,6 +60,29 @@ public:
      */
     static bool does_directory_exist(std::string directory_path);
 
+    /**
+     * @brief Copies a file to a specified directory.
+     * 
+     * Returns true if the operation is successful.
+     * 
+     * @param target_file_path Path of the file to copy.
+     * @param target_directory Directory to copy the file to.
+     * 
+     */
+    static bool copy_file(const char *target_file_path, const char *target_directory);
+
+    /**
+     * @brief Copies a file to a specified directory with a new name.
+     * 
+     * Returns true if the operation is successful.
+     * 
+     * @param target_file_path Path of the file to copy.
+     * @param target_directory Directory to copy the file to.
+     * @param new_file_name New name for the copied file.
+     * 
+     */
+    static bool copy_file(const char *target_file_path, const char *target_directory, const char *new_file_name);
+
     /** 
      * @brief Returns the size in bytes of the file at the passed path. 
      * 

@@ -1,5 +1,21 @@
 This file tracks specific details on what was changed each git push.
 
+
+35:
+
+   - Removed the ChangeLog (For now)
+
+   - Added methods to the engine for retrieving native screen resolutions.
+
+   - Configured SettingsMenuDemo to change screen width.
+
+   - Added an option to the FileSystemHandler to copy files to new directories.
+
+   - Fixed bug in SpriteHandler that was not deleting inactive layers.
+
+   - Fixed bug in TextFileHandler where it was not clearing the internal 
+     strstream properly.
+
 34:
 
    - Reconfigured UIItems to be fully public classes, allowing for full user

@@ -66,6 +66,49 @@ bool FileSystemHandler::does_directory_exist(std::string directory_path)
     return std::filesystem::exists(directory_path);
 }
 
+bool FileSystemHandler::copy_file(const char *target_file_path, const char *target_directory)
+{
+    // Check if the source file exists
+    if (!does_directory_exist(target_file_path)) return false;
+
+    // Construct the destination path
+    std::filesystem::path destination = std::filesystem::path(target_directory) / std::filesystem::path(target_file_path).filename();
+
+    try
+    {
+        // Copy the file to the destination
+        std::filesystem::copy_file(target_file_path, destination, std::filesystem::copy_options::overwrite_existing);
+    }
+    catch (const std::filesystem::filesystem_error &err)
+    {
+        return false;
+    }
+
+    return true;
+}
+
+bool FileSystemHandler::copy_file(const char *target_file_path, const char *target_directory, const char *new_file_name)
+{
+    // Check if the source file exists
+    if (!does_directory_exist(target_file_path)) return false;
+
+    // Construct the destination path with the new file name
+    std::filesystem::path destination = std::filesystem::path(target_directory) / new_file_name;
+
+    try
+    {
+        // Copy the file to the destination
+        std::filesystem::copy_file(target_file_path, destination, std::filesystem::copy_options::overwrite_existing);
+    }
+    catch (const std::filesystem::filesystem_error &err)
+    {
+        return false;
+    }
+
+    return true;
+}
+
+
 uintmax_t FileSystemHandler::get_file_size(std::string file_path)
 {
     // If the file doesn't exist.

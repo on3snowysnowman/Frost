@@ -130,8 +130,8 @@ void SpriteHandler::flag_render(sprite_id id, uint16_t layer)
     if (_is_sprite_rendering(id))
         return;
 
-    // Find the position in the sorted vector where this layer would be at if it exists or where it
-    // should be inserted if it does not.
+    // Find the position in the sorted vector where this layer would be at if 
+    // it exists or where it should be inserted if it does not.
     const std::vector<uint16_t>::const_iterator it =
         std::lower_bound(m_active_layers.begin(), m_active_layers.end(), layer);
 
@@ -163,8 +163,7 @@ void SpriteHandler::deflag_render(sprite_id id)
     // This is the last sprite in the vector at this layer.
     if (layer_vector.size() == 1)
     {
-        // Erase the layer from the map, since it no longer has any sprites to render.
-        m_layers_to_sprites.erase(target_layer);
+        _remove_inactive_layer(target_layer);
         return;
     }
 
@@ -248,6 +247,21 @@ void SpriteHandler::_insert_id_in_layer_vector(sprite_id id, uint16_t layer)
         std::lower_bound(layer_vector.begin(), layer_vector.end(), id);
 
     layer_vector.insert(it, id);
+}
+
+void SpriteHandler::_remove_inactive_layer(uint16_t layer)
+{
+    // Delete the layer from the layers to sprites vector, since there are no
+    // longer any sprites rendering on it.
+    m_layers_to_sprites.erase(layer);
+
+    // Find the position of the layer inside the active layers vector.
+    const std::vector<uint16_t>::const_iterator it =
+        std::lower_bound(m_active_layers.begin(), m_active_layers.end(), 
+        layer);
+
+    // Remove this layer from the active layers.
+    m_active_layers.erase(it);
 }
 
 void SpriteHandler::_remove_texture_dependency(SDL_Texture *texture)
