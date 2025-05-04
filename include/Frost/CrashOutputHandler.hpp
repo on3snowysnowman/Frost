@@ -34,6 +34,11 @@ public:
     */
     static void set_output_file_path(const std::string& new_file_path);
 
+    /**
+     * @brief Clears the output file of any content.
+     */
+    static void clear_output_file();
+
     // User verbose function output if the using GNU or Clang.
     #if defined(__clang__) || defined(__GNUC__)
 

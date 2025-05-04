@@ -1,3 +1,6 @@
+
+#include <cstring>
+
 #include "ConsoleOutputHandler.hpp"
 #include "Fr_Math.hpp"
 
@@ -223,6 +226,19 @@ void ConsoleOutputHandler::add_ch(char c, std::string color)
     { 
         // Place the cursor on the next line.
         add_new_line(); 
+    }
+}
+
+void ConsoleOutputHandler::add_chars(const char* chars, std::string color)
+{
+    int i = 0;
+    char c = chars[0];
+
+    while(c != '\0')
+    {
+        add_ch(c, color);
+        ++i;
+        c = chars[i];
     }
 }
 

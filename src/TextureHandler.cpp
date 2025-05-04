@@ -71,7 +71,7 @@ void TextureHandler::handle_texture_deletion(SDL_Texture* texture)
     // delete it.
     if(s_textures_to_dependencies[texture] > 0) return;
 
-    // This is the last dependency, it can be safely deleted.
+    // This is the last dependency, it can be safely deleted (in theory).
 
     s_paths_to_textures.erase(s_textures_to_paths.at(texture));
     s_textures_to_paths.erase(texture);

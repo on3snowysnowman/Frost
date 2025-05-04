@@ -1,164 +1,267 @@
-/**
- * @file SpriteHandler.hpp
- * @author Joel Height (On3SnowySnowman@gmail.com)
- * @brief Single class declaration.
- * @version 0.2
- * @date 12-28-24
- *
- * @copyright Copyright (c) 2024
- *
- */
-
 #pragma once
 
-#include <string>
-#include <vector>
 #include <unordered_map>
+#include <vector>
+#include <cstdint>
 
 #include <SDL_image.h>
+#include <queue>
 
-#include "Sprite.hpp"
 #include "TextureHandler.hpp"
 #include "DrawHandler.hpp"
+#include "Sprite.hpp"
+
+using rendering_id = uint64_t;
+
+/**
+ * @brief Contains data for a Sprite instance that is being rendered to the 
+ * screen.
+ * 
+ * The SpriteHandler uses these structs as ways to track instances of a Sprite
+ * that is rendered to the screen.
+ */
+struct SpriteInstanceData
+{
+    // Sprite that this instance will use to render.
+    const Sprite* target_sprite;
+
+    // Unique ID of this rendering instance.
+    rendering_id ID;
+
+    // Dimensions to render the target sprite to the screen.
+    SDL_Rect display_dimensions;
+};
 
 
-/** 
- * @brief Handles tracking created Sprites and rendering them to the screen.
+/**
+ * @brief Manages Sprite creation and rendering. 
+ * 
+ * Sprites are created through the `create_sprite` method and deleted through 
+ * the `delete_sprite` method. After obtaining the
+ * Sprite, the user may modify the contents of it during runtime while it is 
+ * being rendered.
+ * 
+ * To render a sprite, call the `render_sprite` method. This method returns a 
+ * unique id, a `rendering_id`. `rendering_id`s are unique ids of a specific 
+ * 'instance' of the Sprite that is being rendered. A single sprite can be 
+ * rendered at an arbitrary amount of positions, this creates an 'instance' of
+ * that Sprite on the screen. For each instance, a pointer is maintained to the
+ * Sprite that the instance is rendering from. Users may obtain the specific 
+ * instance data using the unique `rendering_id` of the instance through the
+ * `get_instance_data` method. This method returns a reference to the data,
+ * meaning the user may freely alter the display dimensions of the instance 
+ * outside of the SpriteHandler to modify the position of the instance on the
+ * screen. Additionally, an instance's position may be altered through the 
+ * `set_instance_position` and `modify_instanced_position` methods.
+ * 
  */
 class SpriteHandler
+
 {
 
 public:
 
+
     SpriteHandler();
 
-    SpriteHandler(TextureHandler* texture_handler, 
-        DrawHandler* draw_handler);
-    
-    /** Renders all Sprites that have been flagged to render. */
+    SpriteHandler(TextureHandler* texture_handler, DrawHandler* draw_handler);
+
+    /**
+     * @brief Renders all Sprite instances to the screen.
+     * 
+     * This method is invoked internally by the Frost Engine every frame.
+     * Users should avoid calling this method.
+     */
     void _render();
-    
-    /** Sets the position of a Sprite on the screen to a new position.
-     * 
-     * @param id ID of the Sprite to modify.
-     * @param x X position in pixels.
-     * @param y Y position in pixels.
-     */
-    void set_sprite_position(sprite_id id, uint16_t x, uint16_t y);
-    
-    /** Modifys a Sprite's position data by the passed amounts.
-     * 
-     * @param id ID of the Sprite to modify.
-     * @param delta_x X translation in pixels.
-     * @param delta_y Y translation in pixels.
-    */
-    void modify_sprite_position(sprite_id, int16_t delta_x, int16_t delta_y);
 
-    /** 
-     * @brief Flags a Sprite to render each frame on a specified Z layer.
+    /**
+     * @brief Sets the position of a Sprite instance associated with the 
+     * specified rendering ID.
      * 
-     * Only call this method once to begin rendering the Sprite. To cease rendering, call the 
-     * deflag_render method. 
+     * This method adjusts the position of the Sprite within its current 
+     * rendering layer.
      * 
-     * @param id ID of the Sprite to render.
-     * @param layer Z layer to render it on.
+     * @param id The unique rendering ID of the Sprite instance.
+     * @param x The new x-coordinate for the instance's position.
+     * @param y The new y-coordinate for the intsance's position.
      */
-    void flag_render(sprite_id id, uint16_t layer = 0);
+    void set_instance_position(rendering_id id, int x, int y);
 
-    /** Flags a Sprite to stop rendering. 
+    /**
+     * @brief Adjusts the position of a Sprite instance associated with the
+     * specified rendering ID by applying the given deltas.
      * 
-     * @param id ID of the Sprite to stop rendering.
-     */
-    void deflag_render(sprite_id id);
-
-    /** Decommissions the Sprite assigned to the passed ID, and frees the ID so that it is able to be
-     * reused. 
+     * The delta values are added to the current position of the Sprite. 
+     * If a delta is 0, the corresponding dimension remains unchanged.
      * 
-     * @param id ID of the Sprite to delete.
+     * @param id The unique rendering ID of the Sprite instance.
+     * @param delta_x The change in the x-coordinate.
+     * @param delta_y The change in the y-coordinate.
      */
-    void delete_sprite(sprite_id id);
+    void modify_instance_position(rendering_id id, int delta_x,
+        int delta_y);
 
-    /** Sets the scale factor for Sprite upscaling to a new value. This value has a minimum value 
-     * of 1.0.
-     */
-    void set_sprite_scale_factor(float new_scale_factor);
-
-    /** Creates a Sprite and assigns an ID to it. Returns the ID of the Sprite created. 
+    /**
+     * @brief Deletes a Sprite instance associated with the given rendering ID 
+     * and releases the rendering ID for reuse.
      * 
-     * @param splice_x X position in the texture to start the splice at.
-     * @param splice_y Y position in the texture to start the splice at.
-     * @param splice_w Width of the splice of the texture.
-     * @param splice_h Height of the splice of the texture.
-     * @param dest_x X position to render the Sprite on screen.
-     * @param dest_y Y position to render the Sprite on screen.
-     * @param png_path Path to the png to create the Sprite's texture.
-    */
-    sprite_id create_sprite(uint16_t splice_x, uint16_t splice_y, uint16_t splice_w, 
-        uint16_t splice_h, uint16_t dest_x, uint16_t dest_y, std::string png_path);
-
-    /** Returns a const reference to the Sprite assigned to the passed ID.
-     * 
-     * @param id Id of the Sprite to fetch.
+     * @param id The unique rendering ID of the Sprite instance to delete.
      */
-    static const Sprite& get_sprite(sprite_id id);
+    void unrender_sprite(rendering_id id);
+
+    /**
+     * @brief Deletes the specified Sprite and manages its associated texture 
+     * through the TextureHandler.
+     * 
+     * Use this method to delete a Sprite if it was created by this 
+     * SpriteHandler. The TextureHandler internally tracks SDL_Texture* 
+     * dependencies to determine whether the texture can be safely removed 
+     * from memory or if it is still in use by other objects.
+     * 
+     * This method leaves `sprite` in an invalid state with no texture. Either
+     * discard the object or reassign the Sprite to a new Sprite using the 
+     * `create_sprite` method.
+     * 
+     * @warning Ensure all instances of the Sprite are removed using 
+     * `unrender_sprite` before calling this method. The SpriteHandler does 
+     * not track which Sprite instances are tied to a specific Sprite object 
+     * and will not automatically handle their removal.
+     * 
+     * @param sprite The Sprite object to delete.
+     */
+    void delete_sprite(Sprite& sprite);
+
+    /**
+     * @brief Creates and renders a Sprite instance at the specified position 
+     * and layer, returning its unique rendering ID.
+     * 
+     * @param sprite The Sprite instance to render.
+     * @param layer The rendering layer where the Sprite will be placed. 
+     *              Defaults to 0 if not specified.
+     * @param x The x-coordinate of the Sprite's position.
+     * @param y The y-coordinate of the Sprite's position.
+     * @param w Width to render the Sprite at. Leave this 0 to render at the 
+     *          splice width.
+     * @param h Height to render the SPrite at. Leave this 0 to render at the 
+     *          splice height.
+     * @return rendering_id The unique rendering ID of the created Sprite 
+     * instance.
+     */
+    rendering_id render_sprite(const Sprite& sprite, uint16_t x,uint16_t y, 
+        uint16_t w = 0, uint16_t h = 0, uint16_t layer = 0);
+
+    /**
+     * @brief Creates a Sprite object from a texture file and specified splicing 
+     * and display dimensions.
+     * 
+     * @param texture_path The file path to the texture image.
+     * @param splice_x The x-coordinate of the top-left corner of the spliced 
+     *                 region.
+     * @param splice_y The y-coordinate of the top-left corner of the spliced 
+     *                 region.
+     * @param splice_w The width of the spliced region.
+     * @param splice_h The height of the spliced region.
+     * @param display_w The width to render the Sprite on the screen.
+     * @param display_h The height to render the Sprite on the screen.
+     * @return Sprite The created Sprite object.
+     */
+    Sprite create_sprite(const char* texture_path, uint16_t splice_x, 
+        uint16_t splice_y, uint16_t splice_w, uint16_t splice_h);
+
+    SpriteInstanceData& get_instance_data(rendering_id ID);
 
 private:
 
     // Members
-    
-    // Factor that each Sprite will be upscaled by when rendered. 
-    float m_sprite_scale_factor = 1.0f;
-
-    // Active Z layers that currently being rendered on.
-    std::vector<uint16_t> m_active_layers;
-
-    // Z layers to their Sprites that are active on them. 
-    std::unordered_map<uint16_t, std::vector<sprite_id>> m_layers_to_sprites;
-
-    // Active Sprite ID to its respective layer it is being rendered on.
-    std::unordered_map<sprite_id, uint16_t> m_sprites_to_layers;
-
-    /** All Sprites that have been created. The index of the vector corresponds with the Sprite's 
-     * ID. */
-    static std::vector<Sprite> s_all_sprites;
-
-    // IDs of Sprites that have been deconstructed and are available to recycle and reuse.
-    static std::unordered_set<sprite_id> s_available_ids;
-
-    // Tracks the number of Sprites that require each Texture.
-    static std::unordered_map<SDL_Texture*, uint64_t> s_texture_dependencies;
 
     TextureHandler* m_texture_handler;
     DrawHandler* m_draw_handler;
 
+    // Decomissioned rendering IDs that are available for use again.
+    std::queue<rendering_id> m_available_rendering_ids;
 
-    // Methods
-    
-    /** Inserts the sprite_id in its correct sorted position inside the vector of sprite_ids of the
-     * respective layer. */
-    void _insert_id_in_layer_vector(sprite_id id, uint16_t layer);
+    // /**
+    //  * A 2D vector of sprites to render. Each index of the outer vector 
+    //  * represents a 'z layer' for rendering sprites, enabling layered rendering.
+    //  */
+    // std::vector<std::vector<SpriteInstanceData>> m_sprites_to_render;
+
+    /** Layers that currently contain sprite instances that are rendering. */
+    std::vector<uint16_t> m_active_layers;
+
+    /** 
+     * @brief Maps layers to their list of Sprite instances currently rendering
+     * on them. 
+     * 
+     * Once a layer is added to this map, its associated vector persists for 
+     * the lifetime of the program, even if emptied. This design avoids the 
+     * overhead of repeatedly constructing and rehashing vectors for layers 
+     * that are frequently emptied and refilled.
+     */
+    std::unordered_map<uint16_t, std::vector<SpriteInstanceData>>
+        m_layers_to_sprites;
 
     /**
-     * @brief Removes a layer that is no longer active from the active layers
-     * vector.
+     * Maps unique rendering IDs to the corresponding layer index
+     * where the Sprite instance is rendered.
+     */
+    std::unordered_map<rendering_id, uint16_t> m_ren_ids_to_layer;
+
+    /** The next rendering ID to be generated if no decommissioned IDs are 
+     * available.
+     */
+    rendering_id m_next_id = 0;
+
+    // Methods
+
+    /**
+     * @brief Places a Sprite instance in its sorted position within the 
+     * respective layer vector.
      * 
-     * @param layer Layer to remove. 
+     * @param layer Layer to place the instance at.
+     * @param instance_data Sprite instance to place.
      */
-    void _remove_inactive_layer(uint16_t layer);
+    void _place_sprite_instance(uint16_t layer, 
+        const SpriteInstanceData& instance_data);
 
-    /** Deducts 1 from the number of tracked Sprite dependencies from the passed Texture. If the 
-     * number of dependencies reaches 0, the Texture is removed from the map and is deleted from 
-     * heap memory using the TextureHandler.
+    /**
+     * @brief Removes the Sprite instance associated with the given rendering ID 
+     * from its current layer.
+     * 
+     * If the layer becomes empty after removal, it is inactive and 
+     * removed from the active layers vector.
+     * 
+     * @param ID The unique rendering ID of the Sprite instance to remove.
      */
-    void _remove_texture_dependency(SDL_Texture* texture);
+    void _remove_instance(rendering_id ID);
 
-    /** Returns true if the Sprite assigned to the passed ID is currently rendering.  */
-    bool _is_sprite_rendering(sprite_id id);
+    /**
+     * @brief Returns true if `ID` is valid and is currently rendering.
+     * 
+     * @param ID ID to check.
+     * @return true 
+     * @return false 
+     */
+    bool _is_ID_valid_and_rendering(rendering_id ID);
 
-    /** Returns true if the Sprite assigned to the passed ID is existant and available. */
-    static bool _is_id_valid(sprite_id id);
+    /**
+     * @brief Retrieves an available unique rendering ID, either from the pool 
+     * of decommissioned IDs or by generating a new one.
+     * 
+     * @return rendering_id The unique rendering ID.
+     */
+    rendering_id _get_unique_id();
 
-    /** Gets the next available ID for a new Sprite, whether that be a recycled ID from a Sprite
-     * that has been deleted, or a new ID that doesn't exist. */
-    static sprite_id _get_next_id();
+    std::vector<SpriteInstanceData>::iterator _find_instance_in_vector(
+        rendering_id ID, std::vector<SpriteInstanceData>& vec);
+
+    /**
+     * @brief Retrieves the instance data associated with the specified 
+     * rendering ID.
+     * 
+     * @param ID The unique rendering ID of the Sprite instance.
+     * @return const SpriteInstanceData& A reference to the Sprite instance 
+     *         data.
+     */
+    SpriteInstanceData& _get_instance(rendering_id ID);
 };

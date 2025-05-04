@@ -1,22 +1,22 @@
 #pragma once
 
-#include <cstdint>
-
-#include <SDL2/SDL_image.h>
-
-
-typedef uint64_t sprite_id;
+#include <SDL_image.h>
 
 /** @brief Pure storage struct. Contains data for rendering a portion of an SDL_Texture to the 
  * screen. 
  * */
 struct Sprite
 {
-    // Contains the dimensions for splicing the SDL_Texture.
+    /**
+     * Pixel dimensions to define the region of the texture to splice for 
+     * this Sprite.
+     */
     SDL_Rect splice_dimensions;
+            
+    /**
+     * Texture that this Sprite will splice from.
+     * This must be a valid SDL_Texture pointer.
+     */
+    SDL_Texture* texture = nullptr;
 
-    // Contains the dimensions for placing the Sprite on the screen.
-    SDL_Rect display_dimensions;
-    
-    SDL_Texture* texture {}; // Texture that the Sprite will splice from.
 };

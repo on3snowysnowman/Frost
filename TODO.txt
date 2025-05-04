@@ -12,6 +12,10 @@ Iterate through all pointer declarations and change the asterisk to associate
 
 Finish README.txt and other documentation.
 
+Iterate through each use of string, and determine whether it can be replaed
+   with a const char *
+
+Reconfigure SpriteHandler to render one sprite in multiple locations.
 
 Add Animation support 
 

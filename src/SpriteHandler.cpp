@@ -1,320 +1,284 @@
-/**
- * @file SpriteHandler.cpp
- * @author Joel Height (On3SnowySnowman@gmail.com)
- * @brief
- * @version 0.2
- * @date 12-28-24
- *
- * @copyright Copyright (c) 2024
- *
- */
-
+#include <stdexcept>
 #include <algorithm>
+#include <iostream>
 
 #include "SpriteHandler.hpp"
-#include "Fr_Math.hpp"
-#include "TextFileHandler.hpp"
 #include "CrashOutputHandler.hpp"
+#include "Fr_IntLimits.hpp"
 
-// Static Members
-
-std::vector<Sprite> SpriteHandler::s_all_sprites;
-
-std::unordered_set<sprite_id> SpriteHandler::s_available_ids;
-
-std::unordered_map<SDL_Texture *, uint64_t> SpriteHandler::s_texture_dependencies;
 
 // Constructors / Deconstructor
 
-SpriteHandler::SpriteHandler()
-{
-    // Default constructor should only be called for a placeholder object.
-
-    m_texture_handler = nullptr;
-    m_draw_handler = nullptr;
-}
+SpriteHandler::SpriteHandler() {}
 
 SpriteHandler::SpriteHandler(TextureHandler* texture_handler, 
-    DrawHandler* draw_handler)
+    DrawHandler* draw_handler) 
 {
     m_texture_handler = texture_handler;
     m_draw_handler = draw_handler;
 }
 
+void SpriteHandler::_render() 
+{
+    for(uint16_t layer : m_active_layers)
+    {
+        for(const SpriteInstanceData& instance_data : 
+            m_layers_to_sprites.at(layer))
+        {
+            m_draw_handler->draw(instance_data.target_sprite->texture,
+                instance_data.target_sprite->splice_dimensions,
+                instance_data.display_dimensions);
+        }
+    }
+}
+
 
 // Public
 
-void SpriteHandler::_render()
+void SpriteHandler::set_instance_position(rendering_id ID, int x,
+    int y) 
 {
-    // Iterate through each active z layer.
-    for (const uint16_t layer : m_active_layers)
+    if(!_is_ID_valid_and_rendering(ID))
     {
-        // Iterate through the sprites on this layer.
-        for (const sprite_id id : m_layers_to_sprites.at(layer))
-        {
-            Sprite &sprite = s_all_sprites.at(id);
-
-            // Calculate the size of the Sprite displayed on screen using the size of the splice
-            // dimensions upscaled by the scale factor.
-            sprite.display_dimensions.w = sprite.splice_dimensions.w * m_sprite_scale_factor;
-            sprite.display_dimensions.h = sprite.splice_dimensions.h * m_sprite_scale_factor;
-
-            m_draw_handler->draw(sprite.texture, sprite.splice_dimensions,
-                sprite.display_dimensions);
-        }
-    }
-}
-
-void SpriteHandler::set_sprite_position(sprite_id id, uint16_t x, uint16_t y)
-{
-
-    Sprite* target_sprite {};
-
-    try
-    {
-        target_sprite = &s_all_sprites.at(id);
-    }
-
-    catch(const std::out_of_range& e)
-    {
-        std::string error_message = " -> " + std::string(e.what());
-
-        if (!_is_id_valid(id))
-        {
-            // Crash the program, since no valid Sprite object exists for this ID.
-
-            error_message = " where 'id' = '" + std::to_string(id) + "': ID does not exist.\n";
-        }
-        
-        OUTPUT_CRASH_DETAILS(error_message);
+        OUTPUT_CRASH_DETAILS(" where 'ID' = '" + std::to_string(ID) + 
+            "' : ID does not exist or is not rendering.");
         exit(1);
     }
 
-    // Update the Sprite's position.
-    target_sprite->display_dimensions.x = x;
-    target_sprite->display_dimensions.y = y;
+    SpriteInstanceData& instance_data = _get_instance(ID);
+
+    instance_data.display_dimensions.x = x;
+    instance_data.display_dimensions.y = y;
 }
 
-void SpriteHandler::modify_sprite_position(sprite_id id, int16_t delta_x, int16_t delta_y)
+void SpriteHandler::modify_instance_position(rendering_id ID, 
+    int delta_x, int delta_y) 
 {
-    Sprite* target_sprite {};
-
-    try
+    if(!_is_ID_valid_and_rendering(ID))
     {
-        target_sprite = &s_all_sprites.at(id);
-    }
-
-    catch(const std::out_of_range& e)
-    {
-        std::string error_message = " -> " + std::string(e.what());
-
-        if (!_is_id_valid(id))
-        {
-            // Crash the program, since no valid Sprite object exists for this ID.
-
-            error_message = " where 'id' = '" + std::to_string(id) + "': ID does not exist.\n";
-        }
-        
-        OUTPUT_CRASH_DETAILS(error_message);
+        OUTPUT_CRASH_DETAILS(" where 'ID' = '" + std::to_string(ID) + 
+            "' : ID does not exist or is not rendering.");
         exit(1);
     }
 
-    // Update the Sprite's position.
-    target_sprite->display_dimensions.x += delta_x;
-    target_sprite->display_dimensions.y += delta_y;
+    SpriteInstanceData& instance_data = _get_instance(ID);
+
+    instance_data.display_dimensions.x += delta_x;
+    instance_data.display_dimensions.y += delta_y;
 }
 
-void SpriteHandler::flag_render(sprite_id id, uint16_t layer)
-{
-    // Don't allow duplicate rendering of a single Sprite.
-    if (_is_sprite_rendering(id))
-        return;
-
-    // Find the position in the sorted vector where this layer would be at if 
-    // it exists or where it should be inserted if it does not.
-    const std::vector<uint16_t>::const_iterator it =
-        std::lower_bound(m_active_layers.begin(), m_active_layers.end(), layer);
-
-    // This layer does not exist yet.
-    if (it == m_active_layers.end() || *it != layer)
+void SpriteHandler::unrender_sprite(rendering_id ID) 
+{   
+    if(!_is_ID_valid_and_rendering(ID))
     {
-        // Update the active layers to reflect this new layer.
-        m_active_layers.insert(it, layer);
-
-        // Create a new vector of sprites for this layer inside the map.
-        m_layers_to_sprites.emplace(layer, std::vector<sprite_id>{});
-    }
-
-    _insert_id_in_layer_vector(id, layer);
-    m_sprites_to_layers.emplace(id, layer);
-}
-
-void SpriteHandler::deflag_render(sprite_id id)
-{
-    const uint16_t target_layer = m_sprites_to_layers.at(id);
-
-    // Erase the id from the map, since will no longer be rendering on a layer.
-    m_sprites_to_layers.erase(id);
-
-    // Get the vector of sprites at the layer this Sprite is rendered on.
-    std::vector<sprite_id> &layer_vector =
-        m_layers_to_sprites.at(target_layer);
-
-    // This is the last sprite in the vector at this layer.
-    if (layer_vector.size() == 1)
-    {
-        _remove_inactive_layer(target_layer);
-        return;
-    }
-
-    // Find the Sprite in the vector of Sprites at this layer.
-    const std::vector<sprite_id>::const_iterator it =
-        std::lower_bound(layer_vector.begin(), layer_vector.end(), id);
-
-    // Erase the Sprite from the rendering vector at this layer.
-    layer_vector.erase(it);
-}
-
-void SpriteHandler::delete_sprite(sprite_id id)
-{
-    if(!_is_id_valid(id))
-    {
-        OUTPUT_CRASH_DETAILS(" where 'id' = '" + std::to_string(id) + "' -> Invalid ID.\n");
+        OUTPUT_CRASH_DETAILS(" where 'ID' = '" + std::to_string(ID) + 
+            "' : ID does not exist or is not rendering.");
         exit(1);
     }
 
-    if (_is_sprite_rendering(id)) deflag_render(id);
-
-    // "Delete" this Sprite by making its ID available, which in turn makes it unavailable to be
-    // modified or referenced until a new Sprite is created and this recycled ID can be assigned to
-    // it.
-    s_available_ids.emplace(id);
-
-    _remove_texture_dependency(s_all_sprites.at(id).texture);
+    // Handle the removing of the instance associated with this ID.
+    _remove_instance(ID);
 }
 
-void SpriteHandler::set_sprite_scale_factor(float new_scale_factor)
+void SpriteHandler::delete_sprite(Sprite& sprite) 
 {
-    // Clamp the scale factor to a minimum of 1.0.
-    m_sprite_scale_factor = Frost::clamp_num_to_minimum<float>(new_scale_factor, 1.0f);
+    // No checking is done here for if any render instance of this Sprite 
+    // exists. The user is warned in the docstring of the function declaration
+    // of this behavior. It is the user's responsiblility to ensure that any
+    // instance of this Sprite is unrendered before its deletion.
+
+    m_texture_handler->handle_texture_deletion(sprite.texture);
+    sprite.texture = nullptr;
 }
 
-sprite_id SpriteHandler::create_sprite(uint16_t splice_x, uint16_t splice_y, uint16_t splice_w,
-                                       uint16_t splice_h, uint16_t dest_x, uint16_t dest_y, std::string png_path)
+rendering_id SpriteHandler::render_sprite(const Sprite& sprite, 
+    uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t layer) 
 {
-    sprite_id new_sprite_id = _get_next_id();
+    // Create the new instance, immediately initializing the const members.
+    SpriteInstanceData new_instance
+    {
+        &sprite,
+        _get_unique_id(),
+        SDL_Rect {}
+    };
 
-    // Get a reference to the Sprite that is going to be "created". The Sprite object is guaranteed
-    // to already exist in the vector since this is either a recycled id and the Sprite already
-    // exists, or it was just created on the last line since this is a new ID. Simply update the
-    // values of the Sprite and allow it to be referenced that already exists to "create" a new
-    // one.
+    // new_instance.target_sprite = &sprite;
 
-    Sprite &target_sprite = s_all_sprites.at(new_sprite_id);
+    // new_instance.ID = _get_unique_id();
 
-    target_sprite.splice_dimensions.x = splice_x;
-    target_sprite.splice_dimensions.y = splice_y;
-    target_sprite.splice_dimensions.w = splice_w;
-    target_sprite.splice_dimensions.h = splice_h;
+    new_instance.display_dimensions.x = x;
+    new_instance.display_dimensions.y = y;
 
-    target_sprite.display_dimensions.x = dest_x;
-    target_sprite.display_dimensions.y = dest_y;
-    target_sprite.display_dimensions.w = splice_w;
-    target_sprite.display_dimensions.h = splice_h;
+    if(w == 0) w = sprite.splice_dimensions.w;
+    if(h == 0) h = sprite.splice_dimensions.h;
+ 
+    new_instance.display_dimensions.w = w;
+    new_instance.display_dimensions.h = h;
+    
+    _place_sprite_instance(layer, new_instance);
 
-    target_sprite.texture = m_texture_handler->create_texture(png_path);
-
-    // Register that this Texture has another dependency.
-    ++s_texture_dependencies[target_sprite.texture];
-
-    return new_sprite_id;
+    return new_instance.ID;
 }
 
-const Sprite &SpriteHandler::get_sprite(sprite_id id)
+Sprite SpriteHandler::create_sprite(const char* texture_path, 
+    uint16_t splice_x, uint16_t splice_y, uint16_t splice_w, uint16_t splice_h) 
 {
-    return s_all_sprites.at(id);
+    Sprite new_sprite;
+
+    new_sprite.splice_dimensions = SDL_Rect {splice_x, splice_y, splice_w, 
+        splice_h};
+
+    new_sprite.texture = m_texture_handler->create_texture(
+        std::string(texture_path));
+
+    return new_sprite;
 }
 
+SpriteInstanceData& SpriteHandler::get_instance_data(rendering_id ID)
+{
+    if(!_is_ID_valid_and_rendering(ID))
+    {
+        OUTPUT_CRASH_DETAILS(" where 'ID' = '" + std::to_string(ID) + 
+            "' : ID does not exist or is not rendering.");
+        exit(1);
+    }
+
+    return _get_instance(ID);
+}
 
 // Private
 
-void SpriteHandler::_insert_id_in_layer_vector(sprite_id id, uint16_t layer)
+void SpriteHandler::_place_sprite_instance(uint16_t layer, 
+    const SpriteInstanceData& instance_data)
 {
-    std::vector<sprite_id> &layer_vector = m_layers_to_sprites.at(layer);
+    // Update the tracking of rendering ideas to reflect that this ID is now
+    // active on this layer.
+    m_ren_ids_to_layer[instance_data.ID] = layer;
 
-    // Find the position in the sorted layer vector where this id should be inserted.
-    const std::vector<sprite_id>::const_iterator it =
-        std::lower_bound(layer_vector.begin(), layer_vector.end(), id);
+    std::cout << "Placed: " << instance_data.ID << " on: " << layer << '\n';
 
-    layer_vector.insert(it, id);
-}
+    // Find the layer vector, if it exists.
+    std::unordered_map<uint16_t, std::vector<SpriteInstanceData>>::iterator it 
+        = m_layers_to_sprites.find(layer);
 
-void SpriteHandler::_remove_inactive_layer(uint16_t layer)
-{
-    // Delete the layer from the layers to sprites vector, since there are no
-    // longer any sprites rendering on it.
-    m_layers_to_sprites.erase(layer);
-
-    // Find the position of the layer inside the active layers vector.
-    const std::vector<uint16_t>::const_iterator it =
-        std::lower_bound(m_active_layers.begin(), m_active_layers.end(), 
-        layer);
-
-    // Remove this layer from the active layers.
-    m_active_layers.erase(it);
-}
-
-void SpriteHandler::_remove_texture_dependency(SDL_Texture *texture)
-{
-    uint64_t &num_dependencies = s_texture_dependencies.at(texture);
-
-    --num_dependencies;
-
-    // If there are more Sprites who need this Texture.
-    if (num_dependencies != 0)
-        return;
-
-    s_texture_dependencies.erase(texture);
-
-    m_texture_handler->handle_texture_deletion(texture);
-}
-
-bool SpriteHandler::_is_id_valid(sprite_id id)
-{
-    // If the ID of this Sprite doesn't exist or it is a recycled ID of a deleted Sprite.
-    if (id >= s_all_sprites.size() ||
-        s_available_ids.find(id) != s_available_ids.end())
-        return false;
-
-    return true;
-}
-
-bool SpriteHandler::_is_sprite_rendering(sprite_id id)
-{
-    // If the sprite_id has a layer associated with it, that means it is rendering on a layer.
-    return m_sprites_to_layers.count(id);
-}
-
-sprite_id SpriteHandler::_get_next_id()
-{
-    sprite_id available_id;
-
-    // There are recycled IDs available.
-    if (s_available_ids.size() > 0)
+    // If this layer has not been used yet.
+    if(it == m_layers_to_sprites.end())
     {
-        available_id = *s_available_ids.begin();
-        s_available_ids.erase(available_id);
+        m_layers_to_sprites.emplace(layer, std::vector<SpriteInstanceData> 
+            {instance_data});
 
-        return available_id;
+        // Since this is a new layer and we're placing a new instance on it, it
+        // is known that this layer was not active before, and needs to be 
+        // added to the tracked active layers vector since this new instance 
+        // is now rendering on it.
+        m_active_layers.push_back(layer);
+        return;
     }
 
-    // Get the next ID in line, which is simply the size of the vector since the length of the
-    // vector corresponds directly to the number of Sprites (IDs) created.
+    // If this layer is empty, and is now active as we're placing an instance 
+    // on it.
+    if(it->second.size() == 0)
+    {
+        m_active_layers.push_back(layer);
+    }
 
-    available_id = s_all_sprites.size();
+    // Place the instance in the vector at this layer.
+    it->second.push_back(instance_data);
+}
 
-    // Add a new Sprite to the Sprites vector. The new size
-    s_all_sprites.push_back(Sprite{});
+void SpriteHandler::_remove_instance(rendering_id ID)
+{
+    // Add this ID to the available IDs, since it is now decomissioned.
+    m_available_rendering_ids.push(ID);
 
-    return available_id;
+    // Find the layer this ID is rendering on.
+    uint16_t targ_layer = m_ren_ids_to_layer.at(ID);
+
+    // Get the vector of instances at the layer this ID is rendering on.
+    std::vector<SpriteInstanceData>& targ_vector = 
+        m_layers_to_sprites.at(targ_layer);
+
+    // Remove the instance from the vector
+    targ_vector.erase(_find_instance_in_vector(ID, targ_vector));
+
+    // Set the layer that this ID is rendering on to the limit of a uint16, 
+    // which will flag the SpriteHandler that this ID is no longer rendering on
+    // any layer if it needs to check.
+    m_ren_ids_to_layer.at(ID) = Frost::UINT16_LIMIT;
+
+    // If this vector is not empty, the layer is still active, so do nothing.
+    if(targ_vector.size() != 0) return;
+
+    // The vector is empty, meaning no more instances are rendering on it so it
+    // is now inactive. Remove it from the active layers vector.
+
+    m_active_layers.erase(
+        std::lower_bound(
+            m_active_layers.begin(),
+            m_active_layers.end(),
+            targ_layer)
+    );
+}
+
+bool SpriteHandler::_is_ID_valid_and_rendering(rendering_id ID)
+{
+    return m_ren_ids_to_layer.find(ID) != m_ren_ids_to_layer.end() && 
+        m_ren_ids_to_layer.at(ID) < Frost::UINT16_LIMIT;
+}
+
+rendering_id SpriteHandler::_get_unique_id()
+{
+    // There are decomissioned IDs available.
+    if(m_available_rendering_ids.size() != 0)
+    {
+        rendering_id ID = m_available_rendering_ids.front();
+        m_available_rendering_ids.pop();
+
+        return ID;
+    }
+
+    // No decomissioned IDs are available, generate a new one.
+    return m_next_id++;
+
+}
+
+std::vector<SpriteInstanceData>::iterator 
+    SpriteHandler::_find_instance_in_vector(rendering_id ID, 
+    std::vector<SpriteInstanceData>& vec)
+{
+    // Return an iterator to the instance with the matching ID.
+    return std::lower_bound(
+        vec.begin(),
+        vec.end(),
+        ID,
+        [](SpriteInstanceData& instance, rendering_id ID) 
+            { return instance.ID < ID;}
+    );
+}
+
+SpriteInstanceData& SpriteHandler::_get_instance(
+    rendering_id ID)
+{
+    uint16_t target_layer;
+
+    // Attempt to retrieve the layer this ID is rendering on.
+    try
+    {
+        target_layer = m_ren_ids_to_layer.at(ID);
+    }
+
+    // Rendering ID is invalid.
+    catch(const std::out_of_range& e)
+    {
+        OUTPUT_CRASH_DETAILS(" where 'ID' = '" + std::to_string(ID) + 
+            "' : ID does not exist.");
+        exit(1);
+    }
+
+    // Get the vector of instances at this layer.
+    std::vector<SpriteInstanceData>& target_vector = 
+        m_layers_to_sprites.at(target_layer);
+
+    // Fetch an iterator to the instance and dereference it to get said instance.
+    return *_find_instance_in_vector(ID, target_vector);
 }

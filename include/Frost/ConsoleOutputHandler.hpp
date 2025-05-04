@@ -120,6 +120,8 @@ public:
      */
     void add_ch(char c, std::string color = "White");
 
+    void add_chars(const char* chars, std::string color = "White");
+
     /** 
      * @brief Adds a string to the screen starting at the cursor's position. 
      * 

@@ -39,6 +39,8 @@ int FrostEngine::s_native_screen_height;
 #include "iostream"
 FrostEngine::FrostEngine()
 { 
+    CrashOutputHandler::clear_output_file();
+
     #ifdef FROST_DEBUG
 
     // Clear the ProgramOutputHandler's output file

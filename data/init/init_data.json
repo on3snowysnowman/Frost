@@ -10,7 +10,7 @@
     "fullscreen": false,
     "vsync": true,
     "frame_limit": 60,
-    "screen_height": 700,
-    "screen_width": 1250,
+    "screen_height": 500,
+    "screen_width": 500,
     "use_extended_colors": true
 }

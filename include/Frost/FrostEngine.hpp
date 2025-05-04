@@ -15,7 +15,7 @@
 #include "Json.hpp"
 
 
-/** Frost Engine by Joel Height. Version 0.2. */
+/** Frost Engine by Joel Height. */
 class FrostEngine
 {
 

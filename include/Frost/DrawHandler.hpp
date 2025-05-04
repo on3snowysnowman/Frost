@@ -39,6 +39,7 @@ public:
      * @param texture Texture to draw.
      * @param source Dimensions to portion from the texture.
      * @param dest Dimensions to place on the screen.
+     * 
      */
     void draw(SDL_Texture* texture, const SDL_Rect& source, const SDL_Rect& dest);
 

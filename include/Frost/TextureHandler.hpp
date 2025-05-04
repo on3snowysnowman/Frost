@@ -37,7 +37,7 @@ static constexpr std::size_t NUM_RENDERABLE_CHARS = std::strlen(RENDERABLE_CHARA
  * 
  * The `handle_texture_deletion()` is NOT guaranteed to delete the Texture.
  * The Texture will only be deleted from the GPU if that call was the last 
- * logged dependency. If the Texture were deleted and other objects were 
+ * logged dependency. If the Texture was deleted and other objects were 
  * sharing that Texture (since they also requested a Texture to be created
  * from the same path, as specified previously), this would invoke undefined
  * behavior from dangling pointers. 

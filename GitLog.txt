@@ -1,5 +1,16 @@
 This file tracks specific details on what was changed each git push.
 
+36:
+
+   - Rewrote SpriteHandler, now supports rendering one sprite in more than
+     one position on the screen at once.
+
+   - Added a method to the COH for adding const char* to the screen.
+   
+   - Added a simple Array2D class. Unfinished, but functional.
+
+   - Added a QuickTest file for small demo tests that don't require a full 
+     Simulator setup
 
 35:
 
