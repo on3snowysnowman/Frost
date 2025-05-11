@@ -139,8 +139,11 @@ bool FrostEngine::_set_application_icon(std::string path_to_png)
     return true;
 }
 
-const double& FrostEngine::_get_frame_time_reference()
- { return m_elapsed_milliseconds_this_frame; }
+const double& FrostEngine::_get_frame_time_reference() const
+    { return m_elapsed_milliseconds_this_frame; }
+
+SDL_Renderer* FrostEngine::_get_renderer() const
+    { return m_renderer; }
 
 
 // Private

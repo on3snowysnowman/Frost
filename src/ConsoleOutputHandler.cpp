@@ -229,7 +229,7 @@ void ConsoleOutputHandler::add_ch(char c, std::string color)
     }
 }
 
-void ConsoleOutputHandler::add_chars(const char* chars, std::string color)
+void ConsoleOutputHandler::add_str(const char* chars, std::string color)
 {
     int i = 0;
     char c = chars[0];

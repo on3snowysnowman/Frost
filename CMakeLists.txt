@@ -25,13 +25,16 @@ target_include_directories(${PROJECT_NAME}
     PUBLIC
         ${CMAKE_SOURCE_DIR}/include/Frost
         ${CMAKE_SOURCE_DIR}/include/Frost/UITools
+        ${CMAKE_SOURCE_DIR}/include/FastNoiseLite
+        ${CMAKE_SOURCE_DIR}/include/nlohmann
+
 )
 
 # Find required libraries .
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
 find_package(SDL2_ttf REQUIRED)
-find_package(nlohmann_json REQUIRED)
+# find_package(nlohmann_json REQUIRED)
 
 # Link Libraries.
 target_link_libraries(${PROJECT_NAME}
@@ -63,5 +66,5 @@ message(STATUS "Target Data/Assets Path:" ${TARGET_DATA_ASSETS_PATH})
 
 # Install each component to their target directory.
 install(TARGETS ${PROJECT_NAME} ARCHIVE DESTINATION ${TARGET_LIB_PATH})
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/Frost DESTINATION ${TARGET_INCLUDE_PATH})
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/ DESTINATION ${TARGET_INCLUDE_PATH})
 

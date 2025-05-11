@@ -15,6 +15,8 @@
 
 // Constructors / Deconstructor
 
+UIList::UIList() {}
+
 UIList::UIList(ConsoleOutputHandler* coh, std::string* cursor_color, std::string name,
     std::initializer_list<UIItem*> content, int16_t cursor_index, 
     int16_t selected_index) : UIItem(coh, cursor_color, "LIST")

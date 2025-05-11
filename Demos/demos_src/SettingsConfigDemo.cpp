@@ -114,8 +114,8 @@ private:
         json settings = EventHandler::invoke_event<const json&>("GET_INIT_DATA");
 
         // Fetch screen dimensions.
-        uint16_t new_screen_width = Frost::str_to_uint16(m_screen_width.m_content);
-        uint16_t new_screen_height = Frost::str_to_uint16(m_screen_height.m_content);
+        uint16_t new_screen_width = Frost::str_to_uint16(m_screen_width.content);
+        uint16_t new_screen_height = Frost::str_to_uint16(m_screen_height.content);
 
         // Check if the screen dimensions are invalid.
         if(new_screen_width < 500 || new_screen_width > m_native_screen_width)

@@ -236,6 +236,14 @@ private:
     void _remove_instance(rendering_id ID);
 
     /**
+     * @brief Places a layer into the `m_active_layers` vector at a position 
+     * that maintains descending order.
+     * 
+     * @param layer Layer to place.
+     */
+    void _place_active_layer(uint16_t layer);
+
+    /**
      * @brief Returns true if `ID` is valid and is currently rendering.
      * 
      * @param ID ID to check.

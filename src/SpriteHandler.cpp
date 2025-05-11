@@ -21,7 +21,7 @@ SpriteHandler::SpriteHandler(TextureHandler* texture_handler,
 void SpriteHandler::_render() 
 {
     for(uint16_t layer : m_active_layers)
-    {
+    {   
         for(const SpriteInstanceData& instance_data : 
             m_layers_to_sprites.at(layer))
         {
@@ -155,14 +155,12 @@ void SpriteHandler::_place_sprite_instance(uint16_t layer,
     // active on this layer.
     m_ren_ids_to_layer[instance_data.ID] = layer;
 
-    std::cout << "Placed: " << instance_data.ID << " on: " << layer << '\n';
-
     // Find the layer vector, if it exists.
-    std::unordered_map<uint16_t, std::vector<SpriteInstanceData>>::iterator it 
+    std::unordered_map<uint16_t, std::vector<SpriteInstanceData>>::iterator map_it 
         = m_layers_to_sprites.find(layer);
 
     // If this layer has not been used yet.
-    if(it == m_layers_to_sprites.end())
+    if(map_it == m_layers_to_sprites.end())
     {
         m_layers_to_sprites.emplace(layer, std::vector<SpriteInstanceData> 
             {instance_data});
@@ -171,19 +169,26 @@ void SpriteHandler::_place_sprite_instance(uint16_t layer,
         // is known that this layer was not active before, and needs to be 
         // added to the tracked active layers vector since this new instance 
         // is now rendering on it.
-        m_active_layers.push_back(layer);
+        _place_active_layer(layer);
         return;
     }
 
     // If this layer is empty, and is now active as we're placing an instance 
     // on it.
-    if(it->second.size() == 0)
+    if(map_it->second.size() == 0)
     {
-        m_active_layers.push_back(layer);
+        _place_active_layer(layer);
     }
 
-    // Place the instance in the vector at this layer.
-    it->second.push_back(instance_data);
+    // Insert the instance into the vector while maintaining sorted order.
+    map_it->second.insert(
+        std::lower_bound(
+            map_it->second.begin(),
+            map_it->second.end(),
+            instance_data.ID,
+            [](SpriteInstanceData& instance, rendering_id ID) 
+            { return instance.ID < ID;}), 
+            instance_data);
 }
 
 void SpriteHandler::_remove_instance(rendering_id ID)
@@ -218,6 +223,17 @@ void SpriteHandler::_remove_instance(rendering_id ID)
             m_active_layers.end(),
             targ_layer)
     );
+}
+
+void SpriteHandler::_place_active_layer(uint16_t layer)
+{
+    m_active_layers.insert(
+        std::lower_bound(
+            m_active_layers.begin(),
+            m_active_layers.end(),
+            layer
+        ),
+        layer);
 }
 
 bool SpriteHandler::_is_ID_valid_and_rendering(rendering_id ID)

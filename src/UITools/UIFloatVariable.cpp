@@ -19,12 +19,12 @@
 UIFloatVariable::UIFloatVariable() {}
 
 UIFloatVariable::UIFloatVariable(ConsoleOutputHandler* coh, std::string* cursor_color, 
-    std::string name, std::string content, std::string default_content) :
+    std::string _name, std::string _content, std::string _default_content) :
     UIItem(coh, cursor_color, "FLOAT_VARIABLE")
 {
-    m_name = name;
-    m_content = content;
-    m_default_content = default_content;
+    name = _name;
+    content = _content;
+    default_content = _default_content;
 
     _check_default_content_on_init();
     _check_content_on_init();
@@ -35,20 +35,20 @@ UIFloatVariable::UIFloatVariable(ConsoleOutputHandler* coh, std::string* cursor_
 
 void UIFloatVariable::_render_no_status() const
 {
-    m_coh->add_str("   " + m_name + ": " + m_content);
+    m_coh->add_str("   " + name + ": " + content);
 }
 
 void UIFloatVariable::_render_hovered() const
 {
     m_coh->add_str(" > ", *m_cursor_color);
-    m_coh->add_str(m_name + ": " + m_content);
+    m_coh->add_str(name + ": " + content);
 }
 
 void UIFloatVariable::_render_selected() const
 {
     m_coh->add_str(" > ", *m_cursor_color);
-    m_coh->add_str(m_name + ": ");
-    m_coh->add_str(m_content + '_', *m_cursor_color);
+    m_coh->add_str(name + ": ");
+    m_coh->add_str(content + '_', *m_cursor_color);
 }
 
 
@@ -61,13 +61,13 @@ UIItem::Status UIFloatVariable::_handle_input()
         InputHandler::block_key_until_released(SDLK_RETURN);
 
         // Remove any proceeding zeros in the content.
-        Frost::remove_first_zeros(m_content);
+        Frost::remove_first_zeros(content);
 
         // If the content is empty, set it to the default content.
-        if(m_content.size() == 0) 
+        if(content.size() == 0) 
         {
-            m_content = m_default_content;
-            m_content_has_decimal = m_default_content_has_decimal;
+            content = default_content;
+            content_has_decimal = default_content_has_decimal;
 
             // Flag this item as deselected by returning the HOVERED status.
             return HOVERED;
@@ -76,9 +76,9 @@ UIItem::Status UIFloatVariable::_handle_input()
         // If there is a decimal point in the content, and the character at the beginning of the
         // string is the decimal, add a 0 in front of it as it was just removed in the 
         // remove_first_zeros() call.
-        if(m_content_has_decimal && *(m_content.begin()) == '.')
+        if(content_has_decimal && *(content.begin()) == '.')
         {
-            m_content.insert(m_content.begin(), '0');
+            content.insert(content.begin(), '0');
         }
 
         // Flag this item as deselected by returning the HOVERED status.
@@ -90,34 +90,40 @@ UIItem::Status UIFloatVariable::_handle_input()
         // Valid integer.
         if(key >= '0' && key <= '9')
         {
-            m_content.push_back(char(key));
+            content.push_back(char(key));
+            continue;
+        }
+
+        else if(content.size() == 0 && key == SDLK_MINUS)
+        {
+            content.push_back('-');
             continue;
         }
 
         else if(key == '.')
         {
             // If the content already has a decimal point.
-            if(m_content_has_decimal) continue;
+            if(content_has_decimal) continue;
 
-            m_content.push_back('.');
-            m_content_has_decimal = true;
+            content.push_back('.');
+            content_has_decimal = true;
             continue;
         }
 
-        else if(m_content.size() != 0 && key == SDLK_BACKSPACE)
+        else if(content.size() != 0 && key == SDLK_BACKSPACE)
         {
             // Backspace + Shift pressed, clear the content.
             if(InputHandler::is_key_pressed(SDLK_LSHIFT))
             {
-                m_content = "";
-                m_content_has_decimal = false;
+                content = "";
+                content_has_decimal = false;
                 continue;
             }
 
             // Character to be deleted is the decimal point.
-            if(*(--m_content.end()) == '.') m_content_has_decimal = false;
+            if(*(--content.end()) == '.') content_has_decimal = false;
 
-            m_content.pop_back();
+            content.pop_back();
         }
     }
 
@@ -131,17 +137,17 @@ UIItem::Status UIFloatVariable::_handle_input()
 
 void UIFloatVariable::_check_content_on_init() 
 {
-    if(m_content.size() == 0)
+    if(content.size() == 0)
     {
-        m_content = m_default_content;
-        m_content_has_decimal = m_default_content_has_decimal;
+        content = default_content;
+        content_has_decimal = default_content_has_decimal;
         return;
     }
 
-   Frost::remove_first_zeros(m_content);
+   Frost::remove_first_zeros(content);
 
     // Iterate over each character and check if it is a valid integer.
-    for(const char& c : m_content)
+    for(const char& c : content)
     {
         // Valid integer.
         if(c >= '0' && c <= '9') continue;
@@ -149,9 +155,9 @@ void UIFloatVariable::_check_content_on_init()
         else if(c == '.')
         {
             // If no decimal point exists yet.
-            if(!m_content_has_decimal)
+            if(!content_has_decimal)
             {
-                m_content_has_decimal = true;
+                content_has_decimal = true;
                 continue;
             }
 
@@ -162,8 +168,8 @@ void UIFloatVariable::_check_content_on_init()
                 "contains multiple decimal points.", Frost::WARN);
             #endif
 
-            m_content = m_default_content;
-            m_content_has_decimal = m_default_content_has_decimal;
+            content = default_content;
+            content_has_decimal = default_content_has_decimal;
             break;
         }
 
@@ -175,21 +181,21 @@ void UIFloatVariable::_check_content_on_init()
             "create a FloatVariable with invalid content.", Frost::WARN);
         #endif
 
-        m_content = m_default_content;
-            m_content_has_decimal = m_default_content_has_decimal;
+        content = default_content;
+            content_has_decimal = default_content_has_decimal;
         break;
     }
 
-        if(m_content_has_decimal && 
-            *(--m_content.begin()) == '.') m_content.insert(m_content.begin(), '0');
+        if(content_has_decimal && 
+            *(--content.begin()) == '.') content.insert(content.begin(), '0');
 }
 
 void UIFloatVariable::_check_default_content_on_init() 
 {
-    Frost::remove_first_zeros(m_default_content);
+    Frost::remove_first_zeros(default_content);
 
     // Iterate over each character and check if it is a valid integer.
-    for(const char& c : m_default_content)
+    for(const char& c : default_content)
     {
         // Valid integer.
         if(c >= '0' && c <= '9') continue;
@@ -197,9 +203,9 @@ void UIFloatVariable::_check_default_content_on_init()
         else if(c == '.')
         {
             // If no decimal point exists yet.
-            if(!m_default_content_has_decimal)
+            if(!default_content_has_decimal)
             {
-                m_default_content_has_decimal = true;
+                default_content_has_decimal = true;
                 continue;
             }
 
@@ -210,8 +216,8 @@ void UIFloatVariable::_check_default_content_on_init()
                 "content contains multiple decimal points.", Frost::WARN);
             #endif
 
-            m_default_content = "";
-            m_default_content_has_decimal = false;
+            default_content = "";
+            default_content_has_decimal = false;
             break;
         }
 
@@ -223,13 +229,13 @@ void UIFloatVariable::_check_default_content_on_init()
             "create a FloatVariable with invalid default content.", Frost::WARN);
         #endif
 
-        m_default_content = "";
-        m_default_content_has_decimal = false;
+        default_content = "";
+        default_content_has_decimal = false;
         break;
     }
 
-        if(m_default_content_has_decimal && *(--m_default_content.begin()) == '.') 
-            m_default_content.insert(m_default_content.begin(), '0');
+        if(default_content_has_decimal && *(--default_content.begin()) == '.') 
+            default_content.insert(default_content.begin(), '0');
 }
 
 

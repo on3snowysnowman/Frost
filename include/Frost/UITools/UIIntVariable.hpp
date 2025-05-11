@@ -33,14 +33,14 @@ public:
     Status _handle_input() final;  
 
     // Name of this variable.
-    std::string m_name;
+    std::string name;
 
     // Content of the variable, the value that the user sees and interacts with.
-    std::string m_content;
+    std::string content;
 
     /** m_content will be set to this string if it is left empty after user deselection of this 
      * item. */
-    std::string m_default_content;
+    std::string default_content;
 
     /** 
      * @brief Checks m_content after construction, iterating through each 

@@ -24,12 +24,12 @@
 UIIntVariable::UIIntVariable() {}
 
 UIIntVariable::UIIntVariable(ConsoleOutputHandler* coh, std::string* cursor_color, 
-    std::string name, std::string content, std::string default_content) :
+    std::string _name, std::string _content, std::string _default_content) :
     UIItem(coh, cursor_color, "INT_VARIABLE")
 {
-    m_name = name;
-    m_content = content;
-    m_default_content = default_content;
+    name = _name;
+    content = _content;
+    default_content = _default_content;
 
     _check_default_content_on_init();
     _check_content_on_init();
@@ -40,20 +40,20 @@ UIIntVariable::UIIntVariable(ConsoleOutputHandler* coh, std::string* cursor_colo
 
 void UIIntVariable::_render_no_status() const 
 {
-    m_coh->add_str("   " + m_name + ": " + m_content);
+    m_coh->add_str("   " + name + ": " + content);
 }
 
 void UIIntVariable::_render_hovered() const 
 {
     m_coh->add_str(" > ", *m_cursor_color);
-    m_coh->add_str(m_name + ": " + m_content);
+    m_coh->add_str(name + ": " + content);
 }
 
 void UIIntVariable::_render_selected() const 
 {
     m_coh->add_str(" > ", *m_cursor_color);
-    m_coh->add_str(m_name + ": ");
-    m_coh->add_str(m_content + '_', *m_cursor_color);
+    m_coh->add_str(name + ": ");
+    m_coh->add_str(content + '_', *m_cursor_color);
 }
 
 UIItem::Status UIIntVariable::_handle_input() 
@@ -65,10 +65,10 @@ UIItem::Status UIIntVariable::_handle_input()
         InputHandler::block_key_until_released(SDLK_RETURN);
 
         // Remove any proceeding zeros in the content.
-        Frost::remove_first_zeros(m_content);
+        Frost::remove_first_zeros(content);
 
         // If the content is empty, set it to the default content.
-        if(m_content.size() == 0) m_content = m_default_content;
+        if(content.size() == 0) content = default_content;
 
         // Flag this item as deselected by returning the HOVERED status.
         return HOVERED;
@@ -79,20 +79,26 @@ UIItem::Status UIIntVariable::_handle_input()
         // Valid integer.
         if(key >= '0' && key <= '9')
         {
-            m_content.push_back(char(key));
+            content.push_back(char(key));
             continue;
         }
 
-        else if(m_content.size() != 0 && key == SDLK_BACKSPACE)
+        else if(content.size() == 0 && key == SDLK_MINUS)
+        {
+            content.push_back('-');
+            continue;
+        }
+
+        else if(content.size() != 0 && key == SDLK_BACKSPACE)
         {
             // Backspace + Shift pressed, clear the content.
             if(InputHandler::is_key_pressed(SDLK_LSHIFT))
             {
-                m_content = "";
+                content = "";
                 continue;
             }
 
-            m_content.pop_back();
+            content.pop_back();
         }
     }
 
@@ -107,21 +113,21 @@ UIItem::Status UIIntVariable::_handle_input()
 
 void UIIntVariable::_check_content_on_init() 
 {
-    if(m_content.size() == 0)
+    if(content.size() == 0)
     {
         // No need to check the content if it's empty. Set it to the default and return.
-        m_content = m_default_content;
+        content = default_content;
         return;
     }
 
-    Frost::remove_first_zeros(m_content);
+    Frost::remove_first_zeros(content);
 
     // Iterate over each character and check if it is a valid integer. During this process, the 
     // initial proceeding zeros in front of the integer are removed.
-    for(int i = 0; i < m_content.size(); ++i)
+    for(int i = 0; i < content.size(); ++i)
     {
         // Valid integer.
-        if(m_content.at(i) >= '0' && m_content.at(i) <= '9') continue;
+        if(content.at(i) >= '0' && content.at(i) <= '9') continue;
 
         // Invalid integer
 
@@ -131,7 +137,7 @@ void UIIntVariable::_check_content_on_init()
             "create an IntVariable with invalid content.", Frost::WARN);
         #endif
 
-        m_content = m_default_content;
+        content = default_content;
         break;
     }
 
@@ -140,10 +146,10 @@ void UIIntVariable::_check_content_on_init()
 
 void UIIntVariable::_check_default_content_on_init() 
 {
-    Frost::remove_first_zeros(m_default_content);
+    Frost::remove_first_zeros(default_content);
 
     // Iterate over each character and check if it is a valid integer.
-    for(const char& c : m_default_content)
+    for(const char& c : default_content)
     {
         // Valid integer.
         if(c >= '0' && c <= '9') continue;
@@ -156,7 +162,7 @@ void UIIntVariable::_check_default_content_on_init()
             "create an IntVariable with invalid default content.", Frost::WARN);
         #endif
 
-        m_default_content = "";
+        default_content = "";
         break;
     }
 }

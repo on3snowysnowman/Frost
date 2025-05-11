@@ -22,3 +22,5 @@ void UIItem::_render_hovered() const {}
 void UIItem::_render_selected() const {}
 
 UIItem::Status UIItem::_handle_input() { return HOVERED; }
+
+const std::string& UIItem::get_item_type() const { return m_item_type; }

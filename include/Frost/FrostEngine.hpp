@@ -75,7 +75,14 @@ protected:
     bool _set_application_icon(std::string path_to_png);
     
     // Returns a const reference to the internal variable measuring the time each frame takes.
-    const double& _get_frame_time_reference();
+    const double& _get_frame_time_reference() const;
+
+    /**
+     * @brief Returns a pointer to the SDL_Renderer.
+     * 
+     * @return SDL_Renderer* A pointer to the SDL_Renderer instance.
+     */
+     SDL_Renderer* _get_renderer() const;
 
     TextureHandler m_texture_handler;
     DrawHandler m_draw_handler;

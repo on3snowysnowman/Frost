@@ -33,10 +33,10 @@ public:
 
     Array2D() {}
 
-    typename std::array<std::array<T, N>, N>::const_iterator begin() 
+    typename std::array<std::array<T, N>, N>::iterator begin() 
         { return content.begin(); }
 
-    typename std::array<std::array<T, N>, N>::const_iterator end()
+    typename std::array<std::array<T, N>, N>::iterator end()
         { return content.end(); }
 
     constexpr uint64_t size() const noexcept { return N; }

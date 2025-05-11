@@ -22,6 +22,8 @@ class UIList : public UIItem
 
 public:
 
+    UIList();
+
     UIList(ConsoleOutputHandler* coh, std::string* cursor_color, std::string name,
         std::initializer_list<UIItem*> content, int16_t cursor_index = 0,
         int16_t selected_index = -1);

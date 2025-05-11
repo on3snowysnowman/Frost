@@ -12,7 +12,7 @@ string(REGEX REPLACE "\r?\n" ";" PATH_FILE_LINES "${PATH_FILE_CONTENTS}")
 list(GET PATH_FILE_LINES 0 TARGET_LIB_PATH)
 list(GET PATH_FILE_LINES 1 TARGET_INCLUDE_PATH)
 
-set(TARGET_INCLUDE_PATH "${TARGET_INCLUDE_PATH}/Frost")
+set(TARGET_INCLUDE_PATH "${TARGET_INCLUDE_PATH}")
 
 message(STATUS "Target Lib Path:" ${TARGET_LIB_PATH})
 message(STATUS "Target Include Path:" ${TARGET_INCLUDE_PATH})
@@ -42,8 +42,11 @@ foreach(DEMO_FILE ${DEMO_SOURCES})
     # Add include directories
     target_include_directories(${DEMO_NAME}
     PUBLIC
-        ${TARGET_INCLUDE_PATH}
-        ${TARGET_INCLUDE_PATH}/UITools
+        ${TARGET_INCLUDE_PATH}/Frost
+        ${TARGET_INCLUDE_PATH}/Frost/UITools
+        ${TARGET_INCLUDE_PATH}/nlohmann
+        ${TARGET_INCLUDE_PATH}/FastNoiseLite
+
     )
 
     # Link libraries

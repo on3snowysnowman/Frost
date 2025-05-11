@@ -1,5 +1,21 @@
 This file tracks specific details on what was changed each git push.
 
+37:
+
+   - Added the implementation for the get_item_type() method in the UIItem. 
+     Never added that for some reason, and it's somehow escaped me up till 
+     this point.
+
+   - Created a Menu for viewing procedurally generated noise.
+
+   - Added the FastNoiseLite library to the project for generating noise.
+
+   - Added 3rd party header files into the project. Will later config the 
+     Engine to allow for 'segmented' installation to disk, so users can 
+     select which 3rd party libs and headers they want compiled and installed
+     to disk, and which to leave out.
+
+
 36:
 
    - Rewrote SpriteHandler, now supports rendering one sprite in more than

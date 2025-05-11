@@ -76,7 +76,7 @@ void Frost::simulate_UI_selection(UISelectionContainer& data)
             return;
     }
 }
-#include<iostream>
+
 void Frost::simulate_UI_panel(UIPanelContainer& data) 
 {
     // Rendering
