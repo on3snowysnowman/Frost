@@ -14,7 +14,10 @@
 
 // Constructors / Deconstructor
 
-NoiseGenerator::NoiseGenerator() {}
+NoiseGenerator::NoiseGenerator() 
+{
+    set_offset(0, 0);
+}
 
 
 // Public
@@ -31,7 +34,6 @@ float NoiseGenerator::get_noise_at_position(float x, float y) const
 std::vector<float> NoiseGenerator::generate_full_noise_map(uint16_t width, 
     uint16_t height)
 {
-
     std::vector<float> noise_map;
 
     noise_map.reserve(width * height);

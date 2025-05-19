@@ -1,5 +1,14 @@
 This file tracks specific details on what was changed each git push.
 
+38:
+
+   - Fixed memory leak in the NoiseGeneration Demo where Textures were not 
+     being destroyed when being recreated.
+
+   - Added the GridNodeDistributor.
+
+   - Added a simple Point2D class.
+
 37:
 
    - Added the implementation for the get_item_type() method in the UIItem. 

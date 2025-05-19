@@ -17,6 +17,9 @@ Iterate through each use of string, and determine whether it can be replaed
 
 Reconfigure SpriteHandler to render one sprite in multiple locations.
 
+Make FrostRandom an object-constructed class rather than static class to allow
+for multithreaded use.
+
 Add Animation support 
 
 Write time profiling class.

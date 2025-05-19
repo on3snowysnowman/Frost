@@ -483,6 +483,8 @@ private:
 
     void _generate_noise_texture(const std::vector<float>& noise_map)
     {
+        if(m_noise_texture) SDL_DestroyTexture(m_noise_texture);
+
         SDL_Surface* noise_surface = SDL_CreateRGBSurfaceWithFormat(0, 
             m_noise_width, m_noise_height, 32, SDL_PIXELFORMAT_RGBA32);
 
@@ -531,6 +533,9 @@ private:
 
     void _generate_condensed_noise_texture(const std::vector<float>& noise_map) 
     {
+        if(m_condensed_noise_texture) 
+            SDL_DestroyTexture(m_condensed_noise_texture);
+
         SDL_Surface* noise_surface = SDL_CreateRGBSurfaceWithFormat(
             0, m_condensed_width, m_condensed_height, 32, 
             SDL_PIXELFORMAT_RGBA32);
@@ -576,6 +581,8 @@ private:
 
     void _generate_colored_noise_texture(const std::vector<SDL_Color>& noise_map) 
     {
+        if(m_colored_noise_texture) SDL_DestroyTexture(m_colored_noise_texture);
+        
         SDL_Surface* noise_surface = SDL_CreateRGBSurfaceWithFormat(
             0, m_noise_width, m_noise_height, 32, SDL_PIXELFORMAT_RGBA32);
 
@@ -617,6 +624,9 @@ private:
 
     void _generate_col_cond_noise_texture(const std::vector<SDL_Color>& noise_map)
     {
+        if(m_col_cond_noise_texture) 
+            SDL_DestroyTexture(m_col_cond_noise_texture);
+
         SDL_Surface* noise_surface = SDL_CreateRGBSurfaceWithFormat(
             0, m_condensed_width, m_condensed_height, 32, SDL_PIXELFORMAT_RGBA32);
 
