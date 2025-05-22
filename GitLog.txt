@@ -1,5 +1,12 @@
 This file tracks specific details on what was changed each git push.
 
+39:
+
+   - Added a folder for build scripts.
+
+   - Added doxygen config and documentation.
+
+
 38:
 
    - Fixed memory leak in the NoiseGeneration Demo where Textures were not 

@@ -114,7 +114,7 @@ public:
     /** 
      * @brief Adds a character to the screen at the cursor's position.
      * 
-     * @param C Character to add.
+     * @param c Character to add.
      * @param color Color of the character, default is White.
      * 
      */

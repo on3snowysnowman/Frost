@@ -4,13 +4,13 @@
 BUILD_DIRECTORY="build"
 
 # Navigate to source directory. 
-cd .. 
+cd ../build_scripts/Linux
 
 # Run Engine's build script.
 ./build.sh
 
 # Navigate to the Demo's directory.
-cd Demos
+cd ../../Demos
 
 # If the build directory does not exist.
 if [ ! -d $BUILD_DIRECTORY ]; then
@@ -32,5 +32,5 @@ echo "Building Demo."
 # Build Engine
 cmake --build $BUILD_DIRECTORY 
 
-sudo chmod 777 -R assets 
-sudo chmod 777 -R data
+# sudo chmod 777 -R assets 
+# sudo chmod 777 -R data

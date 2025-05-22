@@ -161,8 +161,7 @@ public:
      *                 region.
      * @param splice_w The width of the spliced region.
      * @param splice_h The height of the spliced region.
-     * @param display_w The width to render the Sprite on the screen.
-     * @param display_h The height to render the Sprite on the screen.
+     * 
      * @return Sprite The created Sprite object.
      */
     Sprite create_sprite(const char* texture_path, uint16_t splice_x, 
