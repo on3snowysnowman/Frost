@@ -1,3 +1,7 @@
+
+This is an old version of the Engine, I am currently writing a newer version: TUNDRA. There will
+probably be no more development for Frost.
+
 # Frost ( Simple Text and 2D Image Engine ) by Joel Height #
 
 # NOTE #
